@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ATIVIDADES, ETAPAS, GERAIS, MOMENTOS, TOTAL_ITENS, type Item, type Momento, type Nota } from "../data/itens";
-import { ESCALA, corDaNota } from "../lib/cores";
+import { corDaNota } from "../lib/cores";
 import { hoje } from "../lib/historico";
 import { saveAvaliacao } from "../api/ead";
 
+import { getUserToken, getSavedProfile } from "../api/client";
+
 type Props = {
-  perfil: any;
-  token: string | null;
-  lista: any[];
-  setLista: (l: any[]) => void;
-  studentId: string;
+  alunoId: string;
+  isStudent?: boolean;
 };
 
 type Estado = {
@@ -32,8 +31,10 @@ const vazio = (nome: string): Estado => ({
   obs: "",
 });
 
-export default function AvaliacaoSupervisor({ perfil, token, studentId }: Props) {
-  const nomeAvaliador = perfil?.name || "";
+export default function AvaliacaoSupervisor({ alunoId }: Props) {
+  const token = getUserToken();
+  const perfil = getSavedProfile();
+  const nomeAvaliador = String(perfil?.name || "");
   const [s, setS] = useState<Estado>(() => vazio(nomeAvaliador));
   const [faltando, setFaltando] = useState<Set<string>>(new Set());
   const [msg, setMsg] = useState<{ tipo: "ok" | "err"; texto: string } | null>(null);
@@ -45,7 +46,7 @@ export default function AvaliacaoSupervisor({ perfil, token, studentId }: Props)
     setS(vazio(nomeAvaliador));
     setMsg(null);
     setFaltando(new Set());
-  }, [studentId, nomeAvaliador]);
+  }, [alunoId, nomeAvaliador]);
 
   useEffect(() => {
     if (!primeiro.current) return;
@@ -100,12 +101,12 @@ export default function AvaliacaoSupervisor({ perfil, token, studentId }: Props)
       const promises: Promise<unknown>[] = [];
       s.gerais.forEach((nota, i) => {
         if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: studentId, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
+          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
         }
       });
       s.atividades.forEach((nota, i) => {
         if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: studentId, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
+          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
         }
       });
       

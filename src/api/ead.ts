@@ -7,8 +7,10 @@ export interface AvaliacaoPayload {
   nao_praticou?: boolean;
   comentario?: string;
   etapa?: string;
-  momento?: string;
+  momento?: string | null;
   aluno_user_id?: string;
+  grupo?: string;
+  item_texto?: string;
 }
 
 export async function saveAvaliacao(data: AvaliacaoPayload, token?: string | null) {

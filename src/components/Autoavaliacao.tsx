@@ -132,12 +132,12 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
           const promises: Promise<unknown>[] = [];
           av.gerais.forEach((nota, i) => {
             if (nota !== null) {
-              promises.push(saveAvaliacao({ item_chave: `gerais.${i}`, papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
+              promises.push(saveAvaliacao({ aluno_user_id: userKey, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
             }
           });
           av.atividades.forEach((nota, i) => {
             if (nota !== null) {
-              promises.push(saveAvaliacao({ item_chave: `atividades.${i}`, papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
+              promises.push(saveAvaliacao({ aluno_user_id: userKey, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
             }
           });
           await Promise.allSettled(promises).then(results => {
