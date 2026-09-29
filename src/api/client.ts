@@ -214,13 +214,16 @@ export type RegisterInput = {
   password_confirmation: string;
   phone: string;
   cpf: string;
+  user_type?: string;
+  council_type?: string;
+  council_number?: string;
 };
 
 export async function register(input: RegisterInput) {
   const app = await getAppToken();
   const data = await request("POST", "/auth/register", {
     bearer: app,
-    body: { ...input, user_type: "patient" },
+    body: { user_type: "patient", ...input },
   });
   const token = pickToken(data);
   if (!token) throw new ApiError(0, "Cadastro feito, mas a API não devolveu o token de acesso. Tente entrar.", data);

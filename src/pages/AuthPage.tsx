@@ -91,15 +91,15 @@ function Entrar({ inicial, onEntrou }: { inicial: string; onEntrou: () => void }
   );
 }
 
-type Campos = { name: string; email: string; phone: string; cpf: string; password: string; password_confirmation: string };
+type Campos = { name: string; email: string; phone: string; cpf: string; password: string; password_confirmation: string; user_type: string; council_type: string; council_number: string };
 
 function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogin: (email: string) => void }) {
-  const [c, setC] = useState<Campos>({ name: "", email: "", phone: "", cpf: "", password: "", password_confirmation: "" });
+  const [c, setC] = useState<Campos>({ name: "", email: "", phone: "", cpf: "", password: "", password_confirmation: "", user_type: "patient", council_type: "", council_number: "" });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erro, setErro] = useState<string | null>(null);
   const [emailDuplicado, setEmailDuplicado] = useState(false);
   const [enviando, setEnviando] = useState(false);
-  const set = (k: keyof Campos) => (e: React.ChangeEvent<HTMLInputElement>) => setC({ ...c, [k]: e.target.value });
+  const set = (k: keyof Campos) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setC({ ...c, [k]: e.target.value });
 
   async function enviar(e: FormEvent) {
     e.preventDefault();
@@ -112,19 +112,33 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
     if (!soDigitos(c.cpf)) loc.cpf = "Informe seu CPF.";
     if (!c.password) loc.password = "Crie uma senha.";
     if (c.password !== c.password_confirmation) loc.password_confirmation = "As senhas não são iguais.";
+    
+    if (c.user_type === "professional") {
+      if (!c.council_type.trim()) loc.council_type = "Informe o conselho (ex: COREN).";
+      if (!c.council_number.trim()) loc.council_number = "Informe o número do conselho.";
+    }
+
     setErros(loc);
     if (Object.keys(loc).length) return;
 
     setEnviando(true);
     try {
-      await register({
+      const inputToRegister: any = {
         name: c.name.trim(),
         email: c.email.trim(),
         phone: soDigitos(c.phone),
         cpf: soDigitos(c.cpf),
         password: c.password,
         password_confirmation: c.password_confirmation,
-      });
+        user_type: c.user_type,
+      };
+      
+      if (c.user_type === "professional") {
+        inputToRegister.council_type = c.council_type.trim();
+        inputToRegister.council_number = c.council_number.trim();
+      }
+
+      await register(inputToRegister);
       onEntrou();
     } catch (err) {
       const fe = fieldErrors(err);
@@ -155,12 +169,50 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
 
   return (
     <form className="form" onSubmit={enviar} noValidate>
+      <div className="field">
+        <label className="l" htmlFor="cad-user_type">Perfil</label>
+        <select id="cad-user_type" value={c.user_type} onChange={set("user_type")}>
+          <option value="patient">Sou aluno(a)</option>
+          <option value="professional">Sou supervisor(a) de estágio</option>
+          <option value="admin">Sou administrador(a) do sistema</option>
+        </select>
+      </div>
       {campo("name", "Nome completo", "text", "name")}
       {campo("email", "E-mail", "email", "email")}
       <div className="two">
         {campo("phone", "Telefone com DDD", "tel", "tel", "Só números")}
         {campo("cpf", "CPF", "text", "off", "Só números")}
       </div>
+      
+      {c.user_type === "professional" && (
+        <div className="two">
+          <div className="field">
+            <label className="l" htmlFor="cad-council_type">Conselho (ex: COREN)</label>
+            <input
+              id="cad-council_type"
+              type="text"
+              value={c.council_type}
+              onChange={set("council_type")}
+              aria-invalid={!!erros.council_type}
+              placeholder="Ex: COREN, CRM"
+            />
+            {erros.council_type && <span className="e">{erros.council_type}</span>}
+          </div>
+          <div className="field">
+            <label className="l" htmlFor="cad-council_number">Número do Conselho</label>
+            <input
+              id="cad-council_number"
+              type="text"
+              value={c.council_number}
+              onChange={set("council_number")}
+              aria-invalid={!!erros.council_number}
+              placeholder="Apenas números e UF"
+            />
+            {erros.council_number && <span className="e">{erros.council_number}</span>}
+          </div>
+        </div>
+      )}
+
       <div className="two">
         {campo("password", "Senha", "password", "new-password")}
         {campo("password_confirmation", "Repita a senha", "password", "new-password")}

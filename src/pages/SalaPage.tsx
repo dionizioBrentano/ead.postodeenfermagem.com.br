@@ -6,6 +6,7 @@ import Guia from "../components/Guia";
 import AvaliacaoSupervisor from "../components/AvaliacaoSupervisor";
 import Paralelo from "../components/Paralelo";
 import { carregar, type Avaliacao } from "../lib/historico";
+import PainelAdmin from "../components/PainelAdmin";
 
 type Aba = "guia" | "autoavaliacao" | "evolucao" | "avaliacao_sup" | "paralelo";
 
@@ -21,7 +22,10 @@ function chaveDoAluno(p: Profile): string {
 
 export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: () => void }) {
   const isStudent = perfil.user_type === "patient";
-  const [aba, setAba] = useState<Aba>(isStudent ? "guia" : "avaliacao_sup");
+  const isAdmin = perfil.user_type === "admin";
+  const isSupervisor = perfil.user_type === "professional" || isAdmin; // Admins can also be supervisors
+  
+  const [aba, setAba] = useState<Aba | "admin">(isStudent ? "guia" : (isAdmin ? "admin" : "avaliacao_sup"));
   const userKey = useMemo(() => chaveDoAluno(perfil), [perfil]);
   const nome = texto(perfil, "name");
   const [lista, setLista] = useState<Avaliacao[]>(() => carregar(userKey));
@@ -30,7 +34,7 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
   const [studentId, setStudentId] = useState("");
   const [confirmedStudentId, setConfirmedStudentId] = useState(isStudent ? texto(perfil, "id") || texto(perfil, "uuid") : "");
 
-  const ir = (a: Aba) => {
+  const ir = (a: Aba | "admin") => {
     setAba(a);
     window.scrollTo({ top: 0 });
   };
@@ -65,6 +69,11 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
         )}
 
         <nav className="nav" role="tablist" aria-label="Seções da sala" style={{ overflowX: "auto" }}>
+          {isAdmin && (
+            <button role="tab" aria-selected={aba === "admin"} onClick={() => ir("admin")} style={{ fontWeight: "bold", color: "#d32f2f" }}>
+              Painel de Administração
+            </button>
+          )}
           {isStudent && (
             <>
               <button role="tab" aria-selected={aba === "guia"} onClick={() => ir("guia")}>
@@ -78,16 +87,22 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
               </button>
             </>
           )}
-          <button role="tab" aria-selected={aba === "avaliacao_sup"} onClick={() => ir("avaliacao_sup")}>
-            Avaliação do supervisor
-          </button>
-          <button role="tab" aria-selected={aba === "paralelo"} onClick={() => ir("paralelo")}>
-            Paralelo
-          </button>
+          {isSupervisor && (
+            <>
+              <button role="tab" aria-selected={aba === "avaliacao_sup"} onClick={() => ir("avaliacao_sup")}>
+                Avaliação do supervisor
+              </button>
+              <button role="tab" aria-selected={aba === "paralelo"} onClick={() => ir("paralelo")}>
+                Paralelo
+              </button>
+            </>
+          )}
         </nav>
       </div>
       <main className="page">
-        {(!confirmedStudentId && !isStudent) ? (
+        {aba === "admin" && isAdmin ? (
+          <PainelAdmin />
+        ) : (!confirmedStudentId && !isStudent) ? (
           <div className="box sec" style={{ textAlign: "center", padding: "40px 20px", color: "#666" }}>
             Por favor, informe o ID do aluno no campo acima e clique em Buscar.
           </div>
@@ -106,10 +121,10 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
             {aba === "evolucao" && isStudent && (
               <Evolucao userKey={userKey} lista={lista} onMudou={setLista} onAutoavaliar={() => ir("autoavaliacao")} />
             )}
-            {aba === "avaliacao_sup" && (
+            {aba === "avaliacao_sup" && isSupervisor && (
               <AvaliacaoSupervisor alunoId={confirmedStudentId} isStudent={isStudent} />
             )}
-            {aba === "paralelo" && (
+            {aba === "paralelo" && isSupervisor && (
               <Paralelo alunoId={confirmedStudentId} />
             )}
           </>
