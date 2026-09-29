@@ -74,7 +74,13 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
               <label style={{ whiteSpace: "nowrap", fontWeight: 600 }}>ID do Aluno:</label>
               <select 
                 value={confirmedStudentId} 
-                onChange={e => setConfirmedStudentId(e.target.value)} 
+                onChange={e => {
+                  const id = e.target.value;
+                  setConfirmedStudentId(id);
+                  if (id && aba === "admin") {
+                    setAba("avaliacao_sup");
+                  }
+                }} 
                 style={{ flex: 1 }}
                 disabled={carregandoAlunos}
               >
