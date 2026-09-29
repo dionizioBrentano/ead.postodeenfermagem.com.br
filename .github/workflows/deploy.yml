@@ -1,0 +1,44 @@
+﻿name: Deploy EAD Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: 🛠️ Compilar o projeto (Build)
+        run: npm run build
+        env:
+          # Variáveis necessárias para o build do Vite
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_TENANT_ID: ${{ secrets.VITE_TENANT_ID }}
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
+
+      - name: 🚀 Deploy via FTP para o cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Pasta local onde ficam os arquivos prontos
+          local-dir: ./dist/
+          # Pasta no cPanel onde o FTP deve jogar os arquivos.
+          # Pode ser ./ ou /ead.postodeenfermagem.com.br/ (depende de como a conta FTP foi criada)
+          server-dir: ${{ secrets.FTP_TARGET_DIR || './' }}
+
