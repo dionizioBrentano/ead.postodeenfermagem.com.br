@@ -33,3 +33,10 @@ export async function getComparacao(aluno_user_id: string, token?: string | null
   });
 }
 
+export async function getAlunos(token?: string | null) {
+  const t = token || getUserToken();
+  return request("GET", `/ead/alunos`, {
+    bearer: t,
+  });
+}
+

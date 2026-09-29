@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { Profile } from "../api/client";
+import { getAlunos } from "../api/ead";
 import Autoavaliacao from "../components/Autoavaliacao";
 import Evolucao from "../components/Evolucao";
 import Guia from "../components/Guia";
@@ -33,6 +34,22 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
   // Supervisor state
   const [studentId, setStudentId] = useState("");
   const [confirmedStudentId, setConfirmedStudentId] = useState(isStudent ? texto(perfil, "id") || texto(perfil, "uuid") : "");
+  
+  const [alunos, setAlunos] = useState<{id: string, name: string}[]>([]);
+  const [carregandoAlunos, setCarregandoAlunos] = useState(false);
+
+  useEffect(() => {
+    if (isSupervisor) {
+      setCarregandoAlunos(true);
+      getAlunos().then(res => {
+        setAlunos(res as any);
+      }).catch(err => {
+        console.error("Erro ao carregar alunos", err);
+      }).finally(() => {
+        setCarregandoAlunos(false);
+      });
+    }
+  }, [isSupervisor]);
 
   const ir = (a: Aba | "admin") => {
     setAba(a);
@@ -56,14 +73,17 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
           <div className="in" style={{ background: "#f0f0f0", padding: "10px", marginTop: "10px", borderRadius: "6px" }}>
             <div style={{ display: "flex", gap: "10px", width: "100%", alignItems: "center" }}>
               <label style={{ whiteSpace: "nowrap", fontWeight: 600 }}>ID do Aluno:</label>
-              <input 
-                type="text" 
-                value={studentId} 
-                onChange={e => setStudentId(e.target.value)} 
-                placeholder="Cole o ID (UUID) do aluno aqui"
+              <select 
+                value={confirmedStudentId} 
+                onChange={e => setConfirmedStudentId(e.target.value)} 
                 style={{ flex: 1 }}
-              />
-              <button className="btn small" onClick={() => setConfirmedStudentId(studentId.trim())}>Buscar</button>
+                disabled={carregandoAlunos}
+              >
+                <option value="">-- {carregandoAlunos ? "Carregando..." : "Selecione um aluno"} --</option>
+                {alunos.map(a => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
             </div>
           </div>
         )}
