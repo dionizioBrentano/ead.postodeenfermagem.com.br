@@ -1,4 +1,4 @@
-import { request, getUserToken, type Profile } from "./client";
+import { request, getUserToken } from "./client";
 
 export interface AvaliacaoPayload {
   item_chave: string;

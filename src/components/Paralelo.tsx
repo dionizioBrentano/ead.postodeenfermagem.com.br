@@ -49,11 +49,11 @@ export default function Paralelo({ alunoId }: { alunoId: string }) {
     </div>
   );
 
-  if (loading) return <p>Carregando comparação...</p>;
+  if (loading) return <p>Carregando comparaÃ§Ã£o...</p>;
 
   return (
     <div className="box sec narrow" style={{ margin: "20px auto" }}>
-      <h2 style={{ fontSize: 21 }}>Comparação: Aluno x Supervisor</h2>
+      <h2 style={{ fontSize: 21 }}>ComparaÃ§Ã£o: Aluno x Supervisor</h2>
       <h3 style={{ fontSize: 18, marginTop: 24 }}>Aspectos Gerais</h3>
       {renderList(GERAIS, "gerais")}
       <h3 style={{ fontSize: 18, marginTop: 24 }}>Atividades</h3>

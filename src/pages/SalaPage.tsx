@@ -14,7 +14,7 @@ function texto(p: Profile, k: string): string {
   return typeof v === "string" || typeof v === "number" ? String(v) : "";
 }
 
-/** Chave do histórico local: um aluno não vê o histórico de outro no mesmo aparelho. */
+/** Chave do histÃ³rico local: um aluno nÃ£o vÃª o histÃ³rico de outro no mesmo aparelho. */
 function chaveDoAluno(p: Profile): string {
   return texto(p, "id") || texto(p, "uuid") || texto(p, "email") || "anonimo";
 }
@@ -64,22 +64,22 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
           </div>
         )}
 
-        <nav className="nav" role="tablist" aria-label="Seções da sala" style={{ overflowX: "auto" }}>
+        <nav className="nav" role="tablist" aria-label="SeÃ§Ãµes da sala" style={{ overflowX: "auto" }}>
           {isStudent && (
             <>
               <button role="tab" aria-selected={aba === "guia"} onClick={() => ir("guia")}>
-                Guia do estágio
+                Guia do estÃ¡gio
               </button>
               <button role="tab" aria-selected={aba === "autoavaliacao"} onClick={() => ir("autoavaliacao")}>
-                Autoavaliação
+                AutoavaliaÃ§Ã£o
               </button>
               <button role="tab" aria-selected={aba === "evolucao"} onClick={() => ir("evolucao")}>
-                Minha evolução{lista.length ? ` (${lista.length})` : ""}
+                Minha evoluÃ§Ã£o{lista.length ? ` (${lista.length})` : ""}
               </button>
             </>
           )}
           <button role="tab" aria-selected={aba === "avaliacao_sup"} onClick={() => ir("avaliacao_sup")}>
-            Avaliação do supervisor
+            AvaliaÃ§Ã£o do supervisor
           </button>
           <button role="tab" aria-selected={aba === "paralelo"} onClick={() => ir("paralelo")}>
             Paralelo

@@ -32,11 +32,11 @@ export default function AvaliacaoSupervisor({ alunoId, isStudent }: { alunoId: s
             <div style={{ marginTop: "4px", fontSize: "0.95em", color: aval ? "#0066cc" : "#666" }}>
               {aval ? (
                 <span>
-                  <strong>Nota:</strong> {aval.nota ?? "-"} {aval.nao_praticou && "(N„o praticou)"}
+                  <strong>Nota:</strong> {aval.nota ?? "-"} {aval.nao_praticou && "(N√£o praticou)"}
                   {aval.comentario && <span> | <strong>Obs:</strong> {aval.comentario}</span>}
                 </span>
               ) : (
-                <span>ainda sem avaliaÁ„o</span>
+                <span>ainda sem avalia√ß√£o</span>
               )}
             </div>
 
@@ -64,7 +64,7 @@ export default function AvaliacaoSupervisor({ alunoId, isStudent }: { alunoId: s
     </div>
   );
 
-  if (loading) return <p>Carregando avaliaÁıes...</p>;
+  if (loading) return <p>Carregando avalia√ß√µes...</p>;
 
   return (
     <div className="box sec narrow" style={{ margin: "20px auto" }}>
@@ -101,7 +101,7 @@ function SupervisorForm({ alunoId, itemChave, initial, onSaved, onCancel }: any)
       onSaved(payload);
     } catch (err) {
       console.error(err);
-      alert("Erro de comunicaÁ„o. N„o foi possÌvel salvar a avaliaÁ„o.");
+      alert("Erro de comunica√ß√£o. N√£o foi poss√≠vel salvar a avalia√ß√£o.");
     } finally {
       setSaving(false);
     }
@@ -117,11 +117,11 @@ function SupervisorForm({ alunoId, itemChave, initial, onSaved, onCancel }: any)
         <div className="field" style={{ display: "flex", alignItems: "center" }}>
           <label style={{ cursor: "pointer", display: "flex", gap: 8, alignItems: "center" }}>
             <input type="checkbox" checked={naoPraticou} onChange={e => setNaoPraticou(e.target.checked)} /> 
-            <span>N„o praticou</span>
+            <span>N√£o praticou</span>
           </label>
         </div>
         <div className="field full">
-          <label className="l">Coment·rio / Nome do avaliador (se aplic·vel):</label>
+          <label className="l">Coment√°rio / Nome do avaliador (se aplic√°vel):</label>
           <input value={comentario} onChange={e => setComentario(e.target.value)} />
         </div>
         <div className="field">
