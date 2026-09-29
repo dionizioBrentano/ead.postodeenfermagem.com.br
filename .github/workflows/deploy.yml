@@ -1,4 +1,4 @@
-﻿name: Deploy EAD Frontend
+name: Deploy EAD Frontend
 
 on:
   push:
@@ -38,7 +38,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           # Pasta local onde ficam os arquivos prontos
           local-dir: ./dist/
-          # Pasta no cPanel onde o FTP deve jogar os arquivos.
-          # Pode ser ./ ou /ead.postodeenfermagem.com.br/ (depende de como a conta FTP foi criada)
-          server-dir: ${{ secrets.FTP_TARGET_DIR || './' }}
+          # Ajuste de rota: O usuário informou que o site roda dentro da pasta /etcr no servidor
+          server-dir: ./etcr/
 
