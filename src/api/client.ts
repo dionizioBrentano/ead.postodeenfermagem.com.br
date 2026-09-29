@@ -113,7 +113,7 @@ type RequestOptions = {
   tenant?: boolean;
 };
 
-async function request(method: string, path: string, opts: RequestOptions = {}): Promise<unknown> {
+export async function request(method: string, path: string, opts: RequestOptions = {}): Promise<unknown> {
   const headers: Record<string, string> = { Accept: "application/json" };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   if (opts.tenant !== false) headers["X-Tenant-ID"] = TENANT_ID;

@@ -122,6 +122,33 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
     try {
       const { lista: nova, ok } = salvar(userKey, av);
       onSalvou(nova);
+
+      let apiWarning = "";
+      try {
+        const { getUserToken } = await import("../api/client");
+        const { saveAvaliacao } = await import("../api/ead");
+        const token = getUserToken();
+        if (token) {
+          const promises: Promise<unknown>[] = [];
+          av.gerais.forEach((nota, i) => {
+            if (nota !== null) {
+              promises.push(saveAvaliacao({ item_chave: `gerais.${i}`, papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
+            }
+          });
+          av.atividades.forEach((nota, i) => {
+            if (nota !== null) {
+              promises.push(saveAvaliacao({ item_chave: `atividades.${i}`, papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
+            }
+          });
+          await Promise.allSettled(promises).then(results => {
+            if (results.some(r => r.status === "rejected")) throw new Error("Parcial/falha");
+          });
+        }
+      } catch (err) {
+        console.error("Falha ao salvar no servidor EAD:", err);
+        apiWarning = " Aviso: Houve falha de conexão com a API. As notas foram salvas apenas localmente neste aparelho.";
+      }
+
       const { gerarPDF, nomeArquivo } = await import("../lib/pdf");
       const doc = gerarPDF(av, nova.filter((x) => x.etapa < av.etapa || (x.etapa === av.etapa && MOMENTOS.indexOf(x.momento) <= MOMENTOS.indexOf(av.momento))));
       const arquivo = nomeArquivo(av);
@@ -132,8 +159,8 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
         tipo: "ok",
         arquivo,
         texto: ok
-          ? "PDF gerado e autoavaliação salva neste aparelho. Guarde o arquivo junto com os anteriores."
-          : "PDF gerado. Este navegador não permitiu salvar o histórico, então guarde bem o arquivo.",
+          ? "PDF gerado e autoavaliação salva neste aparelho. Guarde o arquivo junto com os anteriores." + apiWarning
+          : "PDF gerado. Este navegador não permitiu salvar o histórico local, então guarde bem o arquivo." + apiWarning,
       });
     } catch (e) {
       console.error(e);
