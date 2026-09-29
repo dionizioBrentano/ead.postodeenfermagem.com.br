@@ -32,7 +32,6 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; onSair: 
   const [lista, setLista] = useState<Avaliacao[]>(() => carregar(userKey));
 
   // Supervisor state
-  const [studentId, setStudentId] = useState("");
   const [confirmedStudentId, setConfirmedStudentId] = useState(isStudent ? texto(perfil, "id") || texto(perfil, "uuid") : "");
   
   const [alunos, setAlunos] = useState<{id: string, name: string}[]>([]);
