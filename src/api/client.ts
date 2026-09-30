@@ -238,11 +238,28 @@ export async function login(loginValue: string, password: string) {
     bearer: app,
     body: { login: loginValue, password },
   });
+  
   const token = pickToken(data);
   if (!token) throw new ApiError(0, "A API não devolveu o token de acesso.", data);
+  
+  if (obj(data)?.mfa_required === true) {
+    return { mfa_required: true, token, profile: null };
+  }
+  
   const profile = pickProfile(data);
   saveSession(token, profile);
-  return { token, profile };
+  return { mfa_required: false, token, profile };
+}
+
+export async function verifyMfa(token: string, totp_code: string) {
+  const data = await request("POST", "/auth/mfa/verify", {
+    bearer: token,
+    body: { totp_code }
+  });
+  const newToken = pickToken(data) || token;
+  const profile = pickProfile(data);
+  saveSession(newToken, profile);
+  return { token: newToken, profile };
 }
 
 export async function currentUser(token: string): Promise<Profile> {
