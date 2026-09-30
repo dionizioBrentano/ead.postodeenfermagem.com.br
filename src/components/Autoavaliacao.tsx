@@ -5,7 +5,6 @@ import {
   apagarRascunho,
   carregarRascunho,
   hoje,
-  salvar,
   salvarRascunho,
   type Avaliacao,
 } from "../lib/historico";
@@ -120,9 +119,6 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
     };
     setGerando(true);
     try {
-      const { lista: nova, ok } = salvar(userKey, av);
-      onSalvou(nova);
-
       let apiWarning = "";
       try {
         const { getUserToken } = await import("../api/client");
@@ -146,8 +142,12 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
         }
       } catch (err) {
         console.error("Falha ao salvar no servidor EAD:", err);
-        apiWarning = " Aviso: Houve falha de conexão com a API. As notas foram salvas apenas localmente neste aparelho.";
+        apiWarning = " Aviso: Houve falha de conexão com a API.";
       }
+
+      const { carregarDaAPI } = await import("../lib/historico");
+      const nova = await carregarDaAPI(userKey, "auto");
+      onSalvou(nova);
 
       const { gerarPDF, nomeArquivo } = await import("../lib/pdf");
       const doc = gerarPDF(av, nova.filter((x) => x.etapa < av.etapa || (x.etapa === av.etapa && MOMENTOS.indexOf(x.momento) <= MOMENTOS.indexOf(av.momento))));
@@ -158,13 +158,11 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
       setMsg({
         tipo: "ok",
         arquivo,
-        texto: ok
-          ? "PDF gerado e autoavaliação salva neste aparelho. Guarde o arquivo junto com os anteriores." + apiWarning
-          : "PDF gerado. Este navegador não permitiu salvar o histórico local, então guarde bem o arquivo." + apiWarning,
+        texto: apiWarning ? "Erro ao salvar na API." + apiWarning : "PDF gerado e autoavaliação salva com sucesso.",
       });
     } catch (e) {
       console.error(e);
-      setMsg({ tipo: "err", texto: "Não foi possível gerar o PDF. Tente de novo ou use outro navegador." });
+      setMsg({ tipo: "err", texto: "Não foi possível gerar o PDF ou salvar na API." });
     } finally {
       setGerando(false);
     }

@@ -4,56 +4,55 @@ import {
   clearSession,
   configMissing,
   currentUser,
-  getAppToken,
   getSavedProfile,
   getUserToken,
+  fetchMembershipsAndSave,
+  apiErrorListeners,
   type Profile,
+  type Membership,
+  logout,
 } from "./api/client";
 import { navegar, useRota } from "./lib/rota";
+
 import AuthPage from "./pages/AuthPage";
+import ParticiparPage from "./pages/ParticiparPage";
+import AguardandoPage from "./pages/AguardandoPage";
+import VerificacaoPage from "./pages/VerificacaoPage";
+import ConvitePage from "./pages/ConvitePage";
 import SalaPage from "./pages/SalaPage";
+import SupervisaoPage from "./pages/SupervisaoPage";
+import AdministracaoPage from "./pages/AdministracaoPage";
+import ConfirmarPage from "./pages/ConfirmarPage";
+import EsqueciSenhaPage from "./pages/EsqueciSenhaPage";
 
 type Guard =
   | { estado: "verificando" }
-  | { estado: "ok"; perfil: Profile }
+  | { estado: "ok"; perfil: Profile; memberships: Membership[] }
   | { estado: "erro"; mensagem: string };
 
 export default function App() {
-  const rota = useRota();
+  const rotaRaw = useRota();
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenConvite = urlParams.get("token");
+  const rota = rotaRaw.startsWith("/convite") ? "/convite" : rotaRaw;
+  
   const faltando = configMissing();
   const [aviso, setAviso] = useState<string | null>(null);
-  const [appErro, setAppErro] = useState<string | null>(null);
   const [guard, setGuard] = useState<Guard>({ estado: "verificando" });
 
-  // 1. Ao subir: token do aplicativo (fica só em memória).
-  useEffect(() => {
-    if (faltando.length) return;
-    getAppToken().catch((e: unknown) => {
-      setAppErro(
-        e instanceof ApiError && e.status !== 0
-          ? "O aplicativo não foi autorizado pela API. Avise a coordenação do curso."
-          : e instanceof Error
-            ? e.message
-            : "Falha ao iniciar o aplicativo.",
-      );
-    });
-  }, []);
+  const token = getUserToken();
 
-  // Redirecionamentos entre "/" e "/sala".
-  useEffect(() => {
-    const token = getUserToken();
-    if (rota === "/sala" && !token) navegar("/", true);
-    else if (rota === "/" && token) navegar("/sala", true);
-    else if (rota !== "/" && rota !== "/sala") navegar(token ? "/sala" : "/", true);
-  }, [rota]);
-
-  // Guarda da sala: GET /user com o token do usuário.
   const verificar = useCallback(() => {
-    const token = getUserToken();
     if (!token) return;
     setGuard({ estado: "verificando" });
-    currentUser(token)
-      .then((u) => setGuard({ estado: "ok", perfil: { ...(getSavedProfile() ?? {}), ...u } }))
+    
+    Promise.all([
+      currentUser(token),
+      fetchMembershipsAndSave(token)
+    ])
+      .then(([u, mems]) => {
+        setGuard({ estado: "ok", perfil: { ...(getSavedProfile() ?? {}), ...u }, memberships: mems });
+      })
       .catch((e: unknown) => {
         if (e instanceof ApiError && e.status === 401) {
           clearSession();
@@ -66,14 +65,41 @@ export default function App() {
           });
         }
       });
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    if (rota === "/sala" && getUserToken() && !faltando.length) verificar();
-  }, [rota, verificar]);
+    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/esqueci-senha") {
+      verificar();
+    }
+  }, [token, faltando.length, verificar, rota, guard.estado]);
+
+  useEffect(() => {
+    if (rota === "/" && token && guard.estado === "verificando" && !faltando.length) {
+       verificar();
+    } else if (rota === "/" && token && guard.estado === "ok") {
+       if (guard.perfil.confirmacao_obrigatoria) {
+         navegar("/confirmar", true);
+       } else {
+         navegar("/participar", true);
+       }
+    }
+  }, [rota, token, guard.estado, faltando.length, verificar]);
+
+  useEffect(() => {
+    const cb = (err: ApiError) => {
+      if (err.status === 403 && typeof err.body === 'object' && (err.body as any)?.code === 'confirmation_required') {
+        navegar("/confirmar");
+      }
+    };
+    apiErrorListeners.add(cb);
+    return () => {
+      apiErrorListeners.delete(cb);
+    };
+  }, []);
 
   const sair = () => {
-    clearSession();
+    if (token) logout(token);
+    else clearSession();
     setGuard({ estado: "verificando" });
     navegar("/", true);
   };
@@ -92,39 +118,146 @@ export default function App() {
     );
   }
 
-  if (rota === "/sala" && getUserToken()) {
-    if (guard.estado === "ok") return <SalaPage perfil={guard.perfil} onSair={sair} />;
+  if (rota === "/convite") {
+    return <ConvitePage token={tokenConvite || ""} onEntrou={() => navegar("/sala")} onSair={sair} tokenAuth={token} />;
+  }
+
+  if (rota === "/esqueci-senha") {
+    return <EsqueciSenhaPage onSair={() => navegar("/")} />;
+  }
+
+  if (!token) {
+    if (rota !== "/") {
+      navegar("/", true);
+      return null;
+    }
+    return (
+      <AuthPage
+        aviso={aviso}
+        onEntrou={() => {
+          setAviso(null);
+          setGuard({ estado: "verificando" });
+          navegar("/participar"); 
+        }}
+      />
+    );
+  }
+
+  if (guard.estado === "erro") {
     return (
       <main className="page auth">
         <div className="auth-card" style={{ textAlign: "center" }}>
-          {guard.estado === "verificando" ? (
-            <p className="muted">Confirmando seu acesso…</p>
-          ) : (
-            <div className="box" style={{ display: "grid", gap: 12 }}>
-              <p style={{ margin: 0 }}>{guard.mensagem}</p>
-              <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-                <button className="btn" onClick={verificar}>
-                  Tentar de novo
-                </button>
-                <button className="btn ghost" onClick={sair}>
-                  Sair
-                </button>
-              </div>
+          <div className="box" style={{ display: "grid", gap: 12 }}>
+            <p style={{ margin: 0 }}>{guard.mensagem}</p>
+            <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+              <button className="btn" onClick={verificar}>Tentar de novo</button>
+              <button className="btn ghost" onClick={sair}>Sair</button>
             </div>
-          )}
+          </div>
         </div>
       </main>
     );
   }
 
-  return (
-    <AuthPage
-      aviso={aviso}
-      appErro={appErro}
-      onEntrou={() => {
-        setAviso(null);
-        navegar("/sala");
-      }}
-    />
-  );
+  if (guard.estado === "verificando") {
+    return (
+      <main className="page auth">
+        <div className="auth-card" style={{ textAlign: "center" }}>
+          <p className="muted">Confirmando seu acesso…</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (guard.perfil.confirmacao_obrigatoria && rota !== "/confirmar") {
+    navegar("/confirmar", true);
+    return null;
+  }
+
+  if (rota === "/confirmar") {
+    return <ConfirmarPage perfil={guard.perfil} onConcluido={() => {
+      setGuard({ estado: "verificando" });
+      verificar();
+      navegar("/sala", true);
+    }} onSair={sair} token={token} />;
+  }
+
+  const mfaEnabled = guard.perfil.mfa_enabled === true;
+  const memberships = guard.memberships;
+  
+  const hasRole = (role: string) => memberships.some(m => m.papel === role && m.situacao === "ativo");
+  const isPendingDocente = memberships.some(m => m.papel === "docente" && m.situacao === "pendente");
+  
+  const isAluno = hasRole("aluno");
+  const isDocente = hasRole("docente");
+  const isAdmin = hasRole("administrador");
+
+  if (rota === "/verificacao") {
+    return <VerificacaoPage token={token} mfaEnabled={mfaEnabled} onConcluido={() => {
+      setGuard({ estado: "verificando" });
+      verificar();
+      navegar("/sala");
+    }} onSair={sair} />;
+  }
+
+  if (rota === "/participar") {
+    if (isAluno || isDocente || isAdmin) {
+      navegar("/sala", true);
+      return null;
+    }
+    if (isPendingDocente) {
+      navegar("/aguardando", true);
+      return null;
+    }
+    return <ParticiparPage token={token} onParticipou={() => {
+      setGuard({ estado: "verificando" });
+      verificar();
+    }} onSair={sair} />;
+  }
+
+  if (rota === "/aguardando") {
+    if (isDocente || isAdmin || isAluno) {
+      navegar("/sala", true);
+      return null;
+    }
+    return <AguardandoPage onVerificar={verificar} onSair={sair} />;
+  }
+
+  if (rota === "/sala") {
+    if (!isAluno) {
+      if (isDocente) navegar("/supervisao", true);
+      else if (isAdmin) navegar("/administracao", true);
+      else navegar("/participar", true);
+      return null;
+    }
+    return <SalaPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;
+  }
+
+  if (rota === "/supervisao") {
+    if (!isDocente) {
+      navegar("/sala", true);
+      return null;
+    }
+    if (!mfaEnabled) {
+      navegar("/verificacao", true);
+      return null;
+    }
+    return <SupervisaoPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;
+  }
+
+  if (rota === "/administracao") {
+    if (!isAdmin) {
+      navegar("/sala", true);
+      return null;
+    }
+    if (!mfaEnabled) {
+      navegar("/verificacao", true);
+      return null;
+    }
+    return <AdministracaoPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;
+  }
+
+  // Rota inválida
+  navegar("/sala", true);
+  return null;
 }

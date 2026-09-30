@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { ApiError, fieldErrors, isOrganizationMismatch, login, register, verifyMfa } from "../api/client";
+import { ApiError, fieldErrors, isOrganizationMismatch, login, register, verifyMfa, obj } from "../api/client";
+import { navegar } from "../lib/rota";
+import RegistroProfissionalForm from "../components/RegistroProfissionalForm";
 
-type Props = { aviso: string | null; appErro: string | null; onEntrou: () => void };
+type Props = { aviso: string | null; onEntrou: () => void };
 
 const soDigitos = (s: string) => s.replace(/\D+/g, "");
 
-export default function AuthPage({ aviso, appErro, onEntrou }: Props) {
+export default function AuthPage({ aviso, onEntrou }: Props) {
   const [aba, setAba] = useState<"entrar" | "cadastrar">("entrar");
   const [loginValor, setLoginValor] = useState("");
 
@@ -20,7 +22,6 @@ export default function AuthPage({ aviso, appErro, onEntrou }: Props) {
           </p>
         </div>
         {aviso && <div className="alert info" role="status">{aviso}</div>}
-        {appErro && <div className="alert err" role="alert">{appErro}</div>}
         <div className="box" style={{ display: "grid", gap: 18 }}>
           <div className="tabs" role="tablist">
             <button role="tab" id="tab-entrar" aria-selected={aba === "entrar"} onClick={() => setAba("entrar")}>
@@ -137,14 +138,18 @@ function Entrar({ inicial, onEntrou }: { inicial: string; onEntrou: () => void }
       <button className="btn" type="submit" disabled={enviando}>
         {enviando ? "Entrando…" : "Entrar"}
       </button>
+      <div style={{ marginTop: 12, textAlign: "center" }}>
+        <button type="button" className="link small" onClick={() => navegar("/esqueci-senha")}>Esqueci minha senha</button>
+      </div>
     </form>
   );
 }
 
-type Campos = { name: string; email: string; phone: string; cpf: string; password: string; password_confirmation: string; user_type: string; council_type: string; council_number: string };
+type Campos = { name: string; email: string; phone: string; cpf: string; password: string; password_confirmation: string; papel: "aluno" | "docente" };
 
 function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogin: (email: string) => void }) {
-  const [c, setC] = useState<Campos>({ name: "", email: "", phone: "", cpf: "", password: "", password_confirmation: "", user_type: "patient", council_type: "", council_number: "" });
+  const [etapa, setEtapa] = useState<"form" | "confirmar" | "registro_docente">("form");
+  const [c, setC] = useState<Campos>({ name: "", email: "", phone: "", cpf: "", password: "", password_confirmation: "", papel: "aluno" });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [erro, setErro] = useState<string | null>(null);
   const [emailDuplicado, setEmailDuplicado] = useState(false);
@@ -162,42 +167,81 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
     if (!soDigitos(c.cpf)) loc.cpf = "Informe seu CPF.";
     if (!c.password) loc.password = "Crie uma senha.";
     if (c.password !== c.password_confirmation) loc.password_confirmation = "As senhas não são iguais.";
-    
-    if (c.user_type === "professional") {
-      if (!c.council_type.trim()) loc.council_type = "Informe o conselho (ex: COREN).";
-      if (!c.council_number.trim()) loc.council_number = "Informe o número do conselho.";
-    }
 
     setErros(loc);
     if (Object.keys(loc).length) return;
 
     setEnviando(true);
     try {
-      const inputToRegister: any = {
+      const inputToRegister = {
         name: c.name.trim(),
         email: c.email.trim(),
         phone: soDigitos(c.phone),
         cpf: soDigitos(c.cpf),
         password: c.password,
         password_confirmation: c.password_confirmation,
-        user_type: c.user_type,
       };
+
+      const { token, profile } = await register(inputToRegister);
       
-      if (c.user_type === "professional") {
-        inputToRegister.council_type = c.council_type.trim();
-        inputToRegister.council_number = c.council_number.trim();
+      try {
+        const { createMembership, fetchMembershipsAndSave } = await import("../api/client");
+        await createMembership(token, c.papel);
+        await fetchMembershipsAndSave(token);
+      } catch (err) {
+        console.error("Erro ao criar vínculo:", err);
       }
 
-      await register(inputToRegister);
-      onEntrou();
+      const profileConf = profile?.confirmacao as any;
+      if (profileConf && (profileConf.email === false || profileConf.telefone === false)) {
+        setEtapa("confirmar");
+      } else {
+        onEntrou();
+      }
+
     } catch (err) {
       const fe = fieldErrors(err);
       setErros(fe);
       if (fe.email && /já|taken|exist|cadastrad|utilizad|em uso/i.test(fe.email)) setEmailDuplicado(true);
-      setErro(isOrganizationMismatch(err) ? "Esta conta não pertence a esta organização." : err instanceof Error ? err.message : "Não foi possível cadastrar.");
+      if (err instanceof ApiError && err.status === 422 && obj(err.body)?.message) {
+        setErro(String(obj(err.body)?.message));
+      } else {
+        setErro(isOrganizationMismatch(err) ? "Esta conta não pertence a esta organização." : err instanceof Error ? err.message : "Não foi possível cadastrar.");
+      }
     } finally {
       setEnviando(false);
     }
+  }
+
+  const continuar = () => {
+    if (c.papel === "docente") {
+      setEtapa("registro_docente");
+    } else {
+      onEntrou();
+    }
+  };
+
+  if (etapa === "confirmar") {
+    return (
+      <div style={{ textAlign: "center", padding: "20px 0" }}>
+        <p>Enviamos um código para seu e-mail e outro por SMS. Você pode confirmar agora ou no próximo acesso.</p>
+        <div style={{ display: "grid", gap: 12, marginTop: 20 }}>
+          <button className="btn" onClick={() => { continuar(); navegar("/confirmar"); }}>Confirmar agora</button>
+          <button className="btn ghost" onClick={continuar}>Depois</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (etapa === "registro_docente") {
+    return (
+      <div>
+        <p className="muted" style={{ marginBottom: 15, textAlign: "center" }}>
+          Como docente, informe seu registro profissional para agilizar sua aprovação.
+        </p>
+        <RegistroProfissionalForm onSalvo={onEntrou} onPular={onEntrou} />
+      </div>
+    );
   }
 
   const campo = (k: keyof Campos, rotulo: string, tipo: string, auto: string, dica?: string) => (
@@ -220,11 +264,10 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
   return (
     <form className="form" onSubmit={enviar} noValidate>
       <div className="field">
-        <label className="l" htmlFor="cad-user_type">Perfil</label>
-        <select id="cad-user_type" value={c.user_type} onChange={set("user_type")}>
-          <option value="patient">Sou aluno(a)</option>
-          <option value="professional">Sou supervisor(a) de estágio</option>
-          <option value="admin">Sou administrador(a) do sistema</option>
+        <label className="l" htmlFor="cad-papel">Quero entrar como:</label>
+        <select id="cad-papel" value={c.papel} onChange={set("papel")}>
+          <option value="aluno">Aluno</option>
+          <option value="docente">Docente</option>
         </select>
       </div>
       {campo("name", "Nome completo", "text", "name")}
@@ -234,35 +277,6 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
         {campo("cpf", "CPF", "text", "off", "Só números")}
       </div>
       
-      {c.user_type === "professional" && (
-        <div className="two">
-          <div className="field">
-            <label className="l" htmlFor="cad-council_type">Conselho (ex: COREN)</label>
-            <input
-              id="cad-council_type"
-              type="text"
-              value={c.council_type}
-              onChange={set("council_type")}
-              aria-invalid={!!erros.council_type}
-              placeholder="Ex: COREN, CRM"
-            />
-            {erros.council_type && <span className="e">{erros.council_type}</span>}
-          </div>
-          <div className="field">
-            <label className="l" htmlFor="cad-council_number">Número do Conselho</label>
-            <input
-              id="cad-council_number"
-              type="text"
-              value={c.council_number}
-              onChange={set("council_number")}
-              aria-invalid={!!erros.council_number}
-              placeholder="Apenas números e UF"
-            />
-            {erros.council_number && <span className="e">{erros.council_number}</span>}
-          </div>
-        </div>
-      )}
-
       <div className="two">
         {campo("password", "Senha", "password", "new-password")}
         {campo("password_confirmation", "Repita a senha", "password", "new-password")}
@@ -286,3 +300,4 @@ function Cadastrar({ onEntrou, irParaLogin }: { onEntrou: () => void; irParaLogi
     </form>
   );
 }
+

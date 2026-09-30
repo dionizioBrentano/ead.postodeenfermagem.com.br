@@ -1,7 +1,5 @@
-// Histórico de autoavaliações guardado SÓ neste navegador, separado por aluno.
-// Por regra do projeto, nada de progresso é enviado para a API.
-
-import { MOMENTOS, type Momento, type Nota } from "../data/itens";
+import { MOMENTOS, type Momento, type Nota, GERAIS, ATIVIDADES } from "../data/itens";
+import { getAvaliacoes } from "../api/ead";
 
 export type Avaliacao = {
   etapa: number;
@@ -16,25 +14,7 @@ export type Avaliacao = {
   criadoEm: string;
 };
 
-const PREFIX = "ead.historico.";
 const DRAFT = "ead.rascunho.";
-
-function read<T>(key: string): T | null {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
-    return null;
-  }
-}
-function write(key: string, value: unknown): boolean {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export function ordenar(lista: Avaliacao[]): Avaliacao[] {
   return lista
@@ -42,37 +22,57 @@ export function ordenar(lista: Avaliacao[]): Avaliacao[] {
     .sort((a, b) => a.etapa - b.etapa || MOMENTOS.indexOf(a.momento) - MOMENTOS.indexOf(b.momento));
 }
 
-export function carregar(userKey: string): Avaliacao[] {
-  const v = read<Avaliacao[]>(PREFIX + userKey);
-  return Array.isArray(v) ? ordenar(v) : [];
-}
-
-/** Grava a avaliação; se já existe uma para a mesma etapa e momento, substitui. */
-export function salvar(userKey: string, av: Avaliacao): { lista: Avaliacao[]; ok: boolean } {
-  const lista = carregar(userKey).filter((x) => !(x.etapa === av.etapa && x.momento === av.momento));
-  lista.push(av);
-  const ordenada = ordenar(lista);
-  return { lista: ordenada, ok: write(PREFIX + userKey, ordenada) };
-}
-
-export function remover(userKey: string, etapa: number, momento: Momento): Avaliacao[] {
-  const lista = carregar(userKey).filter((x) => !(x.etapa === etapa && x.momento === momento));
-  write(PREFIX + userKey, lista);
-  return lista;
+export async function carregarDaAPI(userKey: string, papel: "auto" | "supervisor"): Promise<Avaliacao[]> {
+  const items = (await getAvaliacoes(userKey, papel)) as any[];
+  const map = new Map<string, Avaliacao>();
+  for (const item of items) {
+    const key = `${item.etapa}-${item.momento}`;
+    if (!map.has(key)) {
+      map.set(key, {
+        etapa: parseInt(item.etapa, 10),
+        momento: item.momento as Momento,
+        data: item.created_at ? item.created_at.split("T")[0] : "",
+        nome: "",
+        turma: "",
+        unidade: "",
+        gerais: Array(GERAIS.length).fill(null),
+        atividades: Array(ATIVIDADES.length).fill(null),
+        obs: item.comentario || "",
+        criadoEm: item.created_at || new Date().toISOString(),
+      });
+    }
+    const av = map.get(key)!;
+    if (item.grupo === "gerais") {
+      const idx = parseInt(item.item_chave.replace("gerais.", ""), 10);
+      if (!isNaN(idx)) av.gerais[idx] = item.nao_praticou ? "na" : item.nota;
+    } else if (item.grupo === "atividades") {
+      const idx = parseInt(item.item_chave.replace("atividades.", ""), 10);
+      if (!isNaN(idx)) av.atividades[idx] = item.nao_praticou ? "na" : item.nota;
+    }
+    if (item.comentario) av.obs = item.comentario;
+  }
+  return ordenar(Array.from(map.values()));
 }
 
 export function carregarRascunho<T>(userKey: string): T | null {
-  return read<T>(DRAFT + userKey);
+  try {
+    const raw = localStorage.getItem(DRAFT + userKey);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
 }
+
 export function salvarRascunho(userKey: string, v: unknown) {
-  write(DRAFT + userKey, v);
+  try {
+    localStorage.setItem(DRAFT + userKey, JSON.stringify(v));
+  } catch {}
 }
+
 export function apagarRascunho(userKey: string) {
   try {
     localStorage.removeItem(DRAFT + userKey);
-  } catch {
-    /* nada */
-  }
+  } catch {}
 }
 
 export function media(notas: Nota[]): number | null {
@@ -93,4 +93,13 @@ export function fmtData(iso: string): string {
 export function hoje(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function carregarLocal(userKey: string): Avaliacao[] {
+  try {
+    const raw = localStorage.getItem("ead.historico." + userKey);
+    return raw ? ordenar(JSON.parse(raw)) : [];
+  } catch {
+    return [];
+  }
 }

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { ATIVIDADES, GERAIS, MOMENTOS, type Item, type Momento, type Nota } from "../data/itens";
+import { ATIVIDADES, GERAIS, MOMENTOS, type Item, type Nota } from "../data/itens";
 import { ESCALA, corDaNota } from "../lib/cores";
-import { fmt1, fmtData, media, remover, type Avaliacao } from "../lib/historico";
+import { fmt1, fmtData, media, type Avaliacao } from "../lib/historico";
 
 type Props = {
-  userKey: string;
+  userKey?: string;
   lista: Avaliacao[];
-  onMudou: (l: Avaliacao[]) => void;
+  onMudou?: (l: Avaliacao[]) => void;
   onAutoavaliar: () => void;
 };
 
@@ -27,9 +27,8 @@ function primeiraNota(lista: Avaliacao[], bloco: "gerais" | "atividades", i: num
   return null;
 }
 
-export default function Evolucao({ userKey, lista, onMudou, onAutoavaliar }: Props) {
+export default function Evolucao({ lista, onAutoavaliar }: Props) {
   const [ordem, setOrdem] = useState<"ficha" | "menores">("ficha");
-  const [confirmar, setConfirmar] = useState<string | null>(null);
   const [baixando, setBaixando] = useState<string | null>(null);
 
   if (!lista.length) {
@@ -72,11 +71,6 @@ export default function Evolucao({ userKey, lista, onMudou, onAutoavaliar }: Pro
       setBaixando(null);
     }
   }
-
-  const apagar = (etapa: number, momento: Momento) => {
-    onMudou(remover(userKey, etapa, momento));
-    setConfirmar(null);
-  };
 
   const celula = (v: Nota, key: string) =>
     typeof v === "number" ? (
@@ -191,10 +185,9 @@ export default function Evolucao({ userKey, lista, onMudou, onAutoavaliar }: Pro
       </section>
 
       <section className="box sec">
-        <h2 style={{ fontSize: 20 }}>Autoavaliações salvas neste aparelho</h2>
+        <h2 style={{ fontSize: 20 }}>Autoavaliações salvas</h2>
         <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>
-          Elas ficam só neste navegador. Se trocar de celular ou limpar os dados do navegador, o quadro recomeça. Por isso,
-          guarde sempre os PDFs.
+          Guarde os PDFs com você. As avaliações estão sincronizadas com o servidor.
         </p>
         <ul className="saved">
           {lista.map((a) => {
@@ -204,20 +197,11 @@ export default function Evolucao({ userKey, lista, onMudou, onAutoavaliar }: Pro
                 <span>
                   <b>Etapa {a.etapa} · {a.momento}</b> <span className="muted">· {fmtData(a.data)}</span>
                 </span>
-                {confirmar === id ? (
-                  <span className="acts">
-                    <span>Apagar esta autoavaliação?</span>
-                    <button className="btn small" onClick={() => apagar(a.etapa, a.momento)}>Sim, apagar</button>
-                    <button className="btn ghost small" onClick={() => setConfirmar(null)}>Cancelar</button>
-                  </span>
-                ) : (
-                  <span className="acts">
-                    <button className="btn ghost small" onClick={() => baixar(a)} disabled={baixando === id}>
-                      {baixando === id ? "Gerando…" : "Baixar PDF"}
-                    </button>
-                    <button className="btn ghost small" onClick={() => setConfirmar(id)}>Apagar</button>
-                  </span>
-                )}
+                <span className="acts">
+                  <button className="btn ghost small" onClick={() => baixar(a)} disabled={baixando === id}>
+                    {baixando === id ? "Gerando…" : "Baixar PDF"}
+                  </button>
+                </span>
               </li>
             );
           })}

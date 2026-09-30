@@ -28,20 +28,30 @@ export default function Paralelo({ alunoId }: { alunoId: string }) {
               {item.texto}
             </div>
             
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", width: "100%", fontSize: "0.95em" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", width: "100%", fontSize: "0.95em" }}>
               <div style={{ background: "#f8f9fa", padding: "10px", borderRadius: "4px" }}>
                 <div style={{ fontSize: "0.85em", textTransform: "uppercase", color: "#666", marginBottom: "4px" }}>Nota Aluno</div>
                 <div style={{ fontWeight: "bold", color: comp?.nota_aluno != null ? "#333" : "#999" }}>
                   {comp?.nota_aluno ?? "Sem nota"}
                 </div>
               </div>
-              <div style={{ background: "#f0f7ff", padding: "10px", borderRadius: "4px" }}>
-                <div style={{ fontSize: "0.85em", textTransform: "uppercase", color: "#666", marginBottom: "4px" }}>Nota Supervisor</div>
-                <div style={{ fontWeight: "bold", color: comp?.nota_supervisor != null ? "#0066cc" : "#999" }}>
-                  {comp?.nota_supervisor ?? "aguardando o supervisor"}
+              
+              {comp?.notas_docentes?.map((nd: any) => (
+                <div key={nd.docente_id} style={{ background: "#f0f7ff", padding: "10px", borderRadius: "4px" }}>
+                  <div style={{ fontSize: "0.85em", textTransform: "uppercase", color: "#666", marginBottom: "4px" }}>Nota {nd.docente_nome || "Supervisor"}</div>
+                  <div style={{ fontWeight: "bold", color: nd.nota != null ? "#0066cc" : "#999" }}>
+                    {nd.nota ?? "aguardando o supervisor"}
+                  </div>
+                  {nd.comentario && <div style={{ marginTop: "4px", fontSize: "0.9em", color: "#555" }}>{nd.comentario}</div>}
                 </div>
-                {comp?.comentario_supervisor && <div style={{ marginTop: "4px", fontSize: "0.9em", color: "#555" }}>{comp.comentario_supervisor}</div>}
-              </div>
+              ))}
+              
+              {(!comp?.notas_docentes || comp.notas_docentes.length === 0) && (
+                <div style={{ background: "#f0f7ff", padding: "10px", borderRadius: "4px" }}>
+                  <div style={{ fontSize: "0.85em", textTransform: "uppercase", color: "#666", marginBottom: "4px" }}>Nota Supervisor</div>
+                  <div style={{ fontWeight: "bold", color: "#999" }}>aguardando o supervisor</div>
+                </div>
+              )}
             </div>
           </div>
         );

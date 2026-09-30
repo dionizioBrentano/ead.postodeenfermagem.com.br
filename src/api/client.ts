@@ -4,13 +4,21 @@
 
 const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 const TENANT_ID = import.meta.env.VITE_TENANT_ID ?? "";
-const CLIENT_ID = import.meta.env.VITE_CLIENT_ID ?? "";
-const CLIENT_SECRET = import.meta.env.VITE_CLIENT_SECRET ?? "";
 
 const USER_TOKEN_KEY = "ead.userToken";
 const PROFILE_KEY = "ead.profile";
+const MEMBERSHIPS_KEY = "ead.memberships";
 
 export type Profile = Record<string, unknown>;
+export type Role = "aluno" | "docente" | "administrador";
+export type Membership = {
+  id: string;
+  organizacao: { id: string; nome: string; trilho_principal: string };
+  trilho: string;
+  papel: Role;
+  situacao: "pendente" | "ativo" | "convidado";
+  atribuicoes: string[];
+};
 
 export class ApiError extends Error {
   status: number;
@@ -26,8 +34,6 @@ export function configMissing(): string[] {
   const missing: string[] = [];
   if (!API_URL) missing.push("VITE_API_URL");
   if (!TENANT_ID) missing.push("VITE_TENANT_ID");
-  if (!CLIENT_ID) missing.push("VITE_CLIENT_ID");
-  if (!CLIENT_SECRET) missing.push("VITE_CLIENT_SECRET");
   return missing;
 }
 
@@ -44,14 +50,12 @@ function safeSet(key: string, value: string) {
   try {
     localStorage.setItem(key, value);
   } catch {
-    /* navegador sem armazenamento: o login vale só nesta aba */
   }
 }
 function safeRemove(key: string) {
   try {
     localStorage.removeItem(key);
   } catch {
-    /* nada a fazer */
   }
 }
 
@@ -65,6 +69,9 @@ export function saveSession(token: string, profile: Profile | null) {
   safeSet(USER_TOKEN_KEY, token);
   if (profile) safeSet(PROFILE_KEY, JSON.stringify(profile));
 }
+export function saveMemberships(memberships: Membership[]) {
+  safeSet(MEMBERSHIPS_KEY, JSON.stringify(memberships));
+}
 export function getSavedProfile(): Profile | null {
   const raw = safeGet(PROFILE_KEY);
   if (!raw) return null;
@@ -74,35 +81,20 @@ export function getSavedProfile(): Profile | null {
     return null;
   }
 }
+export function getSavedMemberships(): Membership[] {
+  const raw = safeGet(MEMBERSHIPS_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw) as Membership[];
+  } catch {
+    return [];
+  }
+}
 export function clearSession() {
   memoryUserToken = null;
   safeRemove(USER_TOKEN_KEY);
   safeRemove(PROFILE_KEY);
-}
-
-/* ---------- Token do aplicativo (só em memória) ---------- */
-
-let appToken: string | null = null;
-let appTokenPromise: Promise<string> | null = null;
-
-export function getAppToken(): Promise<string> {
-  if (appToken) return Promise.resolve(appToken);
-  if (!appTokenPromise) {
-    appTokenPromise = request("POST", "/auth/application/token", {
-      body: { client_id: CLIENT_ID, client_secret: CLIENT_SECRET },
-      tenant: false,
-    })
-      .then((data) => {
-        const token = pickToken(data);
-        if (!token) throw new ApiError(0, "A API não devolveu o token do aplicativo.", data);
-        appToken = token;
-        return token;
-      })
-      .finally(() => {
-        appTokenPromise = null;
-      });
-  }
-  return appTokenPromise;
+  safeRemove(MEMBERSHIPS_KEY);
 }
 
 /* ---------- Requisição base ---------- */
@@ -112,6 +104,8 @@ type RequestOptions = {
   bearer?: string | null;
   tenant?: boolean;
 };
+
+export const apiErrorListeners = new Set<(err: ApiError) => void>();
 
 export async function request(method: string, path: string, opts: RequestOptions = {}): Promise<unknown> {
   const headers: Record<string, string> = { Accept: "application/json" };
@@ -127,7 +121,9 @@ export async function request(method: string, path: string, opts: RequestOptions
       body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     });
   } catch {
-    throw new ApiError(0, "Não foi possível falar com o servidor. Verifique sua internet e tente de novo.", null);
+    const e = new ApiError(0, "Não foi possível falar com o servidor. Verifique sua internet e tente de novo.", null);
+    apiErrorListeners.forEach(cb => cb(e));
+    throw e;
   }
 
   let data: unknown = null;
@@ -139,13 +135,17 @@ export async function request(method: string, path: string, opts: RequestOptions
       data = text;
     }
   }
-  if (!res.ok) throw new ApiError(res.status, messageFrom(data) ?? `Erro ${res.status}`, data);
+  if (!res.ok) {
+    const e = new ApiError(res.status, messageFrom(data) ?? `Erro ${res.status}`, data);
+    apiErrorListeners.forEach(cb => cb(e));
+    throw e;
+  }
   return data;
 }
 
 /* ---------- Leitura tolerante das respostas ---------- */
 
-function obj(v: unknown): Record<string, unknown> | null {
+export function obj(v: unknown): Record<string, unknown> | null {
   return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
 }
 
@@ -214,16 +214,11 @@ export type RegisterInput = {
   password_confirmation: string;
   phone: string;
   cpf: string;
-  user_type?: string;
-  council_type?: string;
-  council_number?: string;
 };
 
 export async function register(input: RegisterInput) {
-  const app = await getAppToken();
   const data = await request("POST", "/auth/register", {
-    bearer: app,
-    body: { user_type: "patient", ...input },
+    body: input,
   });
   const token = pickToken(data);
   if (!token) throw new ApiError(0, "Cadastro feito, mas a API não devolveu o token de acesso. Tente entrar.", data);
@@ -233,9 +228,7 @@ export async function register(input: RegisterInput) {
 }
 
 export async function login(loginValue: string, password: string) {
-  const app = await getAppToken();
   const data = await request("POST", "/auth/login", {
-    bearer: app,
     body: { login: loginValue, password },
   });
   
@@ -262,7 +255,123 @@ export async function verifyMfa(token: string, totp_code: string) {
   return { token: newToken, profile };
 }
 
+export async function setupMfa(token: string) {
+  const data = await request("POST", "/auth/mfa/setup", { bearer: token });
+  return obj(data) as { secret: string; qr_code_svg: string };
+}
+
+export async function logout(token: string) {
+  try {
+    await request("POST", "/auth/logout", { bearer: token });
+  } catch {
+    // Ignora erros ao deslogar
+  }
+  clearSession();
+}
+
 export async function currentUser(token: string): Promise<Profile> {
   const data = await request("GET", "/user", { bearer: token });
   return pickProfile(data) ?? (obj(data) as Profile) ?? {};
 }
+
+export async function getMemberships(token: string): Promise<Membership[]> {
+  const data = await request("GET", "/me/memberships", { bearer: token });
+  const list = obj(data)?.data as unknown[];
+  if (!Array.isArray(list)) return [];
+  const filtered = list.filter((m: any) => m?.organizacao?.id === TENANT_ID && m?.trilho === "ensino");
+  return filtered as Membership[];
+}
+
+export async function createMembership(token: string, papel: "aluno" | "docente"): Promise<Membership> {
+  const data = await request("POST", "/me/vinculos", { bearer: token, body: { papel } });
+  return data as Membership;
+}
+
+export async function fetchMembershipsAndSave(token: string): Promise<Membership[]> {
+  const mems = await getMemberships(token);
+  saveMemberships(mems);
+  return mems;
+}
+
+export async function getInvitation(token: string) {
+  return request("GET", `/convites/${token}`, { tenant: false });
+}
+
+export async function acceptInvitation(bearer: string, token: string) {
+  return request("POST", `/convites/${token}/aceitar`, { bearer, tenant: false });
+}
+
+// Admin endpoints
+export async function adminGetMembros(bearer: string, query: string) {
+  return request("GET", `/organizacao/membros?${query}`, { bearer });
+}
+export async function adminAprovarMembro(bearer: string, id: string) {
+  return request("POST", `/organizacao/membros/${id}/aprovar`, { bearer });
+}
+export async function adminRevogarMembro(bearer: string, id: string, motivo: string) {
+  return request("POST", `/organizacao/membros/${id}/revogar`, { bearer, body: { motivo } });
+}
+export async function adminReativarMembro(bearer: string, id: string) {
+  return request("POST", `/organizacao/membros/${id}/reativar`, { bearer });
+}
+export async function adminSetAtribuicoes(bearer: string, id: string, atribuicoes: string[]) {
+  return request("PATCH", `/organizacao/membros/${id}/atribuicoes`, { bearer, body: { atribuicoes } });
+}
+export async function adminGetConvites(bearer: string) {
+  return request("GET", `/organizacao/convites`, { bearer });
+}
+export async function adminCriarConvite(bearer: string, payload: { email: string; papel: string; atribuicoes?: string[] }) {
+  return request("POST", `/organizacao/convites`, { bearer, body: payload });
+}
+export async function adminDeletarConvite(bearer: string, id: string) {
+  return request("DELETE", `/organizacao/convites/${id}`, { bearer });
+}
+
+// Confirmations
+export async function sendEmailConfirmation(bearer: string) {
+  return request("POST", "/me/confirmacoes/email/enviar", { bearer });
+}
+export async function sendPhoneConfirmation(bearer: string, phone?: string) {
+  return request("POST", "/me/confirmacoes/telefone/enviar", { bearer, body: phone ? { phone } : {} });
+}
+export async function confirmEmail(bearer: string, codigo: string) {
+  const data = await request("POST", "/me/confirmacoes/email/confirmar", { bearer, body: { codigo } });
+  return obj(data);
+}
+export async function confirmPhone(bearer: string, codigo: string) {
+  const data = await request("POST", "/me/confirmacoes/telefone/confirmar", { bearer, body: { codigo } });
+  return obj(data);
+}
+
+// Password recovery
+export async function forgotPassword(identificador: string) {
+  return request("POST", "/auth/senha/esqueci", { body: { identificador } });
+}
+export async function resetPassword(payload: { identificador: string; codigo: string; password: string; password_confirmation: string }) {
+  return request("POST", "/auth/senha/redefinir", { body: payload });
+}
+
+// Registros Profissionais
+export type RegistroProfissional = {
+  id: string;
+  conselho: string;
+  uf: string;
+  numero: string;
+  categoria: string;
+  situacao: "nao_conferido" | "regular" | "irregular" | "suspenso" | "cancelado";
+  conferido_em?: string;
+};
+
+export async function getRegistrosProfissionais(bearer: string): Promise<RegistroProfissional[]> {
+  const data = await request("GET", "/me/registros-profissionais", { bearer });
+  return (Array.isArray(data) ? data : []) as RegistroProfissional[];
+}
+
+export async function createRegistroProfissional(bearer: string, payload: { conselho: string; uf: string; numero: string; categoria: string }) {
+  return request("POST", "/me/registros-profissionais", { bearer, body: payload });
+}
+
+export async function deleteRegistroProfissional(bearer: string, id: string) {
+  return request("DELETE", `/me/registros-profissionais/${id}`, { bearer });
+}
+
