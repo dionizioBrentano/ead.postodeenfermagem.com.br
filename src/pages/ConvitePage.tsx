@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getInvitation, acceptInvitation, obj } from "../api/client";
 import { navegar } from "../lib/rota";
+import { iniciarLogin } from "../auth/loginCentral";
 
 export default function ConvitePage({ token, tokenAuth, onEntrou, onSair }: { token: string; tokenAuth: string | null; onEntrou: () => void; onSair: () => void }) {
   const [convite, setConvite] = useState<any>(null);
@@ -21,8 +22,8 @@ export default function ConvitePage({ token, tokenAuth, onEntrou, onSair }: { to
 
   const aceitar = async () => {
     if (!tokenAuth) {
-       navegar("/");
-       return;
+      void iniciarLogin({ destino: `/convite?token=${encodeURIComponent(token)}` });
+      return;
     }
     setEnviando(true);
     setErro(null);
@@ -31,9 +32,9 @@ export default function ConvitePage({ token, tokenAuth, onEntrou, onSair }: { to
       onEntrou();
     } catch (err: any) {
       if (err.status === 403 && obj(err.body)?.code === "convite_outro_email") {
-         setErro(`Este convite foi enviado para o e-mail ${convite?.email_mascarado}. Entre com essa conta ou peça um novo convite.`);
+        setErro(`Este convite foi enviado para o e-mail ${convite?.email_mascarado}. Entre com essa conta ou peça um novo convite.`);
       } else {
-         setErro(err.message || "Erro ao aceitar convite.");
+        setErro(err.message || "Erro ao aceitar convite.");
       }
     } finally {
       setEnviando(false);

@@ -26,8 +26,8 @@ export default function RegistroProfissionalForm({ onSalvo, onPular, hidePular =
       onSalvo();
     } catch (err: any) {
       if (err.status === 403 && err.body?.code === "confirmation_required") {
-        const { navegar } = await import("../lib/rota");
-        navegar("/confirmar");
+        const { iniciarLogin } = await import("../lib/loginCentral");
+        await iniciarLogin();
       } else if (err.status === 422 && err.body?.code === "registro_em_uso") {
         setErro("Este registro profissional já está em uso.");
       } else {

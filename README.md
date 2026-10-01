@@ -6,14 +6,15 @@ A identidade e os vínculos vêm da API do Posto de Enfermagem. O acesso ao EAD 
 
 ## Rotas Principales
 
-- `/` — Entrada (login e cadastro unificados).
+- `/` — Entrada: leva ao login central (entrar.postodeenfermagem.com.br), onde ficam login, cadastro, confirmação de contatos, verificação em duas etapas e "esqueci a senha".
+- `/entrar/retorno` — Volta do login central.
 - `/participar` — Tela para o usuário escolher seu papel ("Sou aluno" ou "Sou docente") ao entrar pela primeira vez.
 - `/aguardando` — Tela de bloqueio para docentes recém-cadastrados até aprovação da escola.
 - `/sala` — Área do **Aluno**: acesso ao guia do estágio, sua autoavaliação (preenchimento) e histórico de avaliações, bem como o paralelo de notas.
 - `/supervisao` — Área do **Docente**: tela para avaliar e acompanhar os alunos. (Requer aprovação e Verificação em Duas Etapas).
 - `/administracao` — Área do **Administrador**: gestão de convites, aprovação de docentes, revogação de acessos, e atribuição de permissões a outros administradores. (Requer Verificação em Duas Etapas).
 - `/convite?token=` — Tela pública para visualização e aceite de convites de participação (aluno, docente ou administrador).
-- `/verificacao` — Tela de MFA (Verificação em Duas Etapas), onde docentes e administradores ativam ou confirmam acesso.
+- `/verificacao` — Leva ao login central para ativar ou confirmar a verificação em duas etapas (docentes e administradores).
 
 ## Variáveis de ambiente
 

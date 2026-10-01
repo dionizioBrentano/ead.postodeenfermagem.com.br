@@ -14,16 +14,14 @@ import {
 } from "./api/client";
 import { navegar, useRota } from "./lib/rota";
 
-import AuthPage from "./pages/AuthPage";
 import ParticiparPage from "./pages/ParticiparPage";
 import AguardandoPage from "./pages/AguardandoPage";
-import VerificacaoPage from "./pages/VerificacaoPage";
 import ConvitePage from "./pages/ConvitePage";
 import SalaPage from "./pages/SalaPage";
 import SupervisaoPage from "./pages/SupervisaoPage";
 import AdministracaoPage from "./pages/AdministracaoPage";
-import ConfirmarPage from "./pages/ConfirmarPage";
-import EsqueciSenhaPage from "./pages/EsqueciSenhaPage";
+import EntrarRetornoPage from "./pages/EntrarRetornoPage";
+import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
 type Guard =
   | { estado: "verificando" }
@@ -68,7 +66,7 @@ export default function App() {
   }, [token]);
 
   useEffect(() => {
-    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/esqueci-senha") {
+    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno") {
       verificar();
     }
   }, [token, faltando.length, verificar, rota, guard.estado]);
@@ -77,18 +75,14 @@ export default function App() {
     if (rota === "/" && token && guard.estado === "verificando" && !faltando.length) {
        verificar();
     } else if (rota === "/" && token && guard.estado === "ok") {
-       if (guard.perfil.confirmacao_obrigatoria) {
-         navegar("/confirmar", true);
-       } else {
-         navegar("/participar", true);
-       }
+       navegar("/participar", true);
     }
   }, [rota, token, guard.estado, faltando.length, verificar]);
 
   useEffect(() => {
     const cb = (err: ApiError) => {
       if (err.status === 403 && typeof err.body === 'object' && (err.body as any)?.code === 'confirmation_required') {
-        navegar("/confirmar");
+        void iniciarLogin({ destino: "/sala" });
       }
     };
     apiErrorListeners.add(cb);
@@ -97,11 +91,10 @@ export default function App() {
     };
   }, []);
 
-  const sair = () => {
-    if (token) logout(token);
+  const sair = async () => {
+    if (token) await logout(token);
     else clearSession();
-    setGuard({ estado: "verificando" });
-    navegar("/", true);
+    sairNoLoginCentral();
   };
 
   if (faltando.length) {
@@ -122,24 +115,40 @@ export default function App() {
     return <ConvitePage token={tokenConvite || ""} onEntrou={() => navegar("/sala")} onSair={sair} tokenAuth={token} />;
   }
 
-  if (rota === "/esqueci-senha") {
-    return <EsqueciSenhaPage onSair={() => navegar("/")} />;
+  if (rota === "/entrar/retorno") {
+    return (
+      <EntrarRetornoPage
+        onEntrou={(destino) => {
+          setAviso(null);
+          setGuard({ estado: "verificando" });
+          navegar(destino === "/" ? "/participar" : destino, true);
+        }}
+      />
+    );
   }
 
   if (!token) {
-    if (rota !== "/") {
-      navegar("/", true);
-      return null;
-    }
     return (
-      <AuthPage
-        aviso={aviso}
-        onEntrou={() => {
-          setAviso(null);
-          setGuard({ estado: "verificando" });
-          navegar("/participar"); 
-        }}
-      />
+      <main className="page auth">
+        <div className="auth-card">
+          <div className="brand">
+            <span className="eyebrow">Posto de Enfermagem · Curso Técnico em Enfermagem</span>
+            <h1>Sala EAD</h1>
+            <p className="muted" style={{ margin: 0 }}>
+              Guia do estágio hospitalar e autoavaliação. Entre com a mesma conta da rede Posto de Enfermagem.
+            </p>
+          </div>
+          {aviso && <div className="alert info" role="status">{aviso}</div>}
+          <div className="box" style={{ display: "grid", gap: 12 }}>
+            <button className="btn" onClick={() => void iniciarLogin({ destino: rota === "/" ? "/participar" : rota })}>
+              Entrar
+            </button>
+            <button className="btn ghost" onClick={() => void iniciarLogin({ destino: "/participar", cadastro: true })}>
+              Criar cadastro
+            </button>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -169,17 +178,10 @@ export default function App() {
     );
   }
 
-  if (guard.perfil.confirmacao_obrigatoria && rota !== "/confirmar") {
-    navegar("/confirmar", true);
+  if (guard.perfil.confirmacao_obrigatoria) {
+    // O login central pede a confirmação de e-mail e celular e devolve para cá.
+    void iniciarLogin({ destino: rota });
     return null;
-  }
-
-  if (rota === "/confirmar") {
-    return <ConfirmarPage perfil={guard.perfil} onConcluido={() => {
-      setGuard({ estado: "verificando" });
-      verificar();
-      navegar("/sala", true);
-    }} onSair={sair} token={token} />;
   }
 
   const mfaEnabled = guard.perfil.mfa_enabled === true;
@@ -193,11 +195,9 @@ export default function App() {
   const isAdmin = hasRole("administrador");
 
   if (rota === "/verificacao") {
-    return <VerificacaoPage token={token} mfaEnabled={mfaEnabled} onConcluido={() => {
-      setGuard({ estado: "verificando" });
-      verificar();
-      navegar("/sala");
-    }} onSair={sair} />;
+    // Verificação em duas etapas acontece no login central.
+    void iniciarLogin({ destino: isAdmin ? "/administracao" : "/supervisao", exigirMfa: true });
+    return null;
   }
 
   if (rota === "/participar") {

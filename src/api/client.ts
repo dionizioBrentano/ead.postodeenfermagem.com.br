@@ -1,6 +1,8 @@
 // Cliente da API do Posto de Enfermagem.
-// Regras: identidade e autorização vêm da API. Este frontend só usa
-// /auth/application/token, /auth/register, /auth/login e /user.
+// Regras: identidade e autorização vêm da API. Entrar, cadastro, verificação em
+// duas etapas, confirmação de contatos e senha ficam no login central
+// (entrar.postodeenfermagem.com.br); ver src/auth/loginCentral.ts.
+import { iniciarLogin } from "../auth/loginCentral";
 
 const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 const TENANT_ID = import.meta.env.VITE_TENANT_ID ?? "";
@@ -136,6 +138,12 @@ export async function request(method: string, path: string, opts: RequestOptions
     }
   }
   if (!res.ok) {
+    if (res.status === 401) {
+      clearSession();
+      if (!window.location.pathname.includes("/entrar/retorno")) {
+        void iniciarLogin();
+      }
+    }
     const e = new ApiError(res.status, messageFrom(data) ?? `Erro ${res.status}`, data);
     apiErrorListeners.forEach(cb => cb(e));
     throw e;
@@ -207,59 +215,6 @@ export function isOrganizationMismatch(err: unknown): boolean {
 
 /* ---------- Rotas usadas ---------- */
 
-export type RegisterInput = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-  phone: string;
-  cpf: string;
-};
-
-export async function register(input: RegisterInput) {
-  const data = await request("POST", "/auth/register", {
-    body: input,
-  });
-  const token = pickToken(data);
-  if (!token) throw new ApiError(0, "Cadastro feito, mas a API não devolveu o token de acesso. Tente entrar.", data);
-  const profile = pickProfile(data);
-  saveSession(token, profile);
-  return { token, profile };
-}
-
-export async function login(loginValue: string, password: string) {
-  const data = await request("POST", "/auth/login", {
-    body: { login: loginValue, password },
-  });
-  
-  const token = pickToken(data);
-  if (!token) throw new ApiError(0, "A API não devolveu o token de acesso.", data);
-  
-  if (obj(data)?.mfa_required === true) {
-    return { mfa_required: true, token, profile: null };
-  }
-  
-  const profile = pickProfile(data);
-  saveSession(token, profile);
-  return { mfa_required: false, token, profile };
-}
-
-export async function verifyMfa(token: string, totp_code: string) {
-  const data = await request("POST", "/auth/mfa/verify", {
-    bearer: token,
-    body: { totp_code }
-  });
-  const newToken = pickToken(data) || token;
-  const profile = pickProfile(data);
-  saveSession(newToken, profile);
-  return { token: newToken, profile };
-}
-
-export async function setupMfa(token: string) {
-  const data = await request("POST", "/auth/mfa/setup", { bearer: token });
-  return obj(data) as { secret: string; qr_code_svg: string };
-}
-
 export async function logout(token: string) {
   try {
     await request("POST", "/auth/logout", { bearer: token });
@@ -325,30 +280,6 @@ export async function adminCriarConvite(bearer: string, payload: { email: string
 }
 export async function adminDeletarConvite(bearer: string, id: string) {
   return request("DELETE", `/organizacao/convites/${id}`, { bearer });
-}
-
-// Confirmations
-export async function sendEmailConfirmation(bearer: string) {
-  return request("POST", "/me/confirmacoes/email/enviar", { bearer });
-}
-export async function sendPhoneConfirmation(bearer: string, phone?: string) {
-  return request("POST", "/me/confirmacoes/telefone/enviar", { bearer, body: phone ? { phone } : {} });
-}
-export async function confirmEmail(bearer: string, codigo: string) {
-  const data = await request("POST", "/me/confirmacoes/email/confirmar", { bearer, body: { codigo } });
-  return obj(data);
-}
-export async function confirmPhone(bearer: string, codigo: string) {
-  const data = await request("POST", "/me/confirmacoes/telefone/confirmar", { bearer, body: { codigo } });
-  return obj(data);
-}
-
-// Password recovery
-export async function forgotPassword(identificador: string) {
-  return request("POST", "/auth/senha/esqueci", { body: { identificador } });
-}
-export async function resetPassword(payload: { identificador: string; codigo: string; password: string; password_confirmation: string }) {
-  return request("POST", "/auth/senha/redefinir", { body: payload });
 }
 
 // Registros Profissionais

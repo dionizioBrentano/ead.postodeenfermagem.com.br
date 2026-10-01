@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getRegistrosProfissionais, getUserToken, type RegistroProfissional } from "../api/client";
 import RegistroProfissionalForm from "../components/RegistroProfissionalForm";
+import { iniciarLogin } from "../auth/loginCentral";
 
 export default function AguardandoPage({ onVerificar, onSair }: { onVerificar: () => void; onSair: () => void }) {
   const [registros, setRegistros] = useState<RegistroProfissional[]>([]);
@@ -12,6 +13,7 @@ export default function AguardandoPage({ onVerificar, onSair }: { onVerificar: (
       const token = getUserToken();
       if (!token) {
         setCarregando(false);
+        void iniciarLogin({ destino: "/aguardando" });
         return;
       }
       try {
