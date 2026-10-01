@@ -23,6 +23,14 @@ import AdministracaoPage from "./pages/AdministracaoPage";
 import EntrarRetornoPage from "./pages/EntrarRetornoPage";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
+/** Página padrão de "não encontrada" de todos os sites da rede. */
+const PAGINA_NAO_ENCONTRADA = "https://entrar.postodeenfermagem.com.br/nao-encontrada";
+
+const ROTAS_EAD = [
+  "/", "/convite", "/entrar/retorno", "/verificacao", "/participar",
+  "/aguardando", "/sala", "/supervisao", "/administracao",
+];
+
 type Guard =
   | { estado: "verificando" }
   | { estado: "ok"; perfil: Profile; memberships: Membership[] }
@@ -109,6 +117,11 @@ export default function App() {
         </div>
       </main>
     );
+  }
+
+  if (!ROTAS_EAD.includes(rota)) {
+    window.location.replace(PAGINA_NAO_ENCONTRADA);
+    return null;
   }
 
   if (rota === "/convite") {
