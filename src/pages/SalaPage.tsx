@@ -1,16 +1,13 @@
 import { useMemo, useState, useEffect } from "react";
 import type { Profile, Membership } from "../api/client";
-import { navegar } from "../lib/rota";
 import Autoavaliacao from "../components/Autoavaliacao";
 import Evolucao from "../components/Evolucao";
 import Guia from "../components/Guia";
-import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
-import MinhaFrequencia from "../components/MinhaFrequencia";
 import Paralelo from "../components/Paralelo";
 import GraficoEvolucao from "../components/GraficoEvolucao";
 import type { Avaliacao } from "../lib/historico";
 
-type Aba = "guia" | "autoavaliacao" | "evolucao" | "avaliacoes_recebidas" | "minha_turma" | "minha_frequencia";
+type Aba = "guia" | "autoavaliacao" | "evolucao" | "avaliacoes_recebidas";
 
 function texto(p: Profile, k: string): string {
   const v = p[k];
@@ -21,13 +18,6 @@ function chaveDoAluno(p: Profile): string {
   return texto(p, "id") || texto(p, "uuid") || texto(p, "email") || "anonimo";
 }
 
-function formatDDMMYYYY(ymd: string) {
-  if (!ymd) return '-';
-  const parts = ymd.split('T')[0].split('-');
-  if (parts.length !== 3) return ymd;
-  return `${parts[2]}/${parts[1]}/${parts[0]}`;
-}
-
 export default function SalaPage({ perfil, onSair }: { perfil: Profile; memberships?: Membership[]; onSair: () => void }) {
   const [aba, setAba] = useState<Aba>("guia");
   const userKey = useMemo(() => chaveDoAluno(perfil), [perfil]);
@@ -35,32 +25,6 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; membersh
   
   const [lista, setLista] = useState<Avaliacao[]>([]);
   const [carregandoLista, setCarregandoLista] = useState(true);
-
-  const [turma, setTurma] = useState<any>(null);
-  const [carregandoTurma, setCarregandoTurma] = useState(false);
-
-  useEffect(() => {
-    if ((aba === "minha_turma" || aba === "minha_frequencia") && !turma && !carregandoTurma) {
-      const loadTurma = async () => {
-        try {
-          setCarregandoTurma(true);
-          const { getMinhasTurmas } = await import("../api/ead");
-          const { getUserToken } = await import("../api/client");
-          const token = getUserToken();
-          if (!token) return;
-          const turmas = await getMinhasTurmas(token);
-          if (turmas && turmas.length > 0) {
-            setTurma(turmas[0]);
-          }
-        } catch (e) {
-          console.error(e);
-        } finally {
-          setCarregandoTurma(false);
-        }
-      };
-      loadTurma();
-    }
-  }, [aba, turma, carregandoTurma]);
 
   useEffect(() => {
     const runMigrationAndLoad = async () => {
@@ -123,12 +87,6 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; membersh
           <button role="tab" aria-selected={aba === "guia"} onClick={() => ir("guia")}>
             Guia do estágio
           </button>
-          <button role="tab" aria-selected={aba === "minha_turma"} onClick={() => ir("minha_turma")}>
-            Minha turma
-          </button>
-          <button role="tab" aria-selected={aba === "minha_frequencia"} onClick={() => ir("minha_frequencia")}>
-            Minha frequência
-          </button>
           <button role="tab" aria-selected={aba === "autoavaliacao"} onClick={() => ir("autoavaliacao")}>
             Autoavaliação
           </button>
@@ -141,41 +99,7 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; membersh
         </nav>
       </div>
       <main className="page">
-        {(!perfil.email_verified_at || !perfil.phone_verified_at) && (
-          <div className="alert info" style={{ marginBottom: 20, display: "flex", gap: "10px", alignItems: "center" }}>
-            Confirme seu e-mail e telefone. No próximo acesso isso será obrigatório.
-            <button type="button" className="btn small" onClick={() => navegar("/confirmar")}>Confirmar agora</button>
-          </div>
-        )}
         {aba === "guia" && <Guia onAutoavaliar={() => ir("autoavaliacao")} />}
-        {aba === "minha_turma" && (
-          <div className="box sec" style={{ padding: "20px" }}>
-            <h2 style={{ marginTop: 0 }}>Minha Turma</h2>
-            {carregandoTurma ? (
-              <p>Carregando...</p>
-            ) : !turma ? (
-              <p>Você não está em nenhuma turma no momento.</p>
-            ) : (
-              <>
-                <div style={{ marginBottom: "20px" }}>
-                  <p><strong>Nome:</strong> {turma.nome}</p>
-                  <p><strong>Início:</strong> {formatDDMMYYYY(turma.data_inicio)}</p>
-                  <p><strong>Fim:</strong> {formatDDMMYYYY(turma.data_fim)}</p>
-                </div>
-                <TurmaCalendarioWrapper turmaId={turma.id} inicioTurma={turma.data_inicio} fimTurma={turma.data_fim} />
-              </>
-            )}
-          </div>
-        )}
-        {aba === "minha_frequencia" && (
-          carregandoTurma ? (
-            <div className="box sec" style={{ padding: "20px" }}><p>Carregando turma...</p></div>
-          ) : !turma ? (
-            <div className="box sec" style={{ padding: "20px" }}><p>Você não está em nenhuma turma no momento.</p></div>
-          ) : (
-            <MinhaFrequencia turmaId={turma.id} />
-          )
-        )}
         {aba === "autoavaliacao" && (
           <Autoavaliacao
             userKey={userKey}
