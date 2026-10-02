@@ -6,6 +6,8 @@ import Evolucao from "../components/Evolucao";
 import Guia from "../components/Guia";
 import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
 import MinhaFrequencia from "../components/MinhaFrequencia";
+import Paralelo from "../components/Paralelo";
+import GraficoEvolucao from "../components/GraficoEvolucao";
 import type { Avaliacao } from "../lib/historico";
 
 type Aba = "guia" | "autoavaliacao" | "evolucao" | "avaliacoes_recebidas" | "minha_turma" | "minha_frequencia";
@@ -193,10 +195,10 @@ export default function SalaPage({ perfil, onSair }: { perfil: Profile; membersh
           )
         )}
         {aba === "avaliacoes_recebidas" && (
-          <div className="box sec" style={{ textAlign: "center", padding: "40px 20px" }}>
-            <h2 style={{ fontSize: 21 }}>Avaliações Recebidas</h2>
-            <p className="muted">As avaliações feitas pelos seus supervisores aparecerão aqui.</p>
-          </div>
+          <>
+            <Paralelo alunoId={userKey} />
+            <GraficoEvolucao alunoId={userKey} />
+          </>
         )}
       </main>
     </>

@@ -5,21 +5,24 @@ import { getUserToken, getRegistrosProfissionais, deleteRegistroProfissional, ty
 import Evolucao from "../components/Evolucao";
 import AvaliacaoSupervisor from "../components/AvaliacaoSupervisor";
 import Paralelo from "../components/Paralelo";
+import GraficoEvolucao from "../components/GraficoEvolucao";
 import { carregarDaAPI, type Avaliacao } from "../lib/historico";
 import RegistroProfissionalForm from "../components/RegistroProfissionalForm";
 import AulasDocente from "../components/AulasDocente";
 import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
+import { navegar } from "../lib/rota";
 
-type Aba = "avaliacao_sup" | "paralelo" | "autoavaliacoes_aluno" | "meu_registro" | "calendario" | "aulas";
+type Aba = "avaliacao_sup" | "paralelo" | "grafico" | "autoavaliacoes_aluno" | "meu_registro" | "calendario" | "aulas";
 
 function texto(p: Profile, k: string): string {
   const v = p[k];
   return typeof v === "string" || typeof v === "number" ? String(v) : "";
 }
 
-export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; memberships: Membership[]; onSair: () => void }) {
+export default function SupervisaoPage({ perfil, memberships, onSair }: { perfil: Profile; memberships: Membership[]; onSair: () => void }) {
   const [aba, setAba] = useState<Aba>("avaliacao_sup");
   const nome = texto(perfil, "name");
+  const ehAdmin = memberships.some((m) => m.papel === "administrador" && m.situacao === "ativo");
   
   const [confirmedTurmaId, setConfirmedTurmaId] = useState("");
   const [turmas, setTurmas] = useState<any[]>([]);
@@ -67,7 +70,7 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
       return;
     }
     setCarregandoAlunos(true);
-    getAlunos(confirmedTurmaId).then((res: any) => {
+    getAlunos(confirmedTurmaId === "todas" ? undefined : confirmedTurmaId).then((res: any) => {
       setAlunos(res as any);
       // Reset selected student if they are no longer in the list
       if (confirmedStudentId && !res.find((a: any) => a.id === confirmedStudentId)) {
@@ -145,9 +148,16 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
             <b>Supervisão EAD</b>
             <span>{nome || texto(perfil, "email")}</span>
           </div>
-          <button className="btn ghost small" onClick={onSair}>
-            Sair
-          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            {ehAdmin && (
+              <button className="btn ghost small" onClick={() => navegar("/administracao")}>
+                Administração
+              </button>
+            )}
+            <button className="btn ghost small" onClick={onSair}>
+              Sair
+            </button>
+          </div>
         </div>
         
         {(!acessoBloqueado && aba !== "meu_registro") && (
@@ -163,6 +173,7 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
                 disabled={carregandoTurmas}
               >
                 <option value="">-- {carregandoTurmas ? "Carregando..." : "Selecione uma turma"} --</option>
+                <option value="todas">Todos os alunos (sem filtro de turma)</option>
                 {turmas.map(t => (
                   <option key={t.id} value={t.id}>{t.nome} ({t.campo_estagio})</option>
                 ))}
@@ -196,6 +207,9 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
           </button>
           <button role="tab" aria-selected={aba === "paralelo"} onClick={() => ir("paralelo")}>
             Paralelo
+          </button>
+          <button role="tab" aria-selected={aba === "grafico"} onClick={() => ir("grafico")}>
+            Gráfico de evolução
           </button>
           <button role="tab" aria-selected={aba === "autoavaliacoes_aluno"} onClick={() => ir("autoavaliacoes_aluno")}>
             Autoavaliações do Aluno
@@ -263,7 +277,7 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
             {acessoBloqueado}
           </div>
         ) : aba === "calendario" ? (
-          !confirmedTurmaId ? (
+          (!confirmedTurmaId || confirmedTurmaId === "todas") ? (
             <div className="box sec" style={{ textAlign: "center", padding: "40px 20px", color: "#666" }}>
               Por favor, selecione uma turma no campo acima.
             </div>
@@ -278,7 +292,7 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
             </div>
           )
         ) : aba === "aulas" ? (
-          !confirmedTurmaId ? (
+          (!confirmedTurmaId || confirmedTurmaId === "todas") ? (
             <div className="box sec" style={{ textAlign: "center", padding: "40px 20px", color: "#666" }}>
               Por favor, selecione uma turma no campo acima.
             </div>
@@ -303,6 +317,9 @@ export default function SupervisaoPage({ perfil, onSair }: { perfil: Profile; me
             )}
             {aba === "paralelo" && (
               <Paralelo alunoId={confirmedStudentId} />
+            )}
+            {aba === "grafico" && (
+              <GraficoEvolucao alunoId={confirmedStudentId} />
             )}
             {aba === "autoavaliacoes_aluno" && (
               carregandoAvaliacoes ? (
