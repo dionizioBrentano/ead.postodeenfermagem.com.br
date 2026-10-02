@@ -35,7 +35,7 @@ export default function SalaPage({
   memberships?: Membership[];
   onSair: () => void;
 }) {
-  const [aba, setAba] = useState<Aba>("guia");
+  const [aba, setAba] = useState<Aba>("dashboard");
   const [ciclo, setCiclo] = useState<number>(() => {
     const salvo = localStorage.getItem(`ciclo:${chaveDoAluno(perfil)}`);
     const n = Number(salvo);
@@ -247,6 +247,10 @@ export default function SalaPage({
               </div>
             </section>
 
+            <section className="guia" aria-label="Orientações do ciclo">
+              <div dangerouslySetInnerHTML={{ __html: orientacaoCiclo }} />
+            </section>
+
             {/* Cards no padrão da página /estrutura/ */}
             <section className="estrutura-grid">
               {/* Card 1: Autoavaliação */}
@@ -318,9 +322,6 @@ export default function SalaPage({
               </div>
             </section>
 
-            <section className="guia" aria-label="Orientações do ciclo">
-              <div dangerouslySetInnerHTML={{ __html: orientacaoCiclo }} />
-            </section>
           </div>
         )}
 
