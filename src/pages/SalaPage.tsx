@@ -34,7 +34,7 @@ export default function SalaPage({
   memberships?: Membership[];
   onSair: () => void;
 }) {
-  const [aba, setAba] = useState<Aba>("dashboard");
+  const [aba, setAba] = useState<Aba>("guia");
   const userKey = useMemo(() => chaveDoAluno(perfil), [perfil]);
   const nome = texto(perfil, "name") || "Aluno";
   const primeiro = primeiroNome(nome);
