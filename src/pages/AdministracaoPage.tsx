@@ -19,6 +19,7 @@ import {
   getCalendarioTurma, addCalendarioTurma, deleteCalendarioTurma, gerarAulasTurma
 } from "../api/ead";
 import FrequenciaAdmin from "../components/FrequenciaAdmin";
+import { navegar } from "../lib/rota";
 
 
 type Aba = "docentes" | "convites" | "administradores" | "alunos" | "turmas" | "calendario";
@@ -95,13 +96,13 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
     try {
       if (aba === "docentes") {
         const res = await adminGetMembros(token, "papel=docente");
-        setLista((res as any)?.data || []);
+        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
       } else if (aba === "administradores") {
         const res = await adminGetMembros(token, "papel=administrador");
-        setLista((res as any)?.data || []);
+        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
       } else if (aba === "alunos") {
         const res = await adminGetMembros(token, "papel=aluno");
-        setLista((res as any)?.data || []);
+        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
       
       } else if (aba === "turmas") {
         const res = await adminGetTurmas(token);
@@ -112,7 +113,7 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
 
       } else if (aba === "convites") {
         const res = await adminGetConvites(token);
-        setLista((res as any)?.data || []);
+        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
       }
     } catch (e: any) {
       setMsg({ tipo: "err", texto: e.message || "Erro ao carregar dados" });
@@ -158,9 +159,9 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
       setEditandoTurmaId(id);
       
       const al = await adminGetMembros(token, "papel=aluno&situacao=ativo");
-      setAlunosAtivos((al as any).data || []);
+      setAlunosAtivos(Array.isArray(al) ? al : ((al as any)?.data || []));
       const doc = await adminGetMembros(token, "papel=docente&situacao=ativo");
-      setDocentesAtivos((doc as any).data || []);
+      setDocentesAtivos(Array.isArray(doc) ? doc : ((doc as any)?.data || []));
       
       const cal = await getCalendarioTurma(token, id);
       setTurmaCalendario(cal);
@@ -366,7 +367,12 @@ const handleAprovar = async (id: string) => {
           <div className="who">
             <b>Administração EAD</b>
           </div>
-          <button className="btn ghost small" onClick={onSair}>Sair</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            {atribuicoes.includes("avaliacoes.ler") && (
+              <button className="btn ghost small" onClick={() => navegar("/supervisao")}>Ver avaliações dos alunos</button>
+            )}
+            <button className="btn ghost small" onClick={onSair}>Sair</button>
+          </div>
         </div>
         <nav className="nav" role="tablist">
           {canDocentes && <button role="tab" aria-selected={aba === "docentes"} onClick={() => setAba("docentes")}>Docentes</button>}

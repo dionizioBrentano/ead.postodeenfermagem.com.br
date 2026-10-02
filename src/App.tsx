@@ -206,6 +206,9 @@ export default function App() {
   const isAluno = hasRole("aluno");
   const isDocente = hasRole("docente");
   const isAdmin = hasRole("administrador");
+  const podeVerAvaliacoes = memberships.some(
+    (m) => m.papel === "administrador" && m.situacao === "ativo" && (m.atribuicoes || []).includes("avaliacoes.ler"),
+  );
 
   if (rota === "/verificacao") {
     // Verificação em duas etapas acontece no login central.
@@ -247,7 +250,7 @@ export default function App() {
   }
 
   if (rota === "/supervisao") {
-    if (!isDocente) {
+    if (!isDocente && !(isAdmin && podeVerAvaliacoes)) {
       navegar("/sala", true);
       return null;
     }

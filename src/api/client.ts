@@ -249,11 +249,11 @@ export async function fetchMembershipsAndSave(token: string): Promise<Membership
 }
 
 export async function getInvitation(token: string) {
-  return request("GET", `/convites/${token}`, { tenant: false });
+  return request("GET", `/convites/${token}`);
 }
 
 export async function acceptInvitation(bearer: string, token: string) {
-  return request("POST", `/convites/${token}/aceitar`, { bearer, tenant: false });
+  return request("POST", `/convites/${token}/aceitar`, { bearer });
 }
 
 // Admin endpoints
