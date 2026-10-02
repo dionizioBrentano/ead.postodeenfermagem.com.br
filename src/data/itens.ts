@@ -40,6 +40,12 @@ export const ATIVIDADES: Item[] = [
   { texto: "Saber onde se encontra na unidade o carro de urgência, conhecer materiais e medicamentos do carro.", curto: "Carro de urgência", desde: 4 },
   { texto: "Realizar registros de enfermagem, utilizando linguagem técnica de forma clara e objetiva.", curto: "Registros de enfermagem", desde: 1 },
   { texto: "Realiza a passagem de plantão de forma organizada, objetiva e clara.", curto: "Passagem de plantão", desde: 4 },
+  { texto: "Meta 1 de segurança do paciente: identifica corretamente o paciente, conferindo nome e data de nascimento e usando a pulseira de identificação.", curto: "Meta 1 · Identificação", desde: 1 },
+  { texto: "Meta 2 de segurança do paciente: comunicação efetiva entre a equipe, com informação clara na passagem de plantão e nos registros.", curto: "Meta 2 · Comunicação", desde: 1 },
+  { texto: "Meta 3 de segurança do paciente: segurança na prescrição, no uso e na administração de medicamentos, inclusive os de alta vigilância.", curto: "Meta 3 · Medicamentos", desde: 1 },
+  { texto: "Meta 4 de segurança do paciente: cirurgia segura, confirmando paciente, procedimento e local corretos.", curto: "Meta 4 · Cirurgia segura", desde: 1 },
+  { texto: "Meta 5 de segurança do paciente: reduz o risco de infecção, com higienização das mãos e precaução conforme o caso.", curto: "Meta 5 · Infecção", desde: 1 },
+  { texto: "Meta 6 de segurança do paciente: reduz o risco de queda e de lesão, com grades, pulseira amarela e prevenção de lesão por pressão.", curto: "Meta 6 · Quedas e lesões", desde: 1 },
 ];
 
 export const TOTAL_ITENS = GERAIS.length + ATIVIDADES.length;
