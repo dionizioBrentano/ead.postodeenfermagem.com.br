@@ -12,7 +12,7 @@ import AulasDocente from "../components/AulasDocente";
 import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
 import { navegar } from "../lib/rota";
 
-type Aba = "avaliacao_sup" | "paralelo" | "grafico" | "autoavaliacoes_aluno" | "meu_registro" | "calendario" | "aulas";
+type Aba = "avaliacao_sup" | "transcrever_auto" | "paralelo" | "grafico" | "autoavaliacoes_aluno" | "meu_registro" | "calendario" | "aulas";
 
 function texto(p: Profile, k: string): string {
   const v = p[k];
@@ -205,6 +205,11 @@ export default function SupervisaoPage({ perfil, memberships, onSair }: { perfil
           <button role="tab" aria-selected={aba === "avaliacao_sup"} onClick={() => ir("avaliacao_sup")}>
             Avaliação do supervisor
           </button>
+          {ehAdmin && (
+            <button role="tab" aria-selected={aba === "transcrever_auto"} onClick={() => ir("transcrever_auto")}>
+              Transcrever autoavaliação (PDF)
+            </button>
+          )}
           <button role="tab" aria-selected={aba === "paralelo"} onClick={() => ir("paralelo")}>
             Paralelo
           </button>
@@ -314,6 +319,9 @@ export default function SupervisaoPage({ perfil, memberships, onSair }: { perfil
           <>
             {aba === "avaliacao_sup" && (
               <AvaliacaoSupervisor alunoId={confirmedStudentId} isStudent={false} />
+            )}
+            {aba === "transcrever_auto" && ehAdmin && (
+              <AvaliacaoSupervisor key={`auto-${confirmedStudentId}`} alunoId={confirmedStudentId} isStudent={false} papel="auto" />
             )}
             {aba === "paralelo" && (
               <Paralelo alunoId={confirmedStudentId} />

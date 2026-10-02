@@ -9,6 +9,8 @@ import { getUserToken, getSavedProfile } from "../api/client";
 type Props = {
   alunoId: string;
   isStudent?: boolean;
+  /** "supervisor" (padrão) ou "auto" = transcrição da autoavaliação do aluno, feita pelo administrador. */
+  papel?: "supervisor" | "auto";
 };
 
 type Estado = {
@@ -31,7 +33,7 @@ const vazio = (nome: string): Estado => ({
   obs: "",
 });
 
-export default function AvaliacaoSupervisor({ alunoId }: Props) {
+export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: Props) {
   const token = getUserToken();
   const perfil = getSavedProfile();
   const nomeAvaliador = String(perfil?.name || "");
@@ -101,12 +103,12 @@ export default function AvaliacaoSupervisor({ alunoId }: Props) {
       const promises: Promise<unknown>[] = [];
       s.gerais.forEach((nota, i) => {
         if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
+          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel, nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
         }
       });
       s.atividades.forEach((nota, i) => {
         if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel: "supervisor", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
+          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel, nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
         }
       });
       
@@ -128,9 +130,13 @@ export default function AvaliacaoSupervisor({ alunoId }: Props) {
   return (
     <div className="narrow">
       <header className="sec" style={{ marginTop: 28 }}>
-        <h1 style={{ fontSize: "clamp(30px,6vw,44px)", fontWeight: 800, letterSpacing: "-.02em" }}>Avaliação do Supervisor</h1>
+        <h1 style={{ fontSize: "clamp(30px,6vw,44px)", fontWeight: 800, letterSpacing: "-.02em" }}>
+          {papel === "auto" ? "Transcrever autoavaliação" : "Avaliação do Supervisor"}
+        </h1>
         <p className="muted" style={{ margin: 0 }}>
-          Dê uma nota de 0 a 10 para o quanto o aluno domina cada item.
+          {papel === "auto"
+            ? "Copie aqui as notas que o aluno deu a si mesmo no PDF da autoavaliação. Elas ficam gravadas como autoavaliação do aluno."
+            : "Dê uma nota de 0 a 10 para o quanto o aluno domina cada item."}
         </p>
       </header>
 
