@@ -218,10 +218,6 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
             <input id="nome" type="text" value={s.nome} aria-invalid={faltando.has("f-nome")} onChange={(e) => setS({ ...s, nome: e.target.value })} />
           </div>
           <div className="field">
-            <label className="l" htmlFor="turma">Turma</label>
-            <input id="turma" type="text" value={s.turma} onChange={(e) => setS({ ...s, turma: e.target.value })} />
-          </div>
-          <div className="field">
             <label className="l" htmlFor="unidade">Unidade hospitalar</label>
             <input id="unidade" type="text" value={s.unidade} onChange={(e) => setS({ ...s, unidade: e.target.value })} />
           </div>

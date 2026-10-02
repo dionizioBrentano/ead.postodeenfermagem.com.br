@@ -6,6 +6,7 @@ import Guia from "../components/Guia";
 import Paralelo from "../components/Paralelo";
 import GraficoEvolucao from "../components/GraficoEvolucao";
 import type { Avaliacao } from "../lib/historico";
+import guiaHtml from "../content/guia.html?raw";
 
 type Aba = "dashboard" | "guia" | "autoavaliacao" | "evolucao" | "grafico" | "avaliacoes_recebidas";
 
@@ -35,6 +36,19 @@ export default function SalaPage({
   onSair: () => void;
 }) {
   const [aba, setAba] = useState<Aba>("guia");
+  const [ciclo, setCiclo] = useState<number>(() => {
+    const salvo = localStorage.getItem(`ciclo:${chaveDoAluno(perfil)}`);
+    const n = Number(salvo);
+    return n >= 1 && n <= 4 ? n : 1;
+  });
+  function escolherCiclo(n: number) {
+    setCiclo(n);
+    localStorage.setItem(`ciclo:${userKey}`, String(n));
+  }
+  const orientacaoCiclo = useMemo(() => {
+    const m = guiaHtml.match(new RegExp(`<article class="cycle k${ciclo}" id="c${ciclo}">[\\s\\S]*?</article>`));
+    return m ? m[0] : "";
+  }, [ciclo]);
   const userKey = useMemo(() => chaveDoAluno(perfil), [perfil]);
   const nome = texto(perfil, "name") || "Aluno";
   const primeiro = primeiroNome(nome);
@@ -117,13 +131,6 @@ export default function SalaPage({
     };
     runMigrationAndLoad();
   }, [userKey]);
-
-  // Calcula etapa atual da autoavaliação
-  const etapaAtual = useMemo(() => {
-    if (!lista.length) return 1;
-    const maxEtapa = Math.max(...lista.map((a) => a.etapa));
-    return Math.min(4, Math.max(1, maxEtapa));
-  }, [lista]);
 
   const ir = (a: Aba) => {
     setAba(a);
@@ -224,15 +231,17 @@ export default function SalaPage({
 
               {/* Indicador de Etapa Corrente no Verde #00AD57 */}
               <div className="etapa-corrente-box">
-                <span className="etapa-corrente-rotulo">Etapa em andamento:</span>
+                <span className="etapa-corrente-rotulo">Ciclo em andamento:</span>
                 <div className="etapa-tags">
                   {[1, 2, 3, 4].map((et) => (
-                    <span
+                    <button
+                      type="button"
                       key={et}
-                      className={et === etapaAtual ? "etapa-pill ativa" : "etapa-pill"}
+                      className={et === ciclo ? "etapa-pill ativa" : "etapa-pill"}
+                      onClick={() => escolherCiclo(et)}
                     >
-                      Etapa {et}
-                    </span>
+                      Ciclo {et}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -248,7 +257,7 @@ export default function SalaPage({
                 />
                 <div className="estrutura-card-overlay" />
                 <div className="estrutura-card-conteudo">
-                  <span className="estrutura-card-badge">Etapa {etapaAtual}</span>
+                  <span className="estrutura-card-badge">Ciclo {ciclo}</span>
                   <h3 className="estrutura-card-titulo">Autoavaliação</h3>
                   <p className="estrutura-card-desc">
                     Avalie seu domínio nos itens de comportamento e técnicas práticas.
@@ -307,6 +316,10 @@ export default function SalaPage({
                   <span className="estrutura-card-link">Ver histórico →</span>
                 </div>
               </div>
+            </section>
+
+            <section className="guia" aria-label="Orientações do ciclo">
+              <div dangerouslySetInnerHTML={{ __html: orientacaoCiclo }} />
             </section>
           </div>
         )}
