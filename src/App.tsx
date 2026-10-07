@@ -205,7 +205,15 @@ export default function App() {
   }
 
   if (rota === "/participar") {
-    if (isAluno || isDocente || isAdmin) {
+    if (isAdmin) {
+      navegar("/administracao", true);
+      return null;
+    }
+    if (isDocente) {
+      navegar("/supervisao", true);
+      return null;
+    }
+    if (isAluno) {
       navegar("/sala", true);
       return null;
     }
@@ -220,7 +228,15 @@ export default function App() {
   }
 
   if (rota === "/aguardando") {
-    if (isDocente || isAdmin || isAluno) {
+    if (isAdmin) {
+      navegar("/administracao", true);
+      return null;
+    }
+    if (isDocente) {
+      navegar("/supervisao", true);
+      return null;
+    }
+    if (isAluno) {
       navegar("/sala", true);
       return null;
     }
@@ -228,13 +244,28 @@ export default function App() {
   }
 
   if (rota === "/sala") {
-    if (!isAluno) {
+    // Aluno tem acesso à sala; Administrador pode "Ver como aluno" mantendo seu papel
+    if (!isAluno && !isAdmin) {
       if (isDocente) navegar("/supervisao", true);
-      else if (isAdmin) navegar("/administracao", true);
       else navegar("/participar", true);
       return null;
     }
     return <SalaPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;
+  }
+
+  if (rota === "/supervisao/lancamento") {
+    // Rota /supervisao/lancamento, só administrador
+    if (!isAdmin) {
+      if (isDocente) navegar("/supervisao", true);
+      else if (isAluno) navegar("/sala", true);
+      else navegar("/participar", true);
+      return null;
+    }
+    if (!mfaEnabled) {
+      navegar("/verificacao", true);
+      return null;
+    }
+    return <SupervisaoPage perfil={guard.perfil} memberships={memberships} onSair={sair} modoLancamento={true} />;
   }
 
   if (rota === "/supervisao") {
@@ -251,7 +282,7 @@ export default function App() {
 
   if (rota === "/administracao") {
     if (!isAdmin) {
-      navegar("/sala", true);
+      navegar(isDocente ? "/supervisao" : "/sala", true);
       return null;
     }
     if (!mfaEnabled) {
@@ -262,6 +293,8 @@ export default function App() {
   }
 
   // Rota inválida
-  navegar("/sala", true);
+  if (isAdmin) navegar("/administracao", true);
+  else if (isDocente) navegar("/supervisao", true);
+  else navegar("/sala", true);
   return null;
 }

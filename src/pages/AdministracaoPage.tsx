@@ -15,16 +15,17 @@ import {
 import { 
   adminGetTurmas, adminCreateTurma, adminUpdateTurma, adminDeleteTurma, adminGetTurma, 
   adminAddMembroTurma, adminRemoveMembroTurma, 
-  adminGetCalendarioPadrao, adminAddCalendarioPadrao, adminDeleteCalendarioPadrao,
-  getCalendarioTurma, addCalendarioTurma, deleteCalendarioTurma, gerarAulasTurma
+  adminGetCalendarioPadrao, adminAddCalendarioPadrao, adminDeleteCalendarioPadrao, adminRatificarCalendarioPadrao,
+  getCalendarioTurma, addCalendarioTurma, deleteCalendarioTurma, ratificarCalendarioTurma, gerarAulasTurma,
+  adminDistribuirEscala, adminDistribuirTodasEscalas
 } from "../api/ead";
 import FrequenciaAdmin from "../components/FrequenciaAdmin";
-import { navegar } from "../lib/rota";
+import MenuEad from "../components/MenuEad";
 
 
 type Aba = "docentes" | "convites" | "administradores" | "alunos" | "turmas" | "calendario";
 
-export default function AdministracaoPage({ memberships, onSair }: { perfil: Profile; memberships: Membership[]; onSair: () => void }) {
+export default function AdministracaoPage({ perfil, memberships, onSair }: { perfil: Profile; memberships: Membership[]; onSair: () => void }) {
   const adminMembership = memberships.find(m => m.papel === "administrador" && m.situacao === "ativo");
   const atribuicoes = adminMembership?.atribuicoes || [];
 
@@ -63,7 +64,22 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
   // Turmas state
   const [editandoTurmaId, setEditandoTurmaId] = useState<string | null>(null);
   const [turmaDetalhes, setTurmaDetalhes] = useState<any>(null);
-  const [novaTurma, setNovaTurma] = useState<any>({nome: "", campo_estagio: false, inicio: "", fim: "", carga_horaria_horas: 0, etapas: 1, minutos_hora_aula: 60, aulas_por_dia: 1, dias_semana: [], horario_inicio: "", situacao: "ativa"});
+  const [novaTurma, setNovaTurma] = useState<any>({
+    nome: "",
+    codigo: "",
+    turno: "Manhã",
+    campo_estagio: "",
+    capacidade: 6,
+    inicio: "",
+    fim: "",
+    carga_horaria_horas: 0,
+    etapas: 1,
+    minutos_hora_aula: 60,
+    aulas_por_dia: 1,
+    dias_semana: [],
+    horario_inicio: "",
+    situacao: "planejada"
+  });
 
   // Calendario Escola state
   const [novoCalDataInicio, setNovoCalDataInicio] = useState("");
@@ -151,6 +167,42 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
     }
   };
 
+  const handleDistribuirEscala = async (turmaId: string) => {
+    if (!window.confirm("Distribuir alunos ativos na escala desta turma até a capacidade máxima? Isso tornará o código e turno visíveis para os alunos alocados.")) return;
+    setCarregando(true);
+    try {
+      const res: any = await adminDistribuirEscala(token, turmaId);
+      setMsg({
+        tipo: "ok",
+        texto: res.message || "Escala distribuída com sucesso!"
+      });
+      if (editandoTurmaId && editandoTurmaId !== "novo") {
+        carregarTurmaDetalhes(turmaId);
+      } else {
+        carregar();
+      }
+    } catch (e: any) {
+      setMsg({ tipo: "err", texto: e.message || "Erro ao distribuir escala." });
+      setCarregando(false);
+    }
+  };
+
+  const handleDistribuirTodasEscalas = async () => {
+    if (!window.confirm("Distribuir alunos ativos para todas as turmas ativas/planejadas até a capacidade máxima? Isso tornará os códigos e turnos visíveis para os alunos alocados.")) return;
+    setCarregando(true);
+    try {
+      const res: any = await adminDistribuirTodasEscalas(token);
+      setMsg({
+        tipo: "ok",
+        texto: res.message || "Escalas distribuídas com sucesso para todas as turmas!"
+      });
+      carregar();
+    } catch (e: any) {
+      setMsg({ tipo: "err", texto: e.message || "Erro ao distribuir todas as escalas." });
+      setCarregando(false);
+    }
+  };
+
   const carregarTurmaDetalhes = async (id: string) => {
     setCarregando(true);
     try {
@@ -209,6 +261,41 @@ export default function AdministracaoPage({ memberships, onSair }: { perfil: Pro
       carregar();
     } catch (e: any) {
       setMsg({ tipo: "err", texto: e.message });
+    }
+  };
+
+  const handleRatificarCalPadrao = async (ano: number) => {
+    if (!window.confirm(`Ratificar o ciclo regional (1º ao penúltimo dia útil, feriados nacionais e do RS) para o ano de ${ano}?`)) {
+      return;
+    }
+    setCarregando(true);
+    try {
+      const res: any = await adminRatificarCalendarioPadrao(token, ano);
+      setMsg({
+        tipo: "ok",
+        texto: `Ciclo regional de ${ano} ratificado com sucesso! ${res?.resultado?.novos_eventos || 0} novos eventos registrados.`
+      });
+      carregar();
+    } catch (e: any) {
+      setMsg({ tipo: "err", texto: e.message || "Erro ao ratificar ciclo regional padrão." });
+      setCarregando(false);
+    }
+  };
+
+  const handleRatificarTurmaCal = async () => {
+    if (!editandoTurmaId) return;
+    if (!window.confirm("Ratificar o ciclo regional para esta turma?")) return;
+    setCarregando(true);
+    try {
+      const res: any = await ratificarCalendarioTurma(token, editandoTurmaId);
+      setMsg({
+        tipo: "ok",
+        texto: `Ciclo regional ratificado para a turma! ${res?.novos_eventos || 0} novos eventos registrados e aulas recalculadas.`
+      });
+      carregarTurmaDetalhes(editandoTurmaId);
+    } catch (e: any) {
+      setMsg({ tipo: "err", texto: e.message || "Erro ao ratificar ciclo da turma." });
+      setCarregando(false);
     }
   };
 
@@ -362,29 +449,17 @@ const handleAprovar = async (id: string) => {
 
   return (
     <>
-      <div className="topbar">
-        <div className="in">
-          <div className="who">
-            <b>Administração EAD</b>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {atribuicoes.includes("avaliacoes.ler") && (
-              <button className="btn ghost small" onClick={() => navegar("/supervisao")}>Ver avaliações dos alunos</button>
-            )}
-            <button className="btn ghost small" onClick={onSair}>Sair</button>
-          </div>
-        </div>
-        <nav className="nav" role="tablist">
-          {canDocentes && <button role="tab" aria-selected={aba === "docentes"} onClick={() => setAba("docentes")}>Docentes</button>}
-          {canConvites && <button role="tab" aria-selected={aba === "convites"} onClick={() => setAba("convites")}>Convites</button>}
-          {canAdmin && <button role="tab" aria-selected={aba === "administradores"} onClick={() => setAba("administradores")}>Administradores</button>}
-          {canAlunos && <button role="tab" aria-selected={aba === "alunos"} onClick={() => setAba("alunos")}>Alunos</button>}
-        
-          {canTurmas && <button role="tab" aria-selected={aba === "turmas"} onClick={() => { setAba("turmas"); setEditandoTurmaId(null); }}>Turmas</button>}
-          {canFrequencia && <button role="tab" aria-selected={aba === "frequencia"} onClick={() => setAba("frequencia")}>Frequência</button>}
-          {canCalendario && <button role="tab" aria-selected={aba === "calendario"} onClick={() => setAba("calendario")}>Calendário da escola</button>}
-        </nav>
-      </div>
+      <MenuEad
+        perfil={perfil}
+        memberships={memberships}
+        papelAtivo="administrador"
+        abaAtiva={aba}
+        onSelecionarAba={(a) => {
+          setAba(a as any);
+          setEditandoTurmaId(null);
+        }}
+        onSair={onSair}
+      />
 
       <main className="page" style={{ padding: 20 }}>
         {msg && (
@@ -558,7 +633,28 @@ const handleAprovar = async (id: string) => {
 
         {!carregando && aba === "calendario" && (
           <div className="box">
-            <h2>Calendário da Escola (Padrão)</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+              <h2>Calendário da Escola (Padrão para Todas as Turmas)</h2>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    const anoStr = window.prompt("Informe o ano para ratificar o ciclo regional (ex.: 2026, 2027):", String(new Date().getFullYear()));
+                    if (anoStr && !isNaN(Number(anoStr))) {
+                      handleRatificarCalPadrao(Number(anoStr));
+                    }
+                  }}
+                >
+                  ✓ Ratificar Ciclo Regional
+                </button>
+              </div>
+            </div>
+
+            <p className="muted" style={{ marginBottom: 20 }}>
+              O ciclo regional aplica o período do 1º ao penúltimo dia útil de cada mês, feriados nacionais e do Rio Grande do Sul (20 de setembro).
+            </p>
+
             <form onSubmit={handleAddCalPadrao} style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "end" }}>
               <div><label>Data Início</label><input type="date" value={novoCalDataInicio} onChange={e=>setNovoCalDataInicio(e.target.value)} required /></div>
               <div><label>Data Fim (opcional)</label><input type="date" value={novoCalDataFim} onChange={e=>setNovoCalDataFim(e.target.value)} /></div>
@@ -566,7 +662,7 @@ const handleAprovar = async (id: string) => {
                 <label>Tipo</label>
                 <select value={novoCalTipo} onChange={e=>setNovoCalTipo(e.target.value as any)}>
                   <option value="feriado">Feriado</option>
-                  <option value="recesso">Recesso</option>
+                  <option value="recesso">Recesso / Não Letivo</option>
                 </select>
               </div>
               <div><label>Descrição</label><input type="text" value={novoCalDescricao} onChange={e=>setNovoCalDescricao(e.target.value)} required /></div>
@@ -588,22 +684,132 @@ const handleAprovar = async (id: string) => {
 
         {!carregando && aba === "turmas" && editandoTurmaId === null && (
           <div className="box">
-            <div style={{display:"flex", justifyContent:"space-between", marginBottom: 20}}>
-              <h2>Turmas</h2>
-              <button className="btn" onClick={() => { setNovaTurma({nome: "", campo_estagio: "", inicio: "", fim: "", carga_horaria_horas: 0, etapas: 1, minutos_hora_aula: 60, aulas_por_dia: 1, dias_semana: [], horario_inicio: "", situacao: "planejada"}); setEditandoTurmaId("novo"); }}>Nova Turma</button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+              <div>
+                <h2 style={{ margin: 0 }}>Turmas e Campos de Estágio</h2>
+                <p className="muted" style={{ margin: "4px 0 0", fontSize: "0.9em" }}>
+                  Defina turmas, campos de estágio (capacidade padrão: 6) e distribua a escala de alunos.
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={handleDistribuirTodasEscalas}
+                  title="Distribui alunos ativos até a capacidade máxima para todas as turmas pendentes"
+                >
+                  ⚡ Distribuir Todas as Escalas
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    setNovaTurma({
+                      nome: "",
+                      codigo: "",
+                      turno: "Manhã",
+                      campo_estagio: "",
+                      capacidade: 6,
+                      inicio: "",
+                      fim: "",
+                      carga_horaria_horas: 0,
+                      etapas: 1,
+                      minutos_hora_aula: 60,
+                      aulas_por_dia: 1,
+                      dias_semana: [],
+                      horario_inicio: "",
+                      situacao: "planejada"
+                    });
+                    setEditandoTurmaId("novo");
+                  }}
+                >
+                  + Nova Turma
+                </button>
+              </div>
             </div>
             <table className="heat" style={{ width: "100%", textAlign: "left" }}>
-              <thead><tr><th>Nome</th><th>Início - Fim</th><th>Situação</th><th>Ações</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Turma</th>
+                  <th>Código / Turno</th>
+                  <th>Campo de Estágio</th>
+                  <th>Capacidade / Vagas</th>
+                  <th>Escala</th>
+                  <th>Início - Fim</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
               <tbody>
                 {lista.map(t => (
                   <tr key={t.id}>
-                    <td>{t.nome} ({t.campo_estagio})</td>
+                    <td><strong>{t.nome}</strong></td>
+                    <td>
+                      {t.codigo || t.turno ? (
+                        <div style={{ fontSize: "0.85em" }}>
+                          {t.codigo && <span style={{ backgroundColor: "#0f3a5d", color: "#fff", padding: "1px 6px", borderRadius: 3, marginRight: 4, fontWeight: 600 }}>{t.codigo}</span>}
+                          {t.turno && <span className="muted">{t.turno}</span>}
+                        </div>
+                      ) : (
+                        <span className="muted">—</span>
+                      )}
+                    </td>
+                    <td>{t.campo_estagio || <span className="muted">Não definido</span>}</td>
+                    <td>
+                      <span style={{ fontSize: "0.85em", fontWeight: 600 }}>
+                        {t.total_alunos ?? 0} / {t.capacidade ?? 6} alunos
+                      </span>
+                    </td>
+                    <td>
+                      {t.escala_distribuida ? (
+                        <span style={{ fontSize: "0.8em", color: "#166534", backgroundColor: "#dcfce7", padding: "2px 6px", borderRadius: 4, fontWeight: 600 }}>
+                          ✓ Distribuída
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: "0.8em", color: "#854d0e", backgroundColor: "#fef9c3", padding: "2px 6px", borderRadius: 4, fontWeight: 600 }}>
+                          ⏳ Pendente
+                        </span>
+                      )}
+                    </td>
                     <td>{t.inicio} a {t.fim}</td>
                     <td>{t.situacao}</td>
                     <td>
                       <button className="btn small" onClick={() => carregarTurmaDetalhes(t.id)}>Gerenciar</button>
-                      <button className="btn ghost small" style={{marginLeft: 5}} onClick={() => {setNovaTurma(t); setEditandoTurmaId(t.id);}}>Editar</button>
-                      <button className="btn ghost small" style={{marginLeft: 5}} onClick={() => handleExcluirTurma(t.id)}>Excluir</button>
+                      <button
+                        className="btn ghost small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => handleDistribuirEscala(t.id)}
+                        title="Distribuir alunos ativos até a capacidade máxima"
+                      >
+                        Escala
+                      </button>
+                      <button
+                        className="btn ghost small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => {
+                          setNovaTurma({
+                            id: t.id,
+                            nome: t.nome,
+                            codigo: t.codigo || "",
+                            turno: t.turno || "Manhã",
+                            campo_estagio: t.campo_estagio || "",
+                            capacidade: t.capacidade ?? 6,
+                            inicio: t.inicio,
+                            fim: t.fim,
+                            carga_horaria_horas: t.carga_horaria_horas,
+                            etapas: t.etapas,
+                            minutos_hora_aula: t.minutos_hora_aula,
+                            aulas_por_dia: t.aulas_por_dia,
+                            dias_semana: t.dias_semana || [],
+                            horario_inicio: t.horario_inicio || "",
+                            situacao: t.situacao,
+                          });
+                          setEditandoTurmaId(t.id);
+                        }}
+                      >
+                        Editar
+                      </button>
+                      <button className="btn ghost small" style={{ marginLeft: 5 }} onClick={() => handleExcluirTurma(t.id)}>Excluir</button>
                     </td>
                   </tr>
                 ))}
@@ -614,19 +820,77 @@ const handleAprovar = async (id: string) => {
 
         {!carregando && aba === "turmas" && editandoTurmaId !== null && editandoTurmaId !== "novo" && turmaDetalhes && (
           <div>
-            <button className="btn ghost" style={{marginBottom: 20}} onClick={() => { setEditandoTurmaId(null); carregar(); }}>&larr; Voltar para lista</button>
+            <button className="btn ghost" style={{ marginBottom: 20 }} onClick={() => { setEditandoTurmaId(null); carregar(); }}>&larr; Voltar para lista</button>
             
-            <div className="box" style={{marginBottom: 20}}>
-              <div style={{display:"flex", justifyContent:"space-between"}}>
-                <h2>{turmaDetalhes.nome} ({turmaDetalhes.campo_estagio})</h2>
-                <button className="btn" onClick={handleGerarAulas}>Gerar aulas</button>
+            <div className="box" style={{ marginBottom: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <h2 style={{ margin: "0 0 6px" }}>{turmaDetalhes.nome}</h2>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                    {turmaDetalhes.codigo && (
+                      <span style={{ backgroundColor: "#0f3a5d", color: "#fff", padding: "2px 8px", borderRadius: 4, fontSize: "0.8em", fontWeight: 600 }}>
+                        Cód: {turmaDetalhes.codigo}
+                      </span>
+                    )}
+                    {turmaDetalhes.turno && (
+                      <span style={{ backgroundColor: "#e2e8f0", color: "#1e293b", padding: "2px 8px", borderRadius: 4, fontSize: "0.8em", fontWeight: 600 }}>
+                        Turno: {turmaDetalhes.turno}
+                      </span>
+                    )}
+                    <span style={{ fontSize: "0.9em", color: "var(--muted, #64748b)" }}>
+                      Campo de Estágio: <strong>{turmaDetalhes.campo_estagio || "Não definido"}</strong>
+                    </span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => handleDistribuirEscala(turmaDetalhes.id)}
+                    title="Distribui alunos ativos até a capacidade e libera código/turno para visualização dos alunos"
+                  >
+                    ⚡ Distribuir Alunos na Escala
+                  </button>
+                  <button type="button" className="btn ghost" onClick={handleGerarAulas}>
+                    Gerar aulas
+                  </button>
+                </div>
               </div>
-              <p>Ciclo: {turmaDetalhes.inicio} a {turmaDetalhes.fim} | Situação: {turmaDetalhes.situacao}</p>
+
+              <div style={{ display: "flex", gap: 20, marginTop: 15, paddingTop: 12, borderTop: "1px solid var(--bdr, #e2e8f0)", flexWrap: "wrap", fontSize: "0.9em" }}>
+                <div>Ciclo: <strong>{turmaDetalhes.inicio} a {turmaDetalhes.fim}</strong></div>
+                <div>Capacidade: <strong>{turmaDetalhes.capacidade ?? 6} vagas</strong></div>
+                <div>
+                  Ocupação: <strong>{((turmaDetalhes.membros || []).filter((m: any) => m.papel === 'aluno').length)} / {turmaDetalhes.capacidade ?? 6}</strong>
+                  {" "}({Math.max(0, (turmaDetalhes.capacidade ?? 6) - (turmaDetalhes.membros || []).filter((m: any) => m.papel === 'aluno').length)} vagas livres)
+                </div>
+                <div>
+                  Escala:{" "}
+                  {turmaDetalhes.escala_distribuida ? (
+                    <span style={{ color: "#166534", fontWeight: 600 }}>✓ Distribuída (Código e Turno visíveis aos alunos)</span>
+                  ) : (
+                    <span style={{ color: "#b45309", fontWeight: 600 }}>⏳ Pendente (Código e Turno ocultos para os alunos)</span>
+                  )}
+                </div>
+                <div>Situação: <strong>{turmaDetalhes.situacao}</strong></div>
+              </div>
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
               <div className="box">
-                <h3>Membros</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <h3 style={{ margin: 0 }}>Membros da Turma</h3>
+                  <span style={{ fontSize: "0.85em", color: "var(--muted, #64748b)" }}>
+                    Alunos: {(turmaDetalhes.membros || []).filter((m: any) => m.papel === "aluno").length} / {turmaDetalhes.capacidade ?? 6}
+                  </span>
+                </div>
+                
+                {addMembroPapel === "aluno" && (turmaDetalhes.membros || []).filter((m: any) => m.papel === "aluno").length >= (turmaDetalhes.capacidade ?? 6) && (
+                  <div style={{ color: "#b45309", fontSize: "0.85em", marginBottom: 10, padding: 8, backgroundColor: "#fef9c3", borderRadius: 4 }}>
+                    ⚠️ Capacidade máxima da turma atingida ({turmaDetalhes.capacidade ?? 6} alunos). Aumente a capacidade na edição da turma para adicionar mais alunos.
+                  </div>
+                )}
+
                 <form onSubmit={handleAddMembroTurma} style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "end" }}>
                   <div>
                     <label>Papel</label>
@@ -659,7 +923,12 @@ const handleAprovar = async (id: string) => {
                 </table>
               </div>
               <div className="box">
-                <h3>Calendário da Turma</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <h3 style={{ margin: 0 }}>Calendário da Turma</h3>
+                  <button type="button" className="btn small" onClick={handleRatificarTurmaCal}>
+                    ✓ Ratificar Ciclo
+                  </button>
+                </div>
                 <form onSubmit={handleAddTurmaCal} style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "end" }}>
                   <div><label>Data Início</label><input type="date" value={novoTurmaCalDataInicio} onChange={e=>setNovoTurmaCalDataInicio(e.target.value)} required style={{width: 130}} /></div>
                   <div><label>Fim (opcional)</label><input type="date" value={novoTurmaCalDataFim} onChange={e=>setNovoTurmaCalDataFim(e.target.value)} style={{width: 130}} /></div>
@@ -667,7 +936,7 @@ const handleAprovar = async (id: string) => {
                     <label>Tipo</label>
                     <select value={novoTurmaCalTipo} onChange={e=>setNovoTurmaCalTipo(e.target.value as any)}>
                       <option value="feriado">Feriado</option>
-                      <option value="recesso">Recesso</option>
+                      <option value="recesso">Recesso / Não Letivo</option>
                       <option value="avaliacao">Avaliação</option>
                       <option value="letivo_extra">Letivo Extra</option>
                     </select>
@@ -692,46 +961,143 @@ const handleAprovar = async (id: string) => {
         )}
 
         {aba === "turmas" && (editandoTurmaId === "novo" || (editandoTurmaId && editandoTurmaId !== "novo" && !turmaDetalhes)) && (
-          <div className="box" style={{maxWidth: 600}}>
-            <div style={{display:"flex", justifyContent:"space-between", marginBottom: 20}}>
+          <div className="box" style={{ maxWidth: 640 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
               <h2>{editandoTurmaId === "novo" ? "Nova Turma" : "Editar Turma"}</h2>
               <button className="btn ghost small" onClick={() => { setEditandoTurmaId(null); carregar(); }}>Cancelar</button>
             </div>
-            <form onSubmit={handleSalvarTurma} style={{display:"flex", flexDirection:"column", gap:15}}>
-              <div><label>Nome</label><input type="text" value={novaTurma.nome} onChange={e=>setNovaTurma({...novaTurma, nome: e.target.value})} required style={{width:"100%"}} /></div>
-              <div><label>Campo Estágio</label><input type="text" value={novaTurma.campo_estagio} onChange={e=>setNovaTurma({...novaTurma, campo_estagio: e.target.value})} required style={{width:"100%"}} /></div>
-              <div style={{display:"flex", gap:10}}>
-                <div style={{flex:1}}><label>Início</label><input type="date" value={novaTurma.inicio} onChange={e=>setNovaTurma({...novaTurma, inicio: e.target.value})} required style={{width:"100%"}} /></div>
-                <div style={{flex:1}}><label>Fim</label><input type="date" value={novaTurma.fim} onChange={e=>setNovaTurma({...novaTurma, fim: e.target.value})} required style={{width:"100%"}} /></div>
+            <form onSubmit={handleSalvarTurma} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+              <div>
+                <label>Nome da Turma</label>
+                <input
+                  type="text"
+                  placeholder="ex.: Turma 2026/1 - Bloco Cirúrgico"
+                  value={novaTurma.nome}
+                  onChange={e => setNovaTurma({ ...novaTurma, nome: e.target.value })}
+                  required
+                  style={{ width: "100%" }}
+                />
               </div>
-              <div style={{display:"flex", gap:10}}>
-                <div style={{flex:1}}><label>Carga Horária (h)</label><input type="number" value={novaTurma.carga_horaria_horas} onChange={e=>setNovaTurma({...novaTurma, carga_horaria_horas: Number(e.target.value)})} required style={{width:"100%"}} /></div>
-                <div style={{flex:1}}><label>Etapas</label><input type="number" value={novaTurma.etapas} onChange={e=>setNovaTurma({...novaTurma, etapas: Number(e.target.value)})} required style={{width:"100%"}} /></div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Código da Turma</label>
+                  <input
+                    type="text"
+                    placeholder="ex.: ENF-2026-1"
+                    value={novaTurma.codigo || ""}
+                    onChange={e => setNovaTurma({ ...novaTurma, codigo: e.target.value })}
+                    style={{ width: "100%" }}
+                  />
+                  <span className="muted" style={{ fontSize: "0.75em", display: "block", marginTop: 2 }}>
+                    O código só aparece para o aluno após a escala ser distribuída.
+                  </span>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Turno</label>
+                  <select
+                    value={novaTurma.turno || "Manhã"}
+                    onChange={e => setNovaTurma({ ...novaTurma, turno: e.target.value })}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                    <option value="Integral">Integral</option>
+                  </select>
+                  <span className="muted" style={{ fontSize: "0.75em", display: "block", marginTop: 2 }}>
+                    O turno só aparece para o aluno após a escala ser distribuída.
+                  </span>
+                </div>
               </div>
-              <div style={{display:"flex", gap:10}}>
-                <div style={{flex:1}}><label>Minutos por Aula</label><input type="number" value={novaTurma.minutos_hora_aula} onChange={e=>setNovaTurma({...novaTurma, minutos_hora_aula: Number(e.target.value)})} required style={{width:"100%"}} /></div>
-                <div style={{flex:1}}><label>Aulas por Dia</label><input type="number" value={novaTurma.aulas_por_dia} onChange={e=>setNovaTurma({...novaTurma, aulas_por_dia: Number(e.target.value)})} required style={{width:"100%"}} /></div>
-                <div style={{flex:1}}><label>Horário Início</label><input type="time" value={novaTurma.horario_inicio} onChange={e=>setNovaTurma({...novaTurma, horario_inicio: e.target.value})} required style={{width:"100%"}} /></div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 2 }}>
+                  <label>Campo de Estágio</label>
+                  <input
+                    type="text"
+                    placeholder="ex.: Hospital Geral - Posto de Enfermagem 2"
+                    value={novaTurma.campo_estagio || ""}
+                    onChange={e => setNovaTurma({ ...novaTurma, campo_estagio: e.target.value })}
+                    required
+                    style={{ width: "100%" }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Capacidade (vagas)</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={1000}
+                    value={novaTurma.capacidade ?? 6}
+                    onChange={e => setNovaTurma({ ...novaTurma, capacidade: Number(e.target.value) })}
+                    required
+                    style={{ width: "100%" }}
+                  />
+                  <span className="muted" style={{ fontSize: "0.75em", display: "block", marginTop: 2 }}>
+                    Padrão no campo: 6 alunos
+                  </span>
+                </div>
               </div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Início</label>
+                  <input type="date" value={novaTurma.inicio} onChange={e => setNovaTurma({ ...novaTurma, inicio: e.target.value })} required style={{ width: "100%" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Fim</label>
+                  <input type="date" value={novaTurma.fim} onChange={e => setNovaTurma({ ...novaTurma, fim: e.target.value })} required style={{ width: "100%" }} />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Carga Horária (h)</label>
+                  <input type="number" value={novaTurma.carga_horaria_horas} onChange={e => setNovaTurma({ ...novaTurma, carga_horaria_horas: Number(e.target.value) })} required style={{ width: "100%" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Etapas</label>
+                  <input type="number" value={novaTurma.etapas} onChange={e => setNovaTurma({ ...novaTurma, etapas: Number(e.target.value) })} required style={{ width: "100%" }} />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Minutos por Aula</label>
+                  <input type="number" value={novaTurma.minutos_hora_aula} onChange={e => setNovaTurma({ ...novaTurma, minutos_hora_aula: Number(e.target.value) })} required style={{ width: "100%" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Aulas por Dia</label>
+                  <input type="number" value={novaTurma.aulas_por_dia} onChange={e => setNovaTurma({ ...novaTurma, aulas_por_dia: Number(e.target.value) })} required style={{ width: "100%" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Horário Início</label>
+                  <input type="time" value={novaTurma.horario_inicio || ""} onChange={e => setNovaTurma({ ...novaTurma, horario_inicio: e.target.value })} required style={{ width: "100%" }} />
+                </div>
+              </div>
+
               <div>
                 <label>Dias da Semana (1=Segunda, 7=Domingo)</label>
-                <div style={{display:"flex", gap:10, marginTop: 5}}>
-                  {[1,2,3,4,5,6,7].map(d => (
-                    <label key={d} style={{display:"flex", alignItems:"center", gap: 5}}>
-                      <input type="checkbox" checked={(novaTurma.dias_semana || []).includes(d)} onChange={() => toggleDiaSemana(d)} /> {["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"][d-1]}
+                <div style={{ display: "flex", gap: 10, marginTop: 5 }}>
+                  {[1, 2, 3, 4, 5, 6, 7].map(d => (
+                    <label key={d} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <input type="checkbox" checked={(novaTurma.dias_semana || []).includes(d)} onChange={() => toggleDiaSemana(d)} /> {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"][d - 1]}
                     </label>
                   ))}
                 </div>
               </div>
+
               <div>
                 <label>Situação</label>
-                <select value={novaTurma.situacao} onChange={e=>setNovaTurma({...novaTurma, situacao: e.target.value})} style={{width:"100%"}}>
+                <select value={novaTurma.situacao} onChange={e => setNovaTurma({ ...novaTurma, situacao: e.target.value })} style={{ width: "100%" }}>
                   <option value="planejada">Planejada</option>
                   <option value="em_andamento">Em Andamento</option>
                   <option value="encerrada">Encerrada</option>
                 </select>
               </div>
-              <button className="btn" type="submit">Salvar</button>
+
+              <button className="btn" type="submit">Salvar Turma</button>
             </form>
           </div>
         )}

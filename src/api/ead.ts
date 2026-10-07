@@ -1,4 +1,4 @@
-import { request, getUserToken } from "./client";
+import { request, getUserToken, obj } from "./client";
 
 export interface AvaliacaoPayload {
   item_chave: string;
@@ -43,8 +43,6 @@ export async function getAlunos(turma_id?: string, token?: string | null) {
   });
 }
 
-import { obj } from "./client";
-
 // Turmas (Admin)
 export async function adminGetTurmas(bearer: string) {
   return request("GET", "/ead/turmas", { bearer }) as Promise<any[]>;
@@ -67,6 +65,12 @@ export async function adminAddMembroTurma(bearer: string, turmaId: string, paylo
 export async function adminRemoveMembroTurma(bearer: string, turmaId: string, membroId: string) {
   return request("DELETE", `/ead/turmas/${turmaId}/membros/${membroId}`, { bearer });
 }
+export async function adminDistribuirEscala(bearer: string, turmaId: string) {
+  return obj(await request("POST", `/ead/turmas/${turmaId}/distribuir-escala`, { bearer }));
+}
+export async function adminDistribuirTodasEscalas(bearer: string) {
+  return obj(await request("POST", "/ead/turmas/distribuir-todas-escalas", { bearer }));
+}
 
 // Calendário Padrão (Admin)
 export async function adminGetCalendarioPadrao(bearer: string) {
@@ -78,6 +82,9 @@ export async function adminAddCalendarioPadrao(bearer: string, payload: any) {
 export async function adminDeleteCalendarioPadrao(bearer: string, id: string) {
   return request("DELETE", `/ead/calendario-padrao/${id}`, { bearer });
 }
+export async function adminRatificarCalendarioPadrao(bearer: string, ano: number) {
+  return obj(await request("POST", "/ead/calendario-padrao/ratificar", { bearer, body: { ano } }));
+}
 
 // Calendário Turma (Admin & Geral)
 export async function getCalendarioTurma(bearer: string, turmaId: string) {
@@ -88,6 +95,9 @@ export async function addCalendarioTurma(bearer: string, turmaId: string, payloa
 }
 export async function deleteCalendarioTurma(bearer: string, turmaId: string, eventoId: string) {
   return request("DELETE", `/ead/turmas/${turmaId}/calendario/${eventoId}`, { bearer });
+}
+export async function ratificarCalendarioTurma(bearer: string, turmaId: string) {
+  return obj(await request("POST", `/ead/turmas/${turmaId}/calendario/ratificar`, { bearer }));
 }
 export async function gerarAulasTurma(bearer: string, turmaId: string) {
   return obj(await request("POST", `/ead/turmas/${turmaId}/gerar-aulas`, { bearer }));
@@ -101,7 +111,7 @@ export async function getAulasTurma(bearer: string, turmaId: string, de: string,
   return request("GET", `/ead/turmas/${turmaId}/aulas?de=${de}&ate=${ate}`, { bearer }) as Promise<any[]>;
 }
 
-// Sprint 9: Plano de Aulas e Chamada
+// Plano de Aulas e Chamada
 export async function getAula(bearer: string, aula_id: string) {
   return obj(await request("GET", `/ead/aulas/${aula_id}`, { bearer }));
 }
@@ -117,6 +127,15 @@ export async function updateChamada(bearer: string, aula_id: string, payload: an
 export async function getChamadaHistorico(bearer: string, aula_id: string) {
   return request("GET", `/ead/aulas/${aula_id}/chamada/historico`, { bearer }) as Promise<any[]>;
 }
+export async function declararPresenca(bearer: string, aula_id: string) {
+  return obj(await request("POST", `/ead/aulas/${aula_id}/declarar-presenca`, { bearer }));
+}
+export async function enviarJustificativa(bearer: string, aula_id: string, payload: { justificativa: string; arquivo?: string }) {
+  return obj(await request("POST", `/ead/aulas/${aula_id}/justificar`, { bearer, body: payload }));
+}
+export async function avaliarJustificativa(bearer: string, aula_id: string, aluno_id: string, payload: { decisao: 'aceitar' | 'recusar'; motivo_recusa?: string }) {
+  return obj(await request("POST", `/ead/aulas/${aula_id}/chamada/${aluno_id}/avaliar-justificativa`, { bearer, body: payload }));
+}
 export async function getMinhaFrequencia(bearer: string, turma_id?: string) {
   const q = turma_id ? `?turma_id=${turma_id}` : "";
   return obj(await request("GET", `/ead/minha-frequencia${q}`, { bearer }));
@@ -124,3 +143,42 @@ export async function getMinhaFrequencia(bearer: string, turma_id?: string) {
 export async function getFrequenciaTurma(bearer: string, turma_id: string) {
   return request("GET", `/ead/turmas/${turma_id}/frequencia`, { bearer }) as Promise<any[]>;
 }
+
+// Sprint 4: Anotações de Campo
+export interface AnotacaoCampoItem {
+  item_chave: string;
+  item_texto: string;
+  o_que_fez?: string | null;
+  dificuldade?: string | null;
+  expectativa?: string | null;
+  descricao_do_feito?: string | null;
+}
+
+export async function getAnotacoesCampo(aluno_user_id: string, data?: string, token?: string | null) {
+  const t = token || getUserToken();
+  const qData = data ? `&data=${data}` : "";
+  return request("GET", `/ead/anotacoes-campo?aluno_user_id=${aluno_user_id}${qData}`, {
+    bearer: t,
+  }) as Promise<any[]>;
+}
+
+export async function getDiasAnotacoesCampo(aluno_user_id: string, token?: string | null) {
+  const t = token || getUserToken();
+  return request("GET", `/ead/anotacoes-campo/dias?aluno_user_id=${aluno_user_id}`, {
+    bearer: t,
+  }) as Promise<{ data: string; total_procedimentos: number }[]>;
+}
+
+export async function salvarAnotacoesCampo(
+  payload: { aluno_user_id: string; data: string; itens: AnotacaoCampoItem[] },
+  token?: string | null
+) {
+  const t = token || getUserToken();
+  return obj(
+    await request("POST", "/ead/anotacoes-campo", {
+      bearer: t,
+      body: payload,
+    })
+  );
+}
+

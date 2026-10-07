@@ -5,12 +5,29 @@ import Evolucao from "../components/Evolucao";
 import Guia from "../components/Guia";
 import Paralelo from "../components/Paralelo";
 import GraficoEvolucao from "../components/GraficoEvolucao";
+import MinhaFrequencia from "../components/MinhaFrequencia";
+import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
+import PlanejamentoAluno from "../components/PlanejamentoAluno";
+import AnotacoesCampoAluno from "../components/AnotacoesCampoAluno";
+import MenuEad from "../components/MenuEad";
 import type { Avaliacao } from "../lib/historico";
 import guiaHtml from "../content/guia.html?raw";
+import { getMinhasTurmas } from "../api/ead";
+import { getUserToken } from "../api/client";
 
-type Aba = "dashboard" | "guia" | "autoavaliacao" | "evolucao" | "grafico" | "avaliacoes_recebidas";
+type Aba =
+  | "dashboard"
+  | "inicio"
+  | "autoavaliacao"
+  | "evolucao"
+  | "grafico"
+  | "avaliacoes_recebidas"
+  | "calendario"
+  | "planejamento"
+  | "presenca"
+  | "guia"
+  | "anotacoes_campo";
 
-const LOGO_ETCR = "https://etcr.com.br/site/wp-content/uploads/2025/09/LogoAtualizado.svg";
 const FOTO_ESTRUTURA = "https://etcr.com.br/site/wp-content/uploads/2020/01/blog-banner.jpg";
 
 function texto(p: Profile, k: string): string {
@@ -29,6 +46,7 @@ function primeiroNome(nomeCompleto: string): string {
 
 export default function SalaPage({
   perfil,
+  memberships = [],
   onSair,
 }: {
   perfil: Profile;
@@ -52,19 +70,34 @@ export default function SalaPage({
   const userKey = useMemo(() => chaveDoAluno(perfil), [perfil]);
   const nome = texto(perfil, "name") || "Aluno";
   const primeiro = primeiroNome(nome);
-  const emailVerificado = !!perfil.email_verified_at;
 
   const [lista, setLista] = useState<Avaliacao[]>([]);
   const [carregandoLista, setCarregandoLista] = useState(true);
+  const [turma, setTurma] = useState<any>(null);
+
+  useEffect(() => {
+    const token = getUserToken();
+    if (token) {
+      getMinhasTurmas(token)
+        .then((res) => {
+          if (Array.isArray(res) && res.length > 0) {
+            setTurma(res[0]);
+          }
+        })
+        .catch((err) => {
+          console.error("Erro ao carregar turma do aluno", err);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     const runMigrationAndLoad = async () => {
       try {
         const { carregarLocal, carregarDaAPI } = await import("../lib/historico");
         const { saveAvaliacao } = await import("../api/ead");
-        const { getUserToken } = await import("../api/client");
+        const { getUserToken: getToken } = await import("../api/client");
         const localList = carregarLocal(userKey);
-        const token = getUserToken();
+        const token = getToken();
 
         if (localList.length > 0 && token) {
           const apiList = await carregarDaAPI(userKey, "auto");
@@ -137,90 +170,30 @@ export default function SalaPage({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const turmaInfo = turma
+    ? {
+        nome: turma.nome,
+        codigo: turma.codigo || undefined,
+        turno: turma.turno || undefined,
+      }
+    : undefined;
+
   return (
     <div className="sala-etcr-root">
-      {/* Topo com Logo Oficial e Nome da Escola */}
-      <header className="topbar-etcr">
-        <div className="topbar-etcr-in">
-          <div className="topbar-etcr-marca" onClick={() => ir("dashboard")} style={{ cursor: "pointer" }}>
-            <img src={LOGO_ETCR} alt="ETCR Escola Técnica" className="topbar-etcr-logo" />
-            <div className="topbar-etcr-titulos">
-              <span className="topbar-etcr-escola">Escola Técnica Cristo Redentor</span>
-              <span className="topbar-etcr-sub">Sala do Aluno · EAD</span>
-            </div>
-          </div>
-
-          <div className="topbar-etcr-usuario">
-            <div className="topbar-etcr-perfil">
-              <span className="topbar-etcr-aluno">{nome}</span>
-              {!emailVerificado && (
-                <span className="badge-pendencia" title="E-mail não confirmado na conta">
-                  E-mail pendente
-                </span>
-              )}
-            </div>
-            <button className="btn-etcr-ghost small" onClick={onSair}>
-              Sair
-            </button>
-          </div>
-        </div>
-
-        {/* Navegação por Abas */}
-        <nav className="nav-etcr" role="tablist" aria-label="Seções da sala">
-          <button
-            role="tab"
-            aria-selected={aba === "dashboard"}
-            className={aba === "dashboard" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("dashboard")}
-          >
-            Início
-          </button>
-          <button
-            role="tab"
-            aria-selected={aba === "autoavaliacao"}
-            className={aba === "autoavaliacao" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("autoavaliacao")}
-          >
-            Autoavaliação
-          </button>
-          <button
-            role="tab"
-            aria-selected={aba === "evolucao"}
-            className={aba === "evolucao" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("evolucao")}
-          >
-            Minha evolução{lista.length ? ` (${lista.length})` : ""}
-          </button>
-          <button
-            role="tab"
-            aria-selected={aba === "grafico"}
-            className={aba === "grafico" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("grafico")}
-          >
-            Gráfico de evolução
-          </button>
-          <button
-            role="tab"
-            aria-selected={aba === "guia"}
-            className={aba === "guia" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("guia")}
-          >
-            Guia do estágio
-          </button>
-          <button
-            role="tab"
-            aria-selected={aba === "avaliacoes_recebidas"}
-            className={aba === "avaliacoes_recebidas" ? "nav-etcr-item ativo" : "nav-etcr-item"}
-            onClick={() => ir("avaliacoes_recebidas")}
-          >
-            Avaliações recebidas
-          </button>
-        </nav>
-      </header>
+      {/* Menu EAD compartilhado com padrão Enfaci */}
+      <MenuEad
+        perfil={perfil}
+        memberships={memberships}
+        papelAtivo="aluno"
+        abaAtiva={aba}
+        onSelecionarAba={(a) => ir(a as Aba)}
+        onSair={onSair}
+        turmaInfo={turmaInfo}
+      />
 
       {/* Conteúdo Principal */}
       <main className="page sala-etcr-page">
-        {aba === "dashboard" && (
+        {(aba === "dashboard" || aba === "inicio") && (
           <div className="wrap sala-dashboard">
             {/* Saudação com o nome do aluno */}
             <section className="sala-hero">
@@ -356,6 +329,48 @@ export default function SalaPage({
             <Paralelo alunoId={userKey} />
             <GraficoEvolucao alunoId={userKey} />
           </>
+        )}
+
+        {aba === "calendario" && (
+          <div className="wrap sec">
+            <div className="box" style={{ padding: "30px 20px" }}>
+              <h2>Calendário da Turma</h2>
+              {turma ? (
+                <TurmaCalendarioWrapper
+                  turmaId={turma.id}
+                  inicioTurma={turma.inicio || "2000-01-01"}
+                  fimTurma={turma.fim || "2099-12-31"}
+                />
+              ) : (
+                <p className="muted" style={{ marginTop: 12 }}>Nenhum calendário de turma ativo no momento.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {aba === "planejamento" && (
+          <div className="wrap sec">
+            <div className="box" style={{ padding: "30px 20px" }}>
+              <h2>Planejamento da Turma</h2>
+              {turma ? (
+                <PlanejamentoAluno turmaId={turma.id} />
+              ) : (
+                <p className="muted" style={{ marginTop: 12 }}>Nenhum planejamento de turma disponível no momento.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {aba === "presenca" && (
+          <div className="wrap sec">
+            <MinhaFrequencia turmaId={turma?.id || ""} />
+          </div>
+        )}
+
+        {aba === "anotacoes_campo" && (
+          <div className="wrap sec">
+            <AnotacoesCampoAluno userKey={userKey} />
+          </div>
         )}
       </main>
     </div>
