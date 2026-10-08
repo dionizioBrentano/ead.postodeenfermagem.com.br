@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Profile, Membership } from "../api/client";
 import {
   getUserToken,
@@ -230,11 +230,15 @@ export default function MenuEad({
   onSair,
   turmaInfo,
 }: MenuEadProps) {
+  const [menuAberto, setMenuAberto] = useState<string | null>(null);
+  const [drawerAberto, setDrawerAberto] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [modalRegistroOpen, setModalRegistroOpen] = useState(false);
   const [meusRegistros, setMeusRegistros] = useState<RegistroProfissional[]>([]);
   const [carregandoRegistros, setCarregandoRegistros] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
 
   const nome = texto(perfil, "name") || texto(perfil, "email") || "Usuário";
   const primeiro = primeiroNome(nome);
@@ -247,15 +251,20 @@ export default function MenuEad({
   const temDocente = activeMemberships.some((m) => m.papel === "docente");
   const temAdmin = activeMemberships.some((m) => m.papel === "administrador");
 
-  // Fechar dropdown com clique fora ou Escape
+  // Fechar dropdowns com clique fora ou Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setUserDropdownOpen(false);
       }
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setMenuAberto(null);
+      }
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        setMenuAberto(null);
+        setDrawerAberto(false);
         setUserDropdownOpen(false);
         setModalRegistroOpen(false);
       }
@@ -265,6 +274,9 @@ export default function MenuEad({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+      }
     };
   }, []);
 
@@ -325,6 +337,8 @@ export default function MenuEad({
   };
 
   const handleItemClick = (chaveAba: string, destinoRota?: string) => {
+    setMenuAberto(null);
+    setDrawerAberto(false);
     if (destinoRota) {
       navegar(destinoRota);
     } else {
@@ -332,37 +346,267 @@ export default function MenuEad({
     }
   };
 
-  // Definição das colunas por papel
-  // Aluno: 3 colunas (Sala, Turma, Diário)
-  // Supervisor: 2 colunas (Alunos, Turmas)
-  // Administrador: 4 colunas (Alunos, Turmas, Organização, Administração)
+  const handleMouseEnterGroup = (groupId: string) => {
+    if (window.innerWidth < 992) return;
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setMenuAberto(groupId);
+  };
+
+  const handleMouseLeaveGroup = () => {
+    if (window.innerWidth < 992) return;
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+    }
+    closeTimerRef.current = window.setTimeout(() => {
+      setMenuAberto(null);
+    }, 150);
+  };
+
+  const handleGroupButtonClick = (groupId: string) => {
+    if (window.innerWidth < 992) return;
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setMenuAberto((prev) => (prev === groupId ? null : groupId));
+  };
+
   const isAluno = papelAtivo === "aluno";
   const isDocente = papelAtivo === "docente";
   const isAdmin = papelAtivo === "administrador";
+
+  // Grupos por papel
+  // Aluno: 3 botões (Sala, Turma, Diário)
+  // Docente: 2 botões (Alunos, Turmas)
+  // Administrador: 4 botões (Alunos, Turmas, Organização, Administração)
+  const grupos: {
+    id: string;
+    rotulo: string;
+    badge?: string;
+    itens: { chave: string; rotulo: string; rota?: string; icone: string }[];
+  }[] = isAluno
+    ? [
+        {
+          id: "sala",
+          rotulo: "Sala",
+          itens: [
+            { chave: "dashboard", rotulo: "Início", icone: "dashboard" },
+            { chave: "autoavaliacao", rotulo: "Autoavaliação", icone: "autoavaliacao" },
+            { chave: "evolucao", rotulo: "Minha evolução", icone: "evolucao" },
+            { chave: "avaliacoes_recebidas", rotulo: "Avaliações recebidas", icone: "avaliacoes_recebidas" },
+            { chave: "grafico", rotulo: "Gráfico", icone: "grafico" },
+          ],
+        },
+        {
+          id: "turma",
+          rotulo: "Turma",
+          badge: turmaInfo?.nome
+            ? `${turmaInfo.nome}${turmaInfo.codigo || turmaInfo.turno ? ` · ${[turmaInfo.codigo, turmaInfo.turno].filter(Boolean).join(" ")}` : ""}`
+            : undefined,
+          itens: [
+            { chave: "calendario", rotulo: "Calendário", icone: "calendario" },
+            { chave: "planejamento", rotulo: "Planejamento", icone: "planejamento" },
+            { chave: "presenca", rotulo: "Presença", icone: "presenca" },
+          ],
+        },
+        {
+          id: "diario",
+          rotulo: "Diário",
+          itens: [
+            { chave: "guia", rotulo: "Guia", icone: "guia" },
+            { chave: "anotacoes_campo", rotulo: "Anotações de campo", icone: "anotacoes_campo" },
+          ],
+        },
+      ]
+    : isDocente
+    ? [
+        {
+          id: "alunos",
+          rotulo: "Alunos",
+          itens: [
+            { chave: "avaliacao_sup", rotulo: "Avaliação", icone: "avaliacao_sup" },
+            { chave: "autoavaliacoes_aluno", rotulo: "Autoavaliações", icone: "autoavaliacoes_aluno" },
+            { chave: "paralelo", rotulo: "Paralelo", icone: "paralelo" },
+            { chave: "grafico", rotulo: "Gráfico", icone: "grafico" },
+            { chave: "anotacoes_campo", rotulo: "Anotações de campo", icone: "anotacoes_campo" },
+          ],
+        },
+        {
+          id: "turmas",
+          rotulo: "Turmas",
+          itens: [
+            { chave: "selecionar_alunos", rotulo: "Selecionar alunos", icone: "selecionar_alunos" },
+            { chave: "calendario", rotulo: "Calendário", icone: "calendario" },
+            { chave: "aulas", rotulo: "Aulas", icone: "aulas" },
+            { chave: "chamada", rotulo: "Chamada", icone: "chamada" },
+          ],
+        },
+      ]
+    : [
+        {
+          id: "alunos",
+          rotulo: "Alunos",
+          itens: [
+            { chave: "avaliacao_sup", rotulo: "Avaliação", rota: "/supervisao", icone: "avaliacao_sup" },
+            { chave: "autoavaliacoes_aluno", rotulo: "Autoavaliações", rota: "/supervisao", icone: "autoavaliacoes_aluno" },
+            { chave: "paralelo", rotulo: "Paralelo", rota: "/supervisao", icone: "paralelo" },
+            { chave: "grafico", rotulo: "Gráfico", rota: "/supervisao", icone: "grafico" },
+            { chave: "anotacoes_campo", rotulo: "Anotações de campo", rota: "/supervisao", icone: "anotacoes_campo" },
+          ],
+        },
+        {
+          id: "turmas",
+          rotulo: "Turmas",
+          itens: [
+            { chave: "selecionar_alunos", rotulo: "Selecionar alunos", rota: "/supervisao", icone: "selecionar_alunos" },
+            { chave: "calendario", rotulo: "Calendário", rota: "/supervisao", icone: "calendario" },
+            { chave: "aulas", rotulo: "Aulas", rota: "/supervisao", icone: "aulas" },
+            { chave: "chamada", rotulo: "Chamada", rota: "/supervisao", icone: "chamada" },
+          ],
+        },
+        {
+          id: "organizacao",
+          rotulo: "Organização",
+          itens: [
+            { chave: "docentes", rotulo: "Docentes", rota: "/administracao", icone: "docentes" },
+            { chave: "convites", rotulo: "Convites", rota: "/administracao", icone: "convites" },
+            { chave: "administradores", rotulo: "Administradores", rota: "/administracao", icone: "administradores" },
+            { chave: "alunos", rotulo: "Alunos", rota: "/administracao", icone: "alunos" },
+          ],
+        },
+        {
+          id: "administracao",
+          rotulo: "Administração",
+          itens: [
+            { chave: "turmas", rotulo: "Turmas", rota: "/administracao", icone: "turmas" },
+            { chave: "frequencia", rotulo: "Frequência", rota: "/administracao", icone: "frequencia" },
+            { chave: "calendario", rotulo: "Calendário da escola", rota: "/administracao", icone: "calendario_escola" },
+          ],
+        },
+      ];
+
+  const isItemAtivo = (itemChave: string) => {
+    if (itemChave === "dashboard" || itemChave === "inicio") {
+      return abaAtiva === "dashboard" || abaAtiva === "inicio";
+    }
+    return itemChave === abaAtiva;
+  };
 
   return (
     <>
       <header className="topbar-ead">
         <div className="topbar-ead-in">
-          {/* Marca à esquerda */}
-          <div
-            className="topbar-ead-brand"
-            onClick={() => {
-              if (isAluno) onSelecionarAba("dashboard");
-              else if (isDocente) onSelecionarAba("avaliacao_sup");
-              else if (isAdmin) onSelecionarAba("docentes");
-            }}
-          >
-            <img src={LOGO_ETCR} alt="ETCR Escola Técnica" className="topbar-ead-logo" />
-            <div className="topbar-ead-titles">
-              <span className="topbar-ead-school">Escola Técnica Cristo Redentor</span>
-              <span className="topbar-ead-sub">
-                {isAluno ? "Sala do Aluno · EAD" : isDocente ? "Supervisão de Estágio · EAD" : "Administração · EAD"}
-              </span>
+          {/* Lado esquerdo: Hamburger (mobile < 992px) + Marca ETCR */}
+          <div className="topbar-ead-brand-wrap">
+            <button
+              type="button"
+              className="topbar-hamburger-btn"
+              onClick={() => setDrawerAberto(true)}
+              aria-label="Abrir menu"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="20" y2="18" />
+              </svg>
+            </button>
+
+            <div
+              className="topbar-ead-brand"
+              onClick={() => {
+                if (isAluno) onSelecionarAba("dashboard");
+                else if (isDocente) onSelecionarAba("avaliacao_sup");
+                else if (isAdmin) onSelecionarAba("docentes");
+              }}
+            >
+              <img src={LOGO_ETCR} alt="ETCR Escola Técnica" className="topbar-ead-logo" />
+              <div className="topbar-ead-titles">
+                <span className="topbar-ead-school">Escola Técnica Cristo Redentor</span>
+                <span className="topbar-ead-sub">
+                  {isAluno ? "Sala do Aluno · EAD" : isDocente ? "Supervisão de Estágio · EAD" : "Administração · EAD"}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Foto/Avatar + Nome à direita com dropdown */}
+          {/* Centro: Menu Desktop (>= 992px) fechado por padrão; abre no hover ou clique */}
+          <nav className="topbar-ead-nav" ref={navRef} aria-label="Navegação principal">
+            {grupos.map((grupo) => (
+              <div
+                key={grupo.id}
+                className="topbar-menu-group"
+                onMouseEnter={() => handleMouseEnterGroup(grupo.id)}
+                onMouseLeave={handleMouseLeaveGroup}
+              >
+                <button
+                  type="button"
+                  className={`topbar-menu-btn ${menuAberto === grupo.id ? "aberto" : ""}`}
+                  onClick={() => handleGroupButtonClick(grupo.id)}
+                  aria-expanded={menuAberto === grupo.id}
+                  aria-haspopup="true"
+                >
+                  <span>{grupo.rotulo}</span>
+                  <svg
+                    className="topbar-menu-chevron"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+
+                {menuAberto === grupo.id && (
+                  <div
+                    className="topbar-submenu"
+                    role="menu"
+                    onMouseEnter={() => {
+                      if (closeTimerRef.current) {
+                        window.clearTimeout(closeTimerRef.current);
+                        closeTimerRef.current = null;
+                      }
+                    }}
+                    onMouseLeave={handleMouseLeaveGroup}
+                  >
+                    {grupo.itens.map((item) => {
+                      const ativo = isItemAtivo(item.chave);
+                      return (
+                        <button
+                          key={item.chave}
+                          type="button"
+                          role="menuitem"
+                          className={`topbar-submenu-item ${ativo ? "ativo" : ""}`}
+                          onClick={() => handleItemClick(item.chave, item.rota)}
+                        >
+                          <span className="topbar-submenu-icon">{renderIcone(item.icone)}</span>
+                          <span className="topbar-submenu-label">{item.rotulo}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Lado direito: Bloco do aluno com iniciais e nome + dropdown */}
           <div className="topbar-user-wrap" ref={dropdownRef}>
             <button
               type="button"
@@ -477,7 +721,6 @@ export default function MenuEad({
                   </button>
                 )}
 
-                {/* Administrador não cai na sala. Opção "Ver como aluno" permite abrir a sala com o mesmo login */}
                 {temAdmin && (
                   papelAtivo === "aluno" ? (
                     <button
@@ -530,363 +773,69 @@ export default function MenuEad({
             )}
           </div>
         </div>
-
-        {/* MENU por baixo, no jeito da Enfaci, no máximo quatro colunas. Não é faixa de abas. */}
-        <div className="menu-ead-wrapper">
-          <div
-            className="menu-ead-grid"
-            style={{ "--menu-cols": isAluno ? 3 : isDocente ? 2 : 4 } as React.CSSProperties}
-          >
-            {/* 1. MODO ALUNO */}
-            {isAluno && (
-              <>
-                {/* Coluna 1: Sala */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Sala</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "dashboard" || abaAtiva === "inicio" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("dashboard")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("dashboard")}</span>
-                    <span>Início</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "autoavaliacao" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("autoavaliacao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("autoavaliacao")}</span>
-                    <span>Autoavaliação</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "evolucao" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("evolucao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("evolucao")}</span>
-                    <span>Minha evolução</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "avaliacoes_recebidas" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("avaliacoes_recebidas")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("avaliacoes_recebidas")}</span>
-                    <span>Avaliações recebidas</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "grafico" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("grafico")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("grafico")}</span>
-                    <span>Gráfico</span>
-                  </button>
-                </div>
-
-                {/* Coluna 2: Turma */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">
-                    <span>Turma</span>
-                    {turmaInfo?.nome && (
-                      <span className="menu-ead-turma-badge" title={turmaInfo.nome}>
-                        {turmaInfo.nome}
-                        {turmaInfo.codigo || turmaInfo.turno ? ` · ${[turmaInfo.codigo, turmaInfo.turno].filter(Boolean).join(" ")}` : ""}
-                      </span>
-                    )}
-                  </span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "calendario" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("calendario")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("calendario")}</span>
-                    <span>Calendário</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "planejamento" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("planejamento")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("planejamento")}</span>
-                    <span>Planejamento</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "presenca" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("presenca")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("presenca")}</span>
-                    <span>Presença</span>
-                  </button>
-                </div>
-
-                {/* Coluna 3: Diário */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Diário</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "guia" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("guia")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("guia")}</span>
-                    <span>Guia</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "anotacoes_campo" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("anotacoes_campo")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("anotacoes_campo")}</span>
-                    <span>Anotações de campo</span>
-                  </button>
-                </div>
-              </>
-            )}
-
-            {/* 2. MODO SUPERVISOR */}
-            {isDocente && (
-              <>
-                {/* Coluna 1: Alunos */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Alunos</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "avaliacao_sup" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("avaliacao_sup")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("avaliacao_sup")}</span>
-                    <span>Avaliação</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "autoavaliacoes_aluno" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("autoavaliacoes_aluno")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("autoavaliacoes_aluno")}</span>
-                    <span>Autoavaliações</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "paralelo" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("paralelo")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("paralelo")}</span>
-                    <span>Paralelo</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "grafico" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("grafico")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("grafico")}</span>
-                    <span>Gráfico</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "anotacoes_campo" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("anotacoes_campo")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("anotacoes_campo")}</span>
-                    <span>Anotações de campo</span>
-                  </button>
-                </div>
-
-                {/* Coluna 2: Turmas */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Turmas</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "selecionar_alunos" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("selecionar_alunos")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("selecionar_alunos")}</span>
-                    <span>Selecionar alunos</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "calendario" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("calendario")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("calendario")}</span>
-                    <span>Calendário</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "aulas" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("aulas")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("aulas")}</span>
-                    <span>Aulas</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "chamada" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("chamada")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("chamada")}</span>
-                    <span>Chamada</span>
-                  </button>
-                </div>
-              </>
-            )}
-
-            {/* 3. MODO ADMINISTRADOR */}
-            {isAdmin && (
-              <>
-                {/* Coluna 1: Alunos */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Alunos</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "avaliacao_sup" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("avaliacao_sup", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("avaliacao_sup")}</span>
-                    <span>Avaliação</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "autoavaliacoes_aluno" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("autoavaliacoes_aluno", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("autoavaliacoes_aluno")}</span>
-                    <span>Autoavaliações</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "paralelo" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("paralelo", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("paralelo")}</span>
-                    <span>Paralelo</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "grafico" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("grafico", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("grafico")}</span>
-                    <span>Gráfico</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "anotacoes_campo" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("anotacoes_campo", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("anotacoes_campo")}</span>
-                    <span>Anotações de campo</span>
-                  </button>
-                </div>
-
-                {/* Coluna 2: Turmas */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Turmas</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "selecionar_alunos" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("selecionar_alunos", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("selecionar_alunos")}</span>
-                    <span>Selecionar alunos</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "calendario_turma" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("calendario", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("calendario")}</span>
-                    <span>Calendário</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "aulas" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("aulas", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("aulas")}</span>
-                    <span>Aulas</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "chamada" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("chamada", "/supervisao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("chamada")}</span>
-                    <span>Chamada</span>
-                  </button>
-                </div>
-
-                {/* Coluna 3: Organização */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Organização</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "docentes" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("docentes", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("docentes")}</span>
-                    <span>Docentes</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "convites" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("convites", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("convites")}</span>
-                    <span>Convites</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "administradores" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("administradores", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("administradores")}</span>
-                    <span>Administradores</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "alunos" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("alunos", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("alunos")}</span>
-                    <span>Alunos</span>
-                  </button>
-                </div>
-
-                {/* Coluna 4: Administração */}
-                <div className="menu-ead-col">
-                  <span className="menu-ead-col-header">Administração</span>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "turmas" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("turmas", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("turmas")}</span>
-                    <span>Turmas</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "frequencia" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("frequencia", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("frequencia")}</span>
-                    <span>Frequência</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`menu-ead-item ${abaAtiva === "calendario" ? "ativo" : ""}`}
-                    onClick={() => handleItemClick("calendario", "/administracao")}
-                  >
-                    <span className="menu-ead-item-icon">{renderIcone("calendario_escola")}</span>
-                    <span>Calendário da escola</span>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
       </header>
+
+      {/* Painel lateral Mobile (< 992px) com fundo branco e grupos verticais */}
+      {drawerAberto && (
+        <>
+          <div
+            className="topbar-drawer-backdrop"
+            onClick={() => setDrawerAberto(false)}
+            aria-hidden="true"
+          />
+          <aside
+            className="topbar-drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu principal"
+          >
+            <div className="topbar-drawer-header">
+              <div className="topbar-drawer-brand">
+                <img src={LOGO_ETCR} alt="ETCR Escola Técnica" className="topbar-drawer-logo" />
+                <span className="topbar-drawer-school">ETCR · EAD</span>
+              </div>
+              <button
+                type="button"
+                className="topbar-drawer-close"
+                onClick={() => setDrawerAberto(false)}
+                aria-label="Fechar menu"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="topbar-drawer-body">
+              {grupos.map((grupo) => (
+                <div key={grupo.id} className="topbar-drawer-group">
+                  <div className="topbar-drawer-group-title">
+                    <span>{grupo.rotulo}</span>
+                    {grupo.badge && <span className="topbar-drawer-turma-badge">{grupo.badge}</span>}
+                  </div>
+                  <div className="topbar-drawer-group-items">
+                    {grupo.itens.map((item) => {
+                      const ativo = isItemAtivo(item.chave);
+                      return (
+                        <button
+                          key={item.chave}
+                          type="button"
+                          className={`topbar-drawer-item ${ativo ? "ativo" : ""}`}
+                          onClick={() => handleItemClick(item.chave, item.rota)}
+                        >
+                          <span className="topbar-drawer-item-icon">{renderIcone(item.icone)}</span>
+                          <span className="topbar-drawer-item-label">{item.rotulo}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </>
+      )}
 
       {/* Modal de Registro Profissional acessível a todos pelo menu */}
       {modalRegistroOpen && (

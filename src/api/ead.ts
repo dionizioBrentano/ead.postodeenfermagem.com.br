@@ -182,3 +182,111 @@ export async function salvarAnotacoesCampo(
   );
 }
 
+// Estágio — Ciclo 1 Etapa 1
+export interface EstagioAssuntoItem {
+  ordem: number;
+  titulo: string;
+  componente: "conceito" | "ficha_procedimento" | "ficha_meta" | "artigo";
+  componente_rotulo: string;
+  assunto_slug: string;
+  metas?: number[];
+}
+
+export interface EstagioAssuntoDetail {
+  id: number;
+  ciclo: number;
+  etapa: number;
+  ordem: number;
+  assunto_slug: string;
+  titulo: string;
+  metas?: number[];
+  componente: "conceito" | "ficha_procedimento" | "ficha_meta" | "artigo";
+}
+
+export interface EstagioFonte {
+  orgao?: string;
+  norma?: string;
+  url?: string;
+  ano?: string | number | null;
+}
+
+export interface EstagioPasso {
+  ordem?: number;
+  texto: string;
+}
+
+export interface EstagioRegistro {
+  o_que?: string[];
+  exemplo?: string;
+}
+
+export interface EstagioApoioBrunner {
+  capitulo?: string;
+  secao?: string;
+  uso?: string;
+}
+
+export interface EstagioPecaDetail {
+  id?: number;
+  assunto_id?: number;
+  peca_slug?: string;
+  papel?: string;
+  status?: string;
+  origem?: string;
+  substitui_peca_id?: number | null;
+  objetivo?: string;
+  faz?: string[];
+  nao_faz?: string[];
+  passos?: EstagioPasso[];
+  registro?: EstagioRegistro;
+  erro_comum?: string[];
+  fontes?: EstagioFonte[];
+  apoio_brunner?: EstagioApoioBrunner | null;
+  alerta?: string | null;
+  ver_tambem?: string[];
+}
+
+export interface EstagioVerTambemLink {
+  slug: string;
+  titulo: string;
+}
+
+export interface EstagioFichaResponse {
+  assunto: EstagioAssuntoDetail;
+  peca: EstagioPecaDetail;
+  ver_tambem_links: EstagioVerTambemLink[];
+  passos_ordenados: EstagioPasso[];
+}
+
+export async function getEstagioCicloEtapa(
+  ciclo: number = 1,
+  etapa: number = 1,
+  token?: string | null
+): Promise<EstagioAssuntoItem[]> {
+  const t = token || getUserToken();
+  const res = (await request("GET", `/ead/estagio/ciclo/${ciclo}/etapa/${etapa}`, {
+    bearer: t,
+  })) as { data?: EstagioAssuntoItem[] } | EstagioAssuntoItem[];
+
+  if (res && typeof res === "object" && "data" in res && Array.isArray((res as { data: EstagioAssuntoItem[] }).data)) {
+    return (res as { data: EstagioAssuntoItem[] }).data;
+  }
+  return Array.isArray(res) ? res : [];
+}
+
+export async function getEstagioAssunto(
+  assunto_slug: string,
+  token?: string | null
+): Promise<EstagioFichaResponse> {
+  const t = token || getUserToken();
+  const res = (await request("GET", `/ead/estagio/assunto/${encodeURIComponent(assunto_slug)}`, {
+    bearer: t,
+  })) as { data?: EstagioFichaResponse } | EstagioFichaResponse;
+
+  if (res && typeof res === "object" && "data" in res && (res as { data: EstagioFichaResponse }).data) {
+    return (res as { data: EstagioFichaResponse }).data;
+  }
+  return res as EstagioFichaResponse;
+}
+
+

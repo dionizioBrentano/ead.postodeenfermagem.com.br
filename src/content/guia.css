@@ -81,3 +81,56 @@
 .guia .sources{font-size:14.5px;color:var(--muted);display:grid;gap:8px;max-width:80ch}
 .guia .sources p{margin:0}
 @media (prefers-reduced-motion:reduce){}
+
+/* Guia do Estágio — Ciclo 1 Etapa 1 */
+.guia-root{background:#f8f6f1;color:#3a3a3a;width:100%}
+.guia-root .wrap{max-width:960px;margin:0 auto;padding:0 16px}
+.guia-header{margin-bottom:24px}
+.guia-header-titulo{font-family:var(--f-display, sans-serif);font-size:24px;font-weight:700;color:#3a3a3a;margin:0 0 6px}
+.guia-header-sub{font-size:14.5px;color:#909090;margin:0}
+.guia-lista-tabela{display:flex;flex-direction:column;gap:8px}
+.guia-linha-item{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#ffffff;border:1px solid #e6e4e1;border-radius:10px;padding:14px 18px;cursor:pointer;transition:background-color .15s, border-color .15s;text-align:left;width:100%}
+.guia-linha-item:hover{background-color:#faf9f6;border-color:#d8d5d0}
+.guia-linha-corpo{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.guia-ordem{font-family:var(--f-mono, monospace);font-size:14px;font-weight:700;color:#909090;min-width:24px;flex-shrink:0}
+.guia-linha-titulo{font-size:15px;font-weight:600;color:#3a3a3a;line-height:1.35}
+.guia-linha-lado-direito{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.guia-linha-rotulo{font-size:12.5px;font-weight:500;color:#909090;background:#f8f6f1;border:1px solid #e6e4e1;border-radius:6px;padding:3px 8px;white-space:nowrap}
+.guia-linha-seta{color:#909090;font-size:15px}
+
+/* Ficha do Assunto */
+.guia-btn-voltar{display:inline-flex;align-items:center;gap:6px;background:#ffffff;border:1px solid #e6e4e1;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;color:#3a3a3a;cursor:pointer;margin-bottom:18px;transition:background-color .15s}
+.guia-btn-voltar:hover{background-color:#faf9f6}
+.guia-ficha-card{background:#ffffff;border:1px solid #e6e4e1;border-radius:12px;padding:26px 24px;display:flex;flex-direction:column;gap:22px;color:#3a3a3a}
+.guia-ficha-cabecalho{display:flex;flex-direction:column;gap:6px}
+.guia-ficha-badge{font-size:12px;font-weight:600;color:#909090;text-transform:uppercase;letter-spacing:.06em}
+.guia-ficha-titulo{font-family:var(--f-display, sans-serif);font-size:24px;font-weight:700;color:#3a3a3a;line-height:1.25;margin:0}
+.guia-secao{display:flex;flex-direction:column;gap:8px}
+.guia-secao-titulo{font-family:var(--f-display, sans-serif);font-size:16px;font-weight:700;color:#3a3a3a;border-bottom:1px solid #e6e4e1;padding-bottom:6px;margin:0}
+.guia-texto-objetivo{font-size:15.5px;color:#3a3a3a;line-height:1.6;margin:0}
+.guia-alerta-box{background:#ffffff;border:1px solid #e6e4e1;border-left:4px solid #b3363b;border-radius:8px;padding:14px 18px;display:flex;flex-direction:column;gap:4px;color:#3a3a3a}
+.guia-alerta-tag{font-size:11.5px;font-weight:700;color:#b3363b;text-transform:uppercase;letter-spacing:.06em}
+.guia-alerta-texto{font-size:14.5px;color:#3a3a3a;line-height:1.5;margin:0}
+.guia-lista-itens{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:#3a3a3a}
+.guia-lista-itens li{font-size:14.5px;line-height:1.55}
+.guia-passos-ordenados{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;color:#3a3a3a}
+.guia-passos-ordenados li{font-size:14.5px;line-height:1.55}
+.guia-subsecao-label{font-size:12.5px;font-weight:600;color:#909090;text-transform:uppercase;letter-spacing:.05em;margin:4px 0 2px}
+.guia-exemplo-card{background:#ffffff;border:1px solid #e6e4e1;border-radius:8px;padding:12px 16px;margin-top:6px}
+.guia-exemplo-texto{font-size:14px;color:#3a3a3a;line-height:1.55;margin:0}
+.guia-fontes-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.guia-fonte-item{font-size:14.5px;line-height:1.55;color:#3a3a3a}
+.guia-fonte-link{color:#1a3a35;text-decoration:underline;word-break:break-word}
+.guia-fonte-link:hover{text-decoration:underline;color:#0d201d}
+.guia-fonte-texto{color:#3a3a3a}
+.guia-apoio-card{background:#ffffff;border:1px solid #e6e4e1;border-radius:8px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#3a3a3a}
+.guia-apoio-card p{margin:0;line-height:1.5}
+.guia-ver-tambem-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:10px}
+.guia-ver-tambem-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#ffffff;border:1px solid #e6e4e1;border-radius:8px;padding:12px 16px;text-align:left;font-size:14px;font-weight:600;color:#3a3a3a;cursor:pointer;transition:background-color .15s, border-color .15s}
+.guia-ver-tambem-btn:hover{background-color:#faf9f6;border-color:#d8d5d0}
+.guia-ver-tambem-seta{color:#909090;font-size:15px;flex-shrink:0}
+.guia-texto-secundario{color:#909090}
+.guia-status-msg{background:#ffffff;border:1px solid #e6e4e1;border-radius:10px;padding:36px 20px;text-align:center;font-size:15px;color:#909090}
+.guia-btn-tentar{background:#ffffff;border:1px solid #e6e4e1;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;color:#3a3a3a;cursor:pointer;margin-top:12px}
+.guia-btn-tentar:hover{background-color:#faf9f6}
+

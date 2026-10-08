@@ -175,10 +175,20 @@ export default function AjudaEad() {
     return (
       <button
         type="button"
-        className="btn"
+        className="btn btn-ajuda-flutuante"
         onClick={() => setAberto(true)}
         aria-label="Abrir a ajuda"
-        style={{ position: "fixed", right: 16, bottom: 16, zIndex: 900, borderRadius: 999, boxShadow: "0 4px 14px rgba(0,0,0,.2)" }}
+        style={{
+          position: "fixed",
+          right: 16,
+          bottom: 16,
+          zIndex: 900,
+          borderRadius: 999,
+          boxShadow: "0 4px 14px rgba(0,0,0,.15)",
+          background: "#00ad57",
+          color: "#ffffff",
+          fontWeight: 700,
+        }}
       >
         Precisa de ajuda?
       </button>
