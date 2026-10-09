@@ -9,6 +9,7 @@ import MinhaFrequencia from "../components/MinhaFrequencia";
 import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
 import PlanejamentoAluno from "../components/PlanejamentoAluno";
 import AnotacoesCampoAluno from "../components/AnotacoesCampoAluno";
+import TarefasTeoricas from "../components/TarefasTeoricas";
 import MenuEad from "../components/MenuEad";
 import type { Avaliacao } from "../lib/historico";
 import guiaHtml from "../content/guia.html?raw";
@@ -26,6 +27,7 @@ type Aba =
   | "planejamento"
   | "presenca"
   | "guia"
+  | "tarefas_teoricas"
   | "anotacoes_campo";
 
 const FOTO_ESTRUTURA = "https://etcr.com.br/site/wp-content/uploads/2020/01/blog-banner.jpg";
@@ -366,6 +368,8 @@ export default function SalaPage({
             <MinhaFrequencia turmaId={turma?.id || ""} />
           </div>
         )}
+
+        {aba === "tarefas_teoricas" && <TarefasTeoricas />}
 
         {aba === "anotacoes_campo" && (
           <div className="wrap sec">
