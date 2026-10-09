@@ -17,6 +17,7 @@ import AulasDocente from "../components/AulasDocente";
 import TurmaCalendarioWrapper from "../components/TurmaCalendarioWrapper";
 import FrequenciaAdmin from "../components/FrequenciaAdmin";
 import AnotacoesCampoSupervisor from "../components/AnotacoesCampoSupervisor";
+import TarefasTeoricasSupervisao from "../components/TarefasTeoricasSupervisao";
 import MenuEad from "../components/MenuEad";
 
 type Aba =
@@ -393,6 +394,9 @@ export default function SupervisaoPage({
             <div className="box sec" style={{ padding: "40px 20px" }}>
               <h2>Chamada e Frequência</h2>
               <FrequenciaAdmin atribuicoes={memberships.find((m) => m.papel === "administrador" || m.papel === "docente")?.atribuicoes || []} />
+              <div style={{ marginTop: 32, borderTop: "1px solid var(--line)", paddingTop: 24 }}>
+                <TarefasTeoricasSupervisao turmaId={confirmedTurmaId} />
+              </div>
             </div>
           )
         ) : !confirmedTurmaId ? (

@@ -732,19 +732,19 @@ export default function MenuEad({
                   </button>
                 )}
 
-                {temAdmin && (
+                {(temAdmin || temDocente) && (
                   papelAtivo === "aluno" ? (
                     <button
                       type="button"
                       role="menuitem"
                       className="dropdown-item"
-                      onClick={() => handleTrocarPapel("administrador")}
+                      onClick={() => handleTrocarPapel(temAdmin ? "administrador" : "docente")}
                       style={{ color: "var(--accent)", fontWeight: 600 }}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m15 18-6-6 6-6" />
                       </svg>
-                      Voltar para Administração
+                      {temAdmin ? "Voltar para Administração" : "Voltar para Supervisão"}
                     </button>
                   ) : (
                     <button

@@ -77,6 +77,11 @@ export default function SalaPage({
   const [carregandoLista, setCarregandoLista] = useState(true);
   const [turma, setTurma] = useState<any>(null);
 
+  const isDocente = useMemo(
+    () => memberships.some((m) => (m.papel === "docente" || m.papel === "administrador") && m.situacao === "ativo"),
+    [memberships],
+  );
+
   useEffect(() => {
     const token = getUserToken();
     if (token) {
@@ -369,7 +374,9 @@ export default function SalaPage({
           </div>
         )}
 
-        {aba === "tarefas_teoricas" && <TarefasTeoricas />}
+        {aba === "tarefas_teoricas" && (
+          <TarefasTeoricas turmaId={turma?.id} isDocente={isDocente} />
+        )}
 
         {aba === "anotacoes_campo" && (
           <div className="wrap sec">

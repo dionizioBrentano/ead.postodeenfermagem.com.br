@@ -289,4 +289,61 @@ export async function getEstagioAssunto(
   return res as EstagioFichaResponse;
 }
 
+// Tarefas Teóricas & Presença
+export interface RespostaTarefaPayload {
+  payload: any;
+  status: "rascunho" | "entregue";
+  origem?: "aluno" | "teste";
+}
+
+export async function getTarefasTeoricas(turmaId?: string, token?: string | null) {
+  const t = token || getUserToken();
+  const url = turmaId ? `/ead/turmas/${turmaId}/tarefas-teoricas` : "/ead/tarefas-teoricas";
+  const res = await request("GET", url, { bearer: t });
+  return (res as any)?.data ?? res;
+}
+
+export async function getTarefaTeorica(id: string, token?: string | null) {
+  const t = token || getUserToken();
+  const res = await request("GET", `/ead/tarefas-teoricas/${id}`, { bearer: t });
+  return (res as any)?.data ?? res;
+}
+
+export async function salvarRespostaTarefa(
+  id: string,
+  payload: any,
+  status: "rascunho" | "entregue",
+  origem?: "aluno" | "teste",
+  token?: string | null
+) {
+  const t = token || getUserToken();
+  const body: any = { payload, status };
+  if (origem) body.origem = origem;
+  const res = await request("POST", `/ead/tarefas-teoricas/${id}/respostas`, {
+    bearer: t,
+    body,
+  });
+  return (res as any)?.data ?? res;
+}
+
+export async function getEntregasTarefa(id: string, token?: string | null) {
+  const t = token || getUserToken();
+  const res = await request("GET", `/ead/tarefas-teoricas/${id}/entregas`, { bearer: t });
+  return (res as any)?.data ?? res;
+}
+
+export async function salvarPresencaTarefa(
+  respostaId: string,
+  valeu: "sim" | "nao",
+  comentario?: string,
+  token?: string | null
+) {
+  const t = token || getUserToken();
+  const res = await request("POST", `/ead/tarefa-respostas/${respostaId}/presenca`, {
+    bearer: t,
+    body: { valeu, comentario },
+  });
+  return (res as any)?.data ?? res;
+}
+
 

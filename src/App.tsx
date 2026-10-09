@@ -244,10 +244,9 @@ export default function App() {
   }
 
   if (rota === "/sala") {
-    // Aluno tem acesso à sala; Administrador pode "Ver como aluno" mantendo seu papel
-    if (!isAluno && !isAdmin) {
-      if (isDocente) navegar("/supervisao", true);
-      else navegar("/participar", true);
+    // Aluno tem acesso à sala; Administrador e Supervisor/Docente podem "Ver como aluno"
+    if (!isAluno && !isAdmin && !isDocente) {
+      navegar("/participar", true);
       return null;
     }
     return <SalaPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;

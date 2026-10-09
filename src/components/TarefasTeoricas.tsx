@@ -1,9 +1,25 @@
 import { useState } from "react";
 import { TAREFAS_TEORICAS, type TarefaTeorica } from "../data/tarefasTeoricas";
 import { formatarTituloComData } from "../lib/tarefasTeoricas";
+import OrganizacaoPlantaoExercicio from "./OrganizacaoPlantaoExercicio";
 
-export default function TarefasTeoricas() {
+interface Props {
+  turmaId?: string;
+  isDocente?: boolean;
+}
+
+export default function TarefasTeoricas({ turmaId, isDocente = false }: Props) {
   const [tarefaAtivaId, setTarefaAtivaId] = useState<string | null>(null);
+
+  if (tarefaAtivaId === "organizacao-plantao") {
+    return (
+      <OrganizacaoPlantaoExercicio
+        turmaId={turmaId}
+        isDocente={isDocente}
+        onVoltar={() => setTarefaAtivaId(null)}
+      />
+    );
+  }
 
   const tarefaAtiva: TarefaTeorica | undefined = TAREFAS_TEORICAS.find(
     (t) => t.id === tarefaAtivaId
