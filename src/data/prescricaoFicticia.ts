@@ -330,3 +330,15 @@ export const OPCOES_TURNO: OpcaoTurno[] = [
   { chave: "6h_tarde", rotulo: "6 horas (tarde)", duracaoHoras: 6, inicioPadrao: "13:00" },
   { chave: "12h_noite", rotulo: "12 horas (noite)", duracaoHoras: 12, inicioPadrao: "19:00" },
 ];
+
+export const MENSAGEM_ERRO_SALVAR_SEM_TOKEN =
+  "Você precisa entrar novamente para salvar.";
+export const MENSAGEM_ERRO_SALVAR_API =
+  "Não foi possível salvar. Confira a conexão e tente de novo.";
+export const MENSAGEM_SUCESSO_RASCUNHO =
+  "Rascunho da organização salvo com sucesso!";
+export const MENSAGEM_SUCESSO_ENTREGUE_ALUNO =
+  "Organização do plantão entregue com sucesso! A presença é decidida pelo professor.";
+export const MENSAGEM_SUCESSO_ENTREGUE_DOCENTE =
+  "Organização do plantão enviada com sucesso em modo de teste (origem: teste).";
+

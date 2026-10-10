@@ -1,4 +1,10 @@
 import { request, getUserToken, obj } from "./client";
+import type {
+  MarcaPrimeiraVia,
+  PrescricaoFicticia,
+  TarefaArrastavel,
+  TipoTurno,
+} from "../data/prescricaoFicticia";
 
 export interface AvaliacaoPayload {
   item_chave: string;
@@ -294,6 +300,22 @@ export interface RespostaTarefaPayload {
   payload: any;
   status: "rascunho" | "entregue";
   origem?: "aluno" | "teste";
+}
+
+export interface TarefaTeoricaComResposta {
+  id?: string;
+  tipo?: string;
+  minha_resposta?: {
+    status?: "rascunho" | "entregue";
+    payload?: {
+      grade?: Record<string, TarefaArrastavel[]>;
+      janelasHorarios?: string[];
+      turno?: { tipo?: TipoTurno; inicio?: string };
+      marcasPrimeiraVia?: Record<string, MarcaPrimeiraVia>;
+      conduta?: string;
+      prescricaoTeste?: PrescricaoFicticia;
+    };
+  };
 }
 
 export async function getTarefasTeoricas(turmaId?: string, token?: string | null) {
