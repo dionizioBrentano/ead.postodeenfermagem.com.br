@@ -6,7 +6,7 @@ export interface PrescricaoItem {
   via: string;
   frequencia: string;
   horariosAprazados: string;
-  temAA_AJ_22h?: boolean;
+  exigeGlicemiaCapilar?: boolean;
 }
 
 export interface MarcaPrimeiraVia {
@@ -21,6 +21,7 @@ export interface TarefaArrastavel {
   itemIdOriginal: string;
   categoria: "dieta" | "cuidado" | "sinais_vitais" | "medicamento" | "sn" | "glicemia";
   detalhes?: string;
+  isSN?: boolean;
 }
 
 export interface PrescricaoFicticia {
@@ -36,7 +37,11 @@ export interface PrescricaoFicticia {
   itens: PrescricaoItem[];
 }
 
-export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
+/**
+ * Bloco 1: Prescrição de estudo (fixa, imutável, para leitura do aluno).
+ * O aluno não organiza esta prescrição.
+ */
+export const PRESCRICAO_ESTUDO: PrescricaoFicticia = {
   hospital: "Hospital de Ensino Simulado",
   unidade: "Clínica Cirúrgica",
   leito: "Leito 104-B (Simulado)",
@@ -48,7 +53,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
   alergias: "Nega alergias medicamentosas conhecidas",
   itens: [
     {
-      id: "item-dieta",
+      id: "estudo-dieta",
       categoria: "dieta",
       apresentacao: "Dieta branda para DM e HAS",
       dose: "—",
@@ -57,7 +62,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "Horários da nutrição",
     },
     {
-      id: "item-cabiceira",
+      id: "estudo-cabiceira",
       categoria: "cuidado",
       apresentacao: "Repouso no leito com cabeceira elevada a 30°",
       dose: "—",
@@ -66,7 +71,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "Contínuo",
     },
     {
-      id: "item-ssvv",
+      id: "estudo-ssvv",
       categoria: "sinais_vitais",
       apresentacao: "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)",
       dose: "—",
@@ -75,7 +80,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "06h - 10h - 14h - 18h - 22h - 02h",
     },
     {
-      id: "item-omeprazol",
+      id: "estudo-omeprazol",
       categoria: "medicamento",
       apresentacao: "Omeprazol pó liofilizado (diluir em 100 mL SF 0,9%)",
       dose: "40 mg",
@@ -84,16 +89,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "08h",
     },
     {
-      id: "item-dipirona-fixa",
-      categoria: "medicamento",
-      apresentacao: "Dipirona 500 mg/mL solução injetável (diluir em 18 mL AD)",
-      dose: "1 g (2 mL)",
-      via: "EV",
-      frequencia: "6/6h",
-      horariosAprazados: "06h - 12h - 18h - 24h",
-    },
-    {
-      id: "item-cefazolina",
+      id: "estudo-cefazolina",
       categoria: "medicamento",
       apresentacao: "Cefazolina pó para solução injetável (diluir em 100 mL SF 0,9%)",
       dose: "1 g",
@@ -102,27 +98,26 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "06h - 14h - 22h",
     },
     {
-      id: "item-insulina-hgt",
+      id: "estudo-insulina-hgt",
       categoria: "medicamento",
       apresentacao: "Insulina Regular 100 UI/mL frasco-ampola",
       dose: "Conforme escala HGT",
       via: "SC",
       frequencia: "AA, AJ e 22h",
       horariosAprazados: "S/N (se glicemia > 180 mg/dL)",
-      temAA_AJ_22h: true,
+      exigeGlicemiaCapilar: true,
     },
     {
-      id: "item-enoxaparina",
+      id: "estudo-enoxaparina",
       categoria: "medicamento",
       apresentacao: "Enoxaparina sódica seringa preenchida",
       dose: "40 mg (0,4 mL)",
       via: "SC",
       frequencia: "1x ao dia",
       horariosAprazados: "22h",
-      temAA_AJ_22h: true,
     },
     {
-      id: "item-curativo",
+      id: "estudo-curativo",
       categoria: "cuidado",
       apresentacao: "Curativo oclusivo em ferida cirúrgica com SF 0,9%",
       dose: "—",
@@ -131,7 +126,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "10h",
     },
     {
-      id: "item-diurese",
+      id: "estudo-diurese",
       categoria: "cuidado",
       apresentacao: "Controle de diurese e balanço de eliminações",
       dose: "—",
@@ -140,7 +135,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "06h - 10h - 14h - 18h - 22h - 02h",
     },
     {
-      id: "item-decubito",
+      id: "estudo-decubito",
       categoria: "cuidado",
       apresentacao: "Mudança de decúbito e deambulação assistida",
       dose: "—",
@@ -149,7 +144,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "Horários pares",
     },
     {
-      id: "item-avp",
+      id: "estudo-avp",
       categoria: "cuidado",
       apresentacao: "Salinização de cateter venoso periférico com SF 0,9%",
       dose: "3 mL",
@@ -158,7 +153,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "08h - 20h",
     },
     {
-      id: "item-metoclopramida-sn",
+      id: "estudo-metoclopramida-sn",
       categoria: "sn",
       apresentacao: "Metoclopramida 5 mg/mL solução injetável (diluir em 10 mL SF 0,9%)",
       dose: "10 mg (2 mL)",
@@ -167,7 +162,7 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
       horariosAprazados: "S/N se náuseas ou vômitos (até 8/8h)",
     },
     {
-      id: "item-dipirona-sn",
+      id: "estudo-dipirona-sn",
       categoria: "sn",
       apresentacao: "Dipirona 500 mg/mL solução injetável (diluir em 18 mL AD)",
       dose: "1 g (2 mL)",
@@ -179,116 +174,135 @@ export const PRESCRICAO_FICTICIA: PrescricaoFicticia = {
 };
 
 /**
- * Converte os itens da prescrição fictícia nas tarefas arrastáveis.
- * Regras didáticas:
- * - Cada sinal vital vira tarefa própria: Aferir PA, Aferir FC, Aferir FR, Aferir TAx, Aferir SpO2.
- * - Se o item contiver AA, AJ ou 22h, inclui a tarefa "Aferir HGT" antes desse item.
- * - Não cria marcos de refeição. Não bloqueia horários rígidos.
+ * Bloco 2: Passos do método "Como organizar".
+ * Ordem rigorosa exigida pelas diretrizes de enfermagem.
  */
-export function extrairTarefasDaPrescricao(prescricao: PrescricaoFicticia): TarefaArrastavel[] {
-  const tarefas: TarefaArrastavel[] = [];
+export const PASSOS_COMO_ORGANIZAR: string[] = [
+  "escolha o turno;",
+  "crie uma janela para cada hora do turno;",
+  "copie o cuidado da prescrição de teste para a janela do horário aprazado;",
+  "S/N não entra em hora fixa, fica na lista de se necessário;",
+  "no mesmo horário e no mesmo acesso, antecipe a infusão mais curta e atrase a mais demorada, até 30 minutos;",
+  "na 1ª via, checar o realizado e circular o não feito ou o reaprazado;",
+  "na conduta, escreva o que checou, o que circulou, o motivo e o horário novo.",
+];
 
-  for (const item of prescricao.itens) {
-    if (item.categoria === "sinais_vitais") {
-      tarefas.push(
-        { id: `${item.id}-pa`, rotulo: "Aferir PA", itemIdOriginal: item.id, categoria: "sinais_vitais", detalhes: "Pressão Arterial" },
-        { id: `${item.id}-fc`, rotulo: "Aferir FC", itemIdOriginal: item.id, categoria: "sinais_vitais", detalhes: "Frequência Cardíaca" },
-        { id: `${item.id}-fr`, rotulo: "Aferir FR", itemIdOriginal: item.id, categoria: "sinais_vitais", detalhes: "Frequência Respiratória" },
-        { id: `${item.id}-tax`, rotulo: "Aferir TAx", itemIdOriginal: item.id, categoria: "sinais_vitais", detalhes: "Temperatura Axilar" },
-        { id: `${item.id}-spo2`, rotulo: "Aferir SpO2", itemIdOriginal: item.id, categoria: "sinais_vitais", detalhes: "Saturação de Oxigênio" }
-      );
-      continue;
-    }
-
-    // Regra: se o item tiver AA, AJ ou 22h, incluir "Aferir HGT" antes do item
-    if (item.temAA_AJ_22h) {
-      tarefas.push({
-        id: `${item.id}-hgt-pre`,
-        rotulo: "Aferir HGT",
-        itemIdOriginal: item.id,
-        categoria: "glicemia",
-        detalhes: "Glicemia capilar prévia",
-      });
-    }
-
-    if (item.id === "item-insulina-hgt") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Insulina Regular SC",
-        itemIdOriginal: item.id,
-        categoria: "medicamento",
-        detalhes: "Conforme resultado do HGT",
-      });
-      continue;
-    }
-
-    if (item.id === "item-enoxaparina") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Enoxaparina 40 mg SC",
-        itemIdOriginal: item.id,
-        categoria: "medicamento",
-        detalhes: "Horário previsto: 22h",
-      });
-      continue;
-    }
-
-    if (item.id === "item-omeprazol") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Omeprazol 40 mg EV",
-        itemIdOriginal: item.id,
-        categoria: "medicamento",
-        detalhes: "08h",
-      });
-      continue;
-    }
-
-    if (item.id === "item-dipirona-fixa") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Dipirona 1 g EV",
-        itemIdOriginal: item.id,
-        categoria: "medicamento",
-        detalhes: "Horários: 06h - 12h - 18h - 24h",
-      });
-      continue;
-    }
-
-    if (item.id === "item-cefazolina") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Cefazolina 1 g EV",
-        itemIdOriginal: item.id,
-        categoria: "medicamento",
-        detalhes: "Horários: 06h - 14h - 22h",
-      });
-      continue;
-    }
-
-    if (item.id === "item-curativo") {
-      tarefas.push({
-        id: `${item.id}-tarefa`,
-        rotulo: "Curativo incisão (SF 0,9%)",
-        itemIdOriginal: item.id,
-        categoria: "cuidado",
-        detalhes: "10h",
-      });
-      continue;
-    }
-
-    // Itens gerais e cuidados
-    tarefas.push({
-      id: `${item.id}-tarefa`,
-      rotulo: item.dose !== "—" ? `${item.apresentacao.split(" (")[0]} ${item.dose}` : item.apresentacao,
-      itemIdOriginal: item.id,
-      categoria: item.categoria,
-      detalhes: `${item.via} · ${item.horariosAprazados || item.frequencia}`,
-    });
-  }
-
-  return tarefas;
-}
+/**
+ * Bloco 3: Prescrição de teste fixa (imutável, com conflito EV às 06h).
+ */
+export const PRESCRICAO_TESTE: PrescricaoFicticia = {
+  hospital: "Hospital Escola Simulado",
+  unidade: "Clínica Cirúrgica",
+  leito: "Leito 208-A (simulação)",
+  prontuario: "000000-SIM",
+  paciente: "Paciente Simulado de Teste",
+  idade: "61 anos",
+  data: "09/10/2026",
+  diagnostico: "Pós-operatório de laparotomia / infecção intra-abdominal / diabetes tipo 2",
+  alergias: "Nega alergias medicamentosas conhecidas",
+  itens: [
+    {
+      id: "teste-dieta",
+      categoria: "dieta",
+      apresentacao: "Dieta branda para diabetes",
+      dose: "—",
+      via: "VO",
+      frequencia: "Conforme rotina",
+      horariosAprazados: "Horários da nutrição",
+    },
+    {
+      id: "teste-ssvv",
+      categoria: "sinais_vitais",
+      apresentacao: "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)",
+      dose: "—",
+      via: "Beira do leito",
+      frequencia: "4/4h",
+      horariosAprazados: "06h - 10h - 14h - 18h - 22h - 02h",
+    },
+    {
+      id: "teste-curativo",
+      categoria: "cuidado",
+      apresentacao: "Curativo da ferida operatória com SF 0,9%",
+      dose: "—",
+      via: "Tópica",
+      frequencia: "1x ao dia",
+      horariosAprazados: "10h",
+    },
+    {
+      id: "teste-decubito",
+      categoria: "cuidado",
+      apresentacao: "Mudança de decúbito e alívio de pontos de pressão",
+      dose: "—",
+      via: "Leito",
+      frequencia: "A cada 2 horas",
+      horariosAprazados: "Horários pares",
+    },
+    {
+      id: "teste-ceftriaxona",
+      categoria: "medicamento",
+      apresentacao: "Ceftriaxona 1 g pó (reconstituir em 10 mL de AD, diluir em 100 mL de SF 0,9%, administrar em 30 min)",
+      dose: "1 g",
+      via: "EV",
+      frequencia: "12/12h",
+      horariosAprazados: "06h - 18h",
+    },
+    {
+      id: "teste-metronidazol",
+      categoria: "medicamento",
+      apresentacao: "Metronidazol 500 mg/100 mL bolsa (pronto para uso, administrar em 60 min)",
+      dose: "500 mg",
+      via: "EV",
+      frequencia: "8/8h",
+      horariosAprazados: "06h - 14h - 22h",
+    },
+    {
+      id: "teste-omeprazol",
+      categoria: "medicamento",
+      apresentacao: "Omeprazol 40 mg pó (diluir em 100 mL de SF 0,9%, administrar em 30 min)",
+      dose: "40 mg",
+      via: "EV",
+      frequencia: "1x ao dia",
+      horariosAprazados: "08h",
+    },
+    {
+      id: "teste-enoxaparina",
+      categoria: "medicamento",
+      apresentacao: "Enoxaparina sódica 40 mg/0,4 mL seringa preenchida",
+      dose: "40 mg",
+      via: "SC",
+      frequencia: "1x ao dia",
+      horariosAprazados: "22h",
+    },
+    {
+      id: "teste-insulina",
+      categoria: "medicamento",
+      apresentacao: "Insulina regular 100 UI/mL frasco-ampola",
+      dose: "Conforme escala de glicemia capilar",
+      via: "SC",
+      frequencia: "AA, AJ e 22h",
+      horariosAprazados: "AA, AJ e 22h",
+      exigeGlicemiaCapilar: true,
+    },
+    {
+      id: "teste-dipirona-sn",
+      categoria: "sn",
+      apresentacao: "Dipirona 500 mg/mL ampola 2 mL (diluir em 10 a 20 mL de SF 0,9%, administrar em 10 min)",
+      dose: "1 g",
+      via: "EV",
+      frequencia: "S/N",
+      horariosAprazados: "S/N se dor ou febre (intervalo mínimo de 6 h)",
+    },
+    {
+      id: "teste-ondansetrona-sn",
+      categoria: "sn",
+      apresentacao: "Ondansetrona 2 mg/mL ampola (EV direto lento, em 2 min)",
+      dose: "4 mg",
+      via: "EV",
+      frequencia: "S/N",
+      horariosAprazados: "S/N se náuseas ou vômitos (intervalo mínimo de 8 h)",
+    },
+  ],
+};
 
 export type TipoTurno = "4h" | "6h_manha" | "6h_tarde" | "12h_noite";
 
@@ -305,20 +319,3 @@ export const OPCOES_TURNO: OpcaoTurno[] = [
   { chave: "6h_tarde", rotulo: "6 horas (tarde)", duracaoHoras: 6, inicioPadrao: "13:00" },
   { chave: "12h_noite", rotulo: "12 horas (noite)", duracaoHoras: 12, inicioPadrao: "19:00" },
 ];
-
-/**
- * Gera a grade de horários do turno a partir da hora de início e duração em horas.
- */
-export function gerarHorariosTurno(inicioHora: string, duracaoHoras: number): string[] {
-  const [hStr, mStr] = inicioHora.split(":");
-  const h = parseInt(hStr || "7", 10);
-  const m = mStr || "00";
-  const slots: string[] = [];
-
-  for (let i = 0; i < duracaoHoras; i++) {
-    const hora = (h + i) % 24;
-    slots.push(`${String(hora).padStart(2, "0")}:${m}`);
-  }
-
-  return slots;
-}
