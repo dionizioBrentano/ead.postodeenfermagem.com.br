@@ -1,0 +1,185 @@
+.supervisao-painel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px 24px;
+  color: var(--ink);
+}
+
+.supervisao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.supervisao-titulo {
+  font-size: 18px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.supervisao-subtitulo {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.supervisao-filtro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.supervisao-filtro-rotulo {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.supervisao-filtro-selecao {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 100%;
+}
+
+.supervisao-alerta {
+  margin-bottom: 16px;
+}
+
+.supervisao-aviso {
+  font-size: 14px;
+  margin: 0;
+}
+
+.supervisao-lista-entregas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.supervisao-entrega {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--bg);
+}
+
+.supervisao-entrega-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.supervisao-aluno-nome {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.supervisao-aluno-email {
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+.supervisao-entrega-data {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.supervisao-resumo {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.supervisao-conduta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+.supervisao-contagem {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.supervisao-presenca {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.supervisao-opcoes {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.supervisao-opcoes-pergunta {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.supervisao-opcao {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.supervisao-comentario {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.supervisao-comentario-campo {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.supervisao-comentario-entrada {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.supervisao-botao-gravar {
+  padding: 6px 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.supervisao-botao-gravar:disabled {
+  cursor: not-allowed;
+}

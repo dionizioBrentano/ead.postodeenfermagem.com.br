@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { getTarefasTeoricas, getEntregasTarefa, salvarPresencaTarefa } from "../api/ead";
 import { getUserToken } from "../api/client";
+import "./TarefasTeoricasSupervisao.css";
+
+const ERRO_CARREGAR_TAREFAS = "Não foi possível carregar as tarefas da turma.";
+const ERRO_CARREGAR_ENTREGAS = "Não foi possível carregar as entregas desta tarefa.";
+const ERRO_GRAVAR_PRESENCA = "Não foi possível gravar a presença. Tente novamente.";
+const SUCESSO_GRAVAR_PRESENCA = "Presença gravada com sucesso!";
 
 interface Props {
   turmaId?: string;
@@ -15,6 +21,7 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
   const [decisoes, setDecisoes] = useState<Record<string, { valeu: "sim" | "nao"; comentario: string }>>({});
   const [gravandoId, setGravandoId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
 
   // Carrega tarefas teóricas da turma
   useEffect(() => {
@@ -28,6 +35,7 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
     if (!token) return;
 
     setCarregando(true);
+    setErro(null);
     getTarefasTeoricas(turmaId, token)
       .then((res: any) => {
         if (Array.isArray(res)) {
@@ -37,8 +45,8 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
           }
         }
       })
-      .catch((err) => {
-        console.error("Erro ao buscar tarefas teóricas da turma", err);
+      .catch(() => {
+        setErro(ERRO_CARREGAR_TAREFAS);
       })
       .finally(() => setCarregando(false));
   }, [turmaId]);
@@ -73,8 +81,8 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
           setDecisoes((prev) => ({ ...prev, ...mapa }));
         }
       })
-      .catch((err) => {
-        console.error("Erro ao carregar entregas da tarefa", err);
+      .catch(() => {
+        setErro(ERRO_CARREGAR_ENTREGAS);
       })
       .finally(() => setCarregandoEntregas(false));
   };
@@ -90,53 +98,41 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
 
     setGravandoId(respostaId);
     setFeedback(null);
+    setErro(null);
 
     try {
       await salvarPresencaTarefa(respostaId, dec.valeu, dec.comentario, token);
-      setFeedback("Presença gravada com sucesso!");
+      setFeedback(SUCESSO_GRAVAR_PRESENCA);
       carregarEntregas();
-    } catch (err: any) {
-      alert("Erro ao gravar presença: " + (err.message || "tente novamente."));
+    } catch {
+      setErro(ERRO_GRAVAR_PRESENCA);
     } finally {
       setGravandoId(null);
     }
   };
 
   return (
-    <section
-      style={{
-        background: "#ffffff",
-        border: "1px solid #e6e4e1",
-        borderRadius: "12px",
-        padding: "20px 24px",
-        color: "#3a3a3a",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+    <section className="supervisao-painel">
+      <div className="supervisao-cabecalho">
         <div>
-          <h2 style={{ fontSize: "18px", margin: "0 0 4px", color: "#222222" }}>
+          <h2 className="supervisao-titulo">
             Tarefas Teóricas — Presença e Entregas dos Alunos
           </h2>
-          <p style={{ margin: 0, fontSize: "13px", color: "#666666" }}>
+          <p className="supervisao-subtitulo">
             Avaliação de presença para tarefas teóricas (exclusivo para entregas de origem aluno).
           </p>
         </div>
 
         {tarefas.length > 1 && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <label htmlFor="select-tarefa-supervisao" style={{ fontSize: "13px", fontWeight: 600 }}>
+          <div className="supervisao-filtro">
+            <label htmlFor="select-tarefa-supervisao" className="supervisao-filtro-rotulo">
               Tarefa:
             </label>
             <select
               id="select-tarefa-supervisao"
+              className="supervisao-filtro-selecao"
               value={tarefaSelecionadaId}
               onChange={(e) => setTarefaSelecionadaId(e.target.value)}
-              style={{
-                padding: "6px 10px",
-                borderRadius: "6px",
-                border: "1px solid #e6e4e1",
-                fontSize: "13px",
-              }}
             >
               {tarefas.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -148,30 +144,26 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
         )}
       </div>
 
+      {erro && (
+        <div className="alert err supervisao-alerta" role="alert">
+          {erro}
+        </div>
+      )}
+
       {feedback && (
-        <div
-          style={{
-            marginBottom: "16px",
-            padding: "8px 12px",
-            background: "#e8f8f0",
-            border: "1px solid #b7ebd0",
-            borderRadius: "6px",
-            fontSize: "13px",
-            color: "#1a7040",
-          }}
-        >
+        <div className="alert info supervisao-alerta">
           {feedback}
         </div>
       )}
 
       {carregando || carregandoEntregas ? (
-        <p style={{ fontSize: "14px", color: "#666666" }}>Carregando entregas...</p>
+        <p className="muted supervisao-aviso">Carregando entregas...</p>
       ) : entregas.length === 0 ? (
-        <p style={{ fontSize: "14px", color: "#777777", margin: 0 }}>
+        <p className="muted supervisao-aviso">
           Nenhuma entrega de aluno registrada ainda para esta tarefa.
         </p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="supervisao-lista-entregas">
           {entregas.map((entrega) => {
             const dec = decisoes[entrega.id] || { valeu: "sim", comentario: "" };
             const gravando = gravandoId === entrega.id;
@@ -179,54 +171,26 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
             const grade = payload.grade || {};
             const marcas = payload.marcasPrimeiraVia || {};
             const condutaTexto = payload.conduta || "";
+            const comentarioInputId = `supervisao-comentario-${entrega.id}`;
 
             return (
-              <div
-                key={entrega.id}
-                style={{
-                  border: "1px solid #e6e4e1",
-                  borderRadius: "8px",
-                  padding: "16px",
-                  background: "#faf9f6",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                    flexWrap: "wrap",
-                    gap: "8px",
-                  }}
-                >
+              <div key={entrega.id} className="supervisao-entrega">
+                <div className="supervisao-entrega-topo">
                   <div>
-                    <strong style={{ fontSize: "15px", color: "#222222" }}>
+                    <strong className="supervisao-aluno-nome">
                       {entrega.aluno?.name || "Aluno"}
                     </strong>
-                    <span style={{ fontSize: "13px", color: "#666666", marginLeft: "8px" }}>
+                    <span className="supervisao-aluno-email">
                       ({entrega.aluno?.email || ""})
                     </span>
                   </div>
-                  <span style={{ fontSize: "12px", color: "#888888" }}>
+                  <span className="supervisao-entrega-data">
                     Entregue em: {entrega.entregue_em || "—"}
                   </span>
                 </div>
 
                 {/* Resumo da Entrega do Aluno */}
-                <div
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid #e6e4e1",
-                    borderRadius: "6px",
-                    padding: "12px",
-                    marginBottom: "12px",
-                    fontSize: "13px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                  }}
-                >
+                <div className="supervisao-resumo">
                   <div>
                     <strong>Turno:</strong>{" "}
                     {payload.turno?.duracaoHoras ? `${payload.turno.duracaoHoras}h (início ${payload.turno.inicio || "—"})` : "—"}
@@ -235,31 +199,24 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
                   {condutaTexto && (
                     <div>
                       <strong>Conduta registrada:</strong>
-                      <p style={{ margin: "4px 0 0", color: "#555555", fontStyle: "italic", whiteSpace: "pre-wrap" }}>
+                      <p className="supervisao-conduta">
                         "{condutaTexto}"
                       </p>
                     </div>
                   )}
 
-                  <div style={{ fontSize: "12px", color: "#666666" }}>
+                  <div className="supervisao-contagem">
                     <strong>Organização:</strong> {Object.keys(grade).length} horário(s) com tarefas coladas ·{" "}
                     <strong>1ª Via:</strong> {Object.keys(marcas).length} item(ns) checados/circulados
                   </div>
                 </div>
 
                 {/* Controle de Presença: Valeu ou Não Valeu com Comentário */}
-                <div
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid #e6e4e1",
-                    borderRadius: "6px",
-                    padding: "12px",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "10px", flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "13px", fontWeight: 600 }}>Presença valeu?</span>
+                <div className="supervisao-presenca">
+                  <div className="supervisao-opcoes">
+                    <span className="supervisao-opcoes-pergunta">Presença valeu?</span>
 
-                    <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", cursor: "pointer" }}>
+                    <label className="supervisao-opcao">
                       <input
                         type="radio"
                         name={`supervisao-valeu-${entrega.id}`}
@@ -275,7 +232,7 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
                       Valeu (Sim)
                     </label>
 
-                    <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", cursor: "pointer" }}>
+                    <label className="supervisao-opcao">
                       <input
                         type="radio"
                         name={`supervisao-valeu-${entrega.id}`}
@@ -292,41 +249,31 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
                     </label>
                   </div>
 
-                  <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-                    <input
-                      type="text"
-                      placeholder="Comentário sobre a organização do plantão (opcional)"
-                      value={dec.comentario}
-                      onChange={(e) =>
-                        setDecisoes((prev) => ({
-                          ...prev,
-                          [entrega.id]: { ...dec, comentario: e.target.value },
-                        }))
-                      }
-                      style={{
-                        flex: 1,
-                        minWidth: "240px",
-                        padding: "6px 10px",
-                        borderRadius: "6px",
-                        border: "1px solid #e6e4e1",
-                        fontSize: "13px",
-                      }}
-                    />
+                  <div className="supervisao-comentario">
+                    <div className="field supervisao-comentario-campo">
+                      <label htmlFor={comentarioInputId} className="l">
+                        Comentário
+                      </label>
+                      <input
+                        id={comentarioInputId}
+                        type="text"
+                        className="supervisao-comentario-entrada"
+                        placeholder="Comentário sobre a organização do plantão (opcional)"
+                        value={dec.comentario}
+                        onChange={(e) =>
+                          setDecisoes((prev) => ({
+                            ...prev,
+                            [entrega.id]: { ...dec, comentario: e.target.value },
+                          }))
+                        }
+                      />
+                    </div>
 
                     <button
                       type="button"
+                      className="supervisao-botao-gravar"
                       disabled={gravando}
                       onClick={() => handleSalvarPresenca(entrega.id)}
-                      style={{
-                        padding: "6px 14px",
-                        background: "#1a3a35",
-                        color: "#ffffff",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        cursor: gravando ? "not-allowed" : "pointer",
-                      }}
                     >
                       {gravando ? "Gravando..." : "Gravar Presença"}
                     </button>

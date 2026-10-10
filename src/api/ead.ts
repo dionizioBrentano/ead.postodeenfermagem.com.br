@@ -346,4 +346,53 @@ export async function salvarPresencaTarefa(
   return (res as any)?.data ?? res;
 }
 
+// Catálogo de medicamentos de referência (sugestão de preparo)
+export interface SugestaoPreparo {
+  id: string;
+  nome: string;
+  apresentacao: string;
+  faixa_etaria?: string;
+  via_preferencial: string;
+  preparo: string | null;
+  tempo_administracao: string | null;
+}
 
+interface PaginacaoSugestaoPreparo {
+  data?: SugestaoPreparo[];
+  current_page?: number;
+  last_page?: number;
+  total?: number;
+}
+
+export async function getSugestoesPreparo(token?: string | null): Promise<SugestaoPreparo[]> {
+  const t = token || getUserToken();
+  const itens: SugestaoPreparo[] = [];
+  let page = 1;
+  let lastPage = 1;
+
+  do {
+    const res = (await request(
+      "GET",
+      `/ead/medicamentos-referencia?per_page=100&page=${page}`,
+      { bearer: t }
+    )) as PaginacaoSugestaoPreparo | SugestaoPreparo[] | null;
+
+    if (Array.isArray(res)) {
+      itens.push(...res);
+      break;
+    }
+
+    if (res && typeof res === "object") {
+      if (Array.isArray(res.data)) {
+        itens.push(...res.data);
+      }
+      if (typeof res.last_page === "number" && res.last_page > 1) {
+        lastPage = res.last_page;
+      }
+    }
+
+    page += 1;
+  } while (page <= lastPage);
+
+  return itens;
+}

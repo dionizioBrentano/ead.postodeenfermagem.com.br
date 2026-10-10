@@ -10,10 +10,24 @@ import {
   PASSOS_COMO_ORGANIZAR,
 } from "../data/prescricaoFicticia";
 import {
+  CENARIOS_PRESCRICAO_TESTE,
+  TEXTO_PREPARANDO_PRESCRICAO,
+} from "../data/cenariosPrescricaoTeste";
+import {
   extrairTarefasDaPrescricao,
   gerarHorariosTurno,
 } from "../lib/organizacaoPlantao";
-import { salvarRespostaTarefa, getTarefasTeoricas } from "../api/ead";
+import {
+  escolherPrescricaoTeste,
+  montarPrescricaoTeste,
+  sortearIndice,
+} from "../lib/prescricaoTeste";
+import { fmtData, hoje } from "../lib/historico";
+import {
+  salvarRespostaTarefa,
+  getTarefasTeoricas,
+  getSugestoesPreparo,
+} from "../api/ead";
 import { getUserToken } from "../api/client";
 
 interface Props {
@@ -28,9 +42,12 @@ export default function OrganizacaoPlantaoExercicio({
   onVoltar,
 }: Props) {
   // -------------------------------------------------------------
-  // Bloco 3: Prescrição de Teste (Fixa)
+  // Bloco 3: Prescrição de Teste
   // -------------------------------------------------------------
   const [prescricaoTeste, setPrescricaoTeste] = useState<PrescricaoFicticia>(PRESCRICAO_TESTE);
+  const [carregandoPrescricao, setCarregandoPrescricao] = useState<boolean>(() =>
+    Boolean(getUserToken())
+  );
 
   // Tarefas geradas a partir da prescrição de teste
   const tarefasTeste = useMemo(
@@ -167,15 +184,43 @@ export default function OrganizacaoPlantaoExercicio({
   const [mensagemStatus, setMensagemStatus] = useState<string | null>(null);
   const [tarefaApiId, setTarefaApiId] = useState<string>("organizacao-plantao");
 
-  // Carrega rascunho anterior da API caso exista
+  // Carrega rascunho anterior da API ou sorteia cenário com sugestão de preparo do catálogo
   useEffect(() => {
+    let cancelado = false;
     const token = getUserToken();
-    if (!token) return;
 
-    getTarefasTeoricas(turmaId, token)
-      .then((tarefas: any) => {
-        if (Array.isArray(tarefas) && tarefas.length > 0) {
-          const t = tarefas.find((x: any) => x.tipo === "organizacao_plantao") || tarefas[0];
+    if (!token) {
+      setPrescricaoTeste(escolherPrescricaoTeste({ salva: null, montada: null }));
+      setCarregandoPrescricao(false);
+      return;
+    }
+
+    setCarregandoPrescricao(true);
+
+    interface TarefaOrganizacaoApi {
+      id?: string;
+      tipo?: string;
+      minha_resposta?: {
+        status?: "rascunho" | "entregue";
+        payload?: {
+          grade?: Record<string, TarefaArrastavel[]>;
+          janelasHorarios?: string[];
+          turno?: { tipo?: TipoTurno; inicio?: string };
+          marcasPrimeiraVia?: Record<string, MarcaPrimeiraVia>;
+          conduta?: string;
+          prescricaoTeste?: PrescricaoFicticia;
+        };
+      };
+    }
+
+    const carregar = async () => {
+      let salva: PrescricaoFicticia | null = null;
+      let montada: PrescricaoFicticia | null = null;
+
+      try {
+        const tarefas = (await getTarefasTeoricas(turmaId, token)) as TarefaOrganizacaoApi[];
+        if (!cancelado && Array.isArray(tarefas) && tarefas.length > 0) {
+          const t = tarefas.find((x) => x.tipo === "organizacao_plantao") || tarefas[0];
           if (t?.id) {
             setTarefaApiId(t.id);
             if (t.minha_resposta?.status) {
@@ -198,15 +243,39 @@ export default function OrganizacaoPlantaoExercicio({
                 setConduta(payload.conduta);
               }
               if (payload?.prescricaoTeste) {
-                setPrescricaoTeste(payload.prescricaoTeste);
+                salva = payload.prescricaoTeste;
               }
             }
           }
         }
-      })
-      .catch((err) => {
-        console.warn("Não foi possível sincronizar da API neste momento", err);
-      });
+      } catch {
+        salva = null;
+      }
+
+      if (!salva && !cancelado) {
+        try {
+          const catalogo = await getSugestoesPreparo(token);
+          const indice = sortearIndice(CENARIOS_PRESCRICAO_TESTE.length);
+          const cenario = CENARIOS_PRESCRICAO_TESTE[indice];
+          if (cenario) {
+            montada = montarPrescricaoTeste(catalogo, cenario, fmtData(hoje()));
+          }
+        } catch {
+          montada = null;
+        }
+      }
+
+      if (!cancelado) {
+        setPrescricaoTeste(escolherPrescricaoTeste({ salva, montada }));
+        setCarregandoPrescricao(false);
+      }
+    };
+
+    void carregar();
+
+    return () => {
+      cancelado = true;
+    };
   }, [turmaId]);
 
   // Grava resposta (Rascunho ou Entregue)
@@ -398,6 +467,8 @@ export default function OrganizacaoPlantaoExercicio({
             <div><strong>Unidade:</strong> {PRESCRICAO_ESTUDO.unidade}</div>
             <div><strong>Leito:</strong> {PRESCRICAO_ESTUDO.leito}</div>
             <div><strong>Paciente:</strong> {PRESCRICAO_ESTUDO.paciente}</div>
+            <div><strong>Idade:</strong> {PRESCRICAO_ESTUDO.idade}</div>
+            <div><strong>Peso:</strong> {PRESCRICAO_ESTUDO.peso}</div>
             <div><strong>Diagnóstico:</strong> {PRESCRICAO_ESTUDO.diagnostico}</div>
             <div><strong>Alergias:</strong> {PRESCRICAO_ESTUDO.alergias}</div>
           </div>
@@ -543,36 +614,42 @@ export default function OrganizacaoPlantaoExercicio({
             marginBottom: "24px",
           }}
         >
-          <div style={{ marginBottom: "16px" }}>
-            <h2 style={{ fontSize: "18px", margin: "0 0 4px", color: "#3a3a3a" }}>
-              Prescrição de teste
-            </h2>
-            <p style={{ margin: 0, fontSize: "13px", color: "#666666" }}>
-              É outra prescrição para você organizar.
-            </p>
-          </div>
+          {carregandoPrescricao ? (
+            <div className="guia-status-msg">{TEXTO_PREPARANDO_PRESCRICAO}</div>
+          ) : (
+            <>
+              <div style={{ marginBottom: "16px" }}>
+                <h2 style={{ fontSize: "18px", margin: "0 0 4px", color: "#3a3a3a" }}>
+                  Prescrição de teste
+                </h2>
+                <p style={{ margin: 0, fontSize: "13px", color: "#666666" }}>
+                  É outra prescrição para você organizar.
+                </p>
+              </div>
 
-          {/* Dados do paciente de teste */}
-          <div
-            style={{
-              background: "#faf9f6",
-              border: "1px solid #eae7e1",
-              borderRadius: "8px",
-              padding: "12px 16px",
-              marginBottom: "16px",
-              fontSize: "13px",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "8px",
-            }}
-          >
-            <div><strong>Hospital:</strong> {prescricaoTeste.hospital}</div>
-            <div><strong>Unidade:</strong> {prescricaoTeste.unidade}</div>
-            <div><strong>Leito:</strong> {prescricaoTeste.leito}</div>
-            <div><strong>Paciente:</strong> {prescricaoTeste.paciente}</div>
-            <div><strong>Diagnóstico:</strong> {prescricaoTeste.diagnostico}</div>
-            <div><strong>Alergias:</strong> {prescricaoTeste.alergias}</div>
-          </div>
+              {/* Dados do paciente de teste */}
+              <div
+                style={{
+                  background: "#faf9f6",
+                  border: "1px solid #eae7e1",
+                  borderRadius: "8px",
+                  padding: "12px 16px",
+                  marginBottom: "16px",
+                  fontSize: "13px",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "8px",
+                }}
+              >
+                <div><strong>Hospital:</strong> {prescricaoTeste.hospital}</div>
+                <div><strong>Unidade:</strong> {prescricaoTeste.unidade}</div>
+                <div><strong>Leito:</strong> {prescricaoTeste.leito}</div>
+                <div><strong>Paciente:</strong> {prescricaoTeste.paciente}</div>
+                <div><strong>Idade:</strong> {prescricaoTeste.idade}</div>
+                <div><strong>Peso:</strong> {prescricaoTeste.peso ?? ""}</div>
+                <div><strong>Diagnóstico:</strong> {prescricaoTeste.diagnostico}</div>
+                <div><strong>Alergias:</strong> {prescricaoTeste.alergias}</div>
+              </div>
 
           {/* Tabela da 1ª Via da Prescrição de Teste (Checar / Circular) */}
           <div style={{ marginBottom: "20px" }}>
@@ -1222,6 +1299,8 @@ export default function OrganizacaoPlantaoExercicio({
             >
               {mensagemStatus}
             </div>
+          )}
+            </>
           )}
         </section>
       </div>

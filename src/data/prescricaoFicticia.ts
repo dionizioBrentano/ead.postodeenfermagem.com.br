@@ -31,6 +31,7 @@ export interface PrescricaoFicticia {
   prontuario: string;
   paciente: string;
   idade: string;
+  peso: string;
   data: string;
   diagnostico: string;
   alergias: string;
@@ -48,6 +49,7 @@ export const PRESCRICAO_ESTUDO: PrescricaoFicticia = {
   prontuario: "000842",
   paciente: "Paciente Simulado de Estágio",
   idade: "54 anos",
+  peso: "82 kg",
   data: "09/10/2026",
   diagnostico: "Pós-operatório de colecistectomia videolaparoscópica / HAS / DM2",
   alergias: "Nega alergias medicamentosas conhecidas",
@@ -187,6 +189,46 @@ export const PASSOS_COMO_ORGANIZAR: string[] = [
   "na conduta, escreva o que checou, o que circulou, o motivo e o horário novo.",
 ];
 
+export const CUIDADO_TESTE_DIETA: PrescricaoItem = {
+  id: "teste-dieta",
+  categoria: "dieta",
+  apresentacao: "Dieta branda para diabetes",
+  dose: "—",
+  via: "VO",
+  frequencia: "Conforme rotina",
+  horariosAprazados: "Horários da nutrição",
+};
+
+export const CUIDADO_TESTE_SSVV: PrescricaoItem = {
+  id: "teste-ssvv",
+  categoria: "sinais_vitais",
+  apresentacao: "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)",
+  dose: "—",
+  via: "Beira do leito",
+  frequencia: "4/4h",
+  horariosAprazados: "06h - 10h - 14h - 18h - 22h - 02h",
+};
+
+export const CUIDADO_TESTE_CURATIVO: PrescricaoItem = {
+  id: "teste-curativo",
+  categoria: "cuidado",
+  apresentacao: "Curativo da ferida operatória com SF 0,9%",
+  dose: "—",
+  via: "Tópica",
+  frequencia: "1x ao dia",
+  horariosAprazados: "10h",
+};
+
+export const CUIDADO_TESTE_DECUBITO: PrescricaoItem = {
+  id: "teste-decubito",
+  categoria: "cuidado",
+  apresentacao: "Mudança de decúbito e alívio de pontos de pressão",
+  dose: "—",
+  via: "Leito",
+  frequencia: "A cada 2 horas",
+  horariosAprazados: "Horários pares",
+};
+
 /**
  * Bloco 3: Prescrição de teste fixa (imutável, com conflito EV às 06h).
  */
@@ -197,46 +239,15 @@ export const PRESCRICAO_TESTE: PrescricaoFicticia = {
   prontuario: "000000-SIM",
   paciente: "Paciente Simulado de Teste",
   idade: "61 anos",
+  peso: "76 kg",
   data: "09/10/2026",
   diagnostico: "Pós-operatório de laparotomia / infecção intra-abdominal / diabetes tipo 2",
   alergias: "Nega alergias medicamentosas conhecidas",
   itens: [
-    {
-      id: "teste-dieta",
-      categoria: "dieta",
-      apresentacao: "Dieta branda para diabetes",
-      dose: "—",
-      via: "VO",
-      frequencia: "Conforme rotina",
-      horariosAprazados: "Horários da nutrição",
-    },
-    {
-      id: "teste-ssvv",
-      categoria: "sinais_vitais",
-      apresentacao: "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)",
-      dose: "—",
-      via: "Beira do leito",
-      frequencia: "4/4h",
-      horariosAprazados: "06h - 10h - 14h - 18h - 22h - 02h",
-    },
-    {
-      id: "teste-curativo",
-      categoria: "cuidado",
-      apresentacao: "Curativo da ferida operatória com SF 0,9%",
-      dose: "—",
-      via: "Tópica",
-      frequencia: "1x ao dia",
-      horariosAprazados: "10h",
-    },
-    {
-      id: "teste-decubito",
-      categoria: "cuidado",
-      apresentacao: "Mudança de decúbito e alívio de pontos de pressão",
-      dose: "—",
-      via: "Leito",
-      frequencia: "A cada 2 horas",
-      horariosAprazados: "Horários pares",
-    },
+    CUIDADO_TESTE_DIETA,
+    CUIDADO_TESTE_SSVV,
+    CUIDADO_TESTE_CURATIVO,
+    CUIDADO_TESTE_DECUBITO,
     {
       id: "teste-ceftriaxona",
       categoria: "medicamento",
