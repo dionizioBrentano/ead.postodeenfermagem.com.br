@@ -342,3 +342,37 @@ export const MENSAGEM_SUCESSO_ENTREGUE_ALUNO =
 export const MENSAGEM_SUCESSO_ENTREGUE_DOCENTE =
   "Organização do plantão enviada com sucesso em modo de teste (origem: teste).";
 
+export const TEXTO_TURNO_NAO_INFORMADO = "Turno não informado";
+export const TEXTO_VER_ORGANIZACAO_PLANTAO = "Ver a organização do plantão";
+export const TEXTO_ENTREGA_SEM_ORGANIZACAO = "Entrega sem organização gravada.";
+export const TEXTO_PRESCRICAO_NAO_GRAVADA = "A prescrição não foi gravada nesta entrega.";
+export const TEXTO_JANELA_SEM_CUIDADO_LEITURA = "Nenhum cuidado neste horário.";
+export const TEXTO_CONDUTA_NAO_REGISTRADA = "Nenhuma conduta registrada.";
+
+export const TEXTO_MARCA_CHECADO = "Checado (/)";
+export const TEXTO_MARCA_CIRCULADO_NAO_FEITO = "Circulado (○) — não feito";
+export const TEXTO_MARCA_CIRCULADO_REAPRAZADO = "Circulado (○) — reaprazado";
+export const TEXTO_MARCA_CIRCULADO_REAPRAZADO_PARA = "Circulado (○) — reaprazado para";
+export const TEXTO_MARCA_SEM_MARCA = "Sem marca";
+
+export const ROTULOS_LEITURA_ORGANIZACAO = {
+  dadosPacienteTitulo: "Dados do paciente",
+  hospital: "Hospital:",
+  unidade: "Unidade:",
+  leito: "Leito:",
+  paciente: "Paciente:",
+  idade: "Idade:",
+  peso: "Peso:",
+  diagnostico: "Diagnóstico:",
+  alergias: "Alergias:",
+  turnoTitulo: "Turno",
+  janelasTitulo: "Janelas de horário",
+  janelaPrefixo: "Janela das",
+  primeiraViaTitulo: "1ª Via da Prescrição",
+  colunaItem: "Medicamento ou cuidado",
+  colunaDose: "Dose",
+  colunaVia: "Via",
+  colunaHorarios: "Horários aprazados",
+  colunaMarca: "Marca",
+  condutaTitulo: "Conduta",
+} as const;

@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
-import { getTarefasTeoricas, getEntregasTarefa, salvarPresencaTarefa } from "../api/ead";
+import {
+  getTarefasTeoricas,
+  getEntregasTarefa,
+  salvarPresencaTarefa,
+  type EntregaTarefaTeorica,
+} from "../api/ead";
 import { getUserToken } from "../api/client";
+import {
+  TEXTO_ENTREGA_SEM_ORGANIZACAO,
+  TEXTO_VER_ORGANIZACAO_PLANTAO,
+} from "../data/prescricaoFicticia";
+import { montarLeituraOrganizacao } from "../lib/leituraOrganizacaoPlantao";
+import OrganizacaoPlantaoLeitura from "./OrganizacaoPlantaoLeitura";
 import "./TarefasTeoricasSupervisao.css";
 
 const ERRO_CARREGAR_TAREFAS = "Não foi possível carregar as tarefas da turma.";
@@ -15,7 +26,7 @@ interface Props {
 export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
   const [tarefas, setTarefas] = useState<any[]>([]);
   const [tarefaSelecionadaId, setTarefaSelecionadaId] = useState<string>("");
-  const [entregas, setEntregas] = useState<any[]>([]);
+  const [entregas, setEntregas] = useState<EntregaTarefaTeorica[]>([]);
   const [carregando, setCarregando] = useState(false);
   const [carregandoEntregas, setCarregandoEntregas] = useState(false);
   const [decisoes, setDecisoes] = useState<Record<string, { valeu: "sim" | "nao"; comentario: string }>>({});
@@ -37,10 +48,10 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
     setCarregando(true);
     setErro(null);
     getTarefasTeoricas(turmaId, token)
-      .then((res: any) => {
+      .then((res) => {
         if (Array.isArray(res)) {
           setTarefas(res);
-          if (res.length > 0) {
+          if (res.length > 0 && res[0]?.id) {
             setTarefaSelecionadaId(res[0].id);
           }
         }
@@ -63,10 +74,11 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
 
     setCarregandoEntregas(true);
     getEntregasTarefa(tarefaSelecionadaId, token)
-      .then((res: any) => {
+      .then((res) => {
         if (Array.isArray(res)) {
+          const lista = res as EntregaTarefaTeorica[];
           // Garante filtro rigoroso de origem aluno (Requisito 5)
-          const apenasAlunos = res.filter((e) => e.origem === "aluno");
+          const apenasAlunos = lista.filter((e) => e.origem === "aluno");
           setEntregas(apenasAlunos);
 
           const mapa: Record<string, { valeu: "sim" | "nao"; comentario: string }> = {};
@@ -172,6 +184,7 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
             const marcas = payload.marcasPrimeiraVia || {};
             const condutaTexto = payload.conduta || "";
             const comentarioInputId = `supervisao-comentario-${entrega.id}`;
+            const leitura = montarLeituraOrganizacao(entrega.payload);
 
             return (
               <div key={entrega.id} className="supervisao-entrega">
@@ -210,6 +223,20 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
                     <strong>1ª Via:</strong> {Object.keys(marcas).length} item(ns) checados/circulados
                   </div>
                 </div>
+
+                {/* Leitura detalhada da organização do plantão */}
+                {leitura.temConteudo ? (
+                  <details className="supervisao-detalhes">
+                    <summary className="supervisao-detalhes-resumo">
+                      {TEXTO_VER_ORGANIZACAO_PLANTAO}
+                    </summary>
+                    <OrganizacaoPlantaoLeitura leitura={leitura} />
+                  </details>
+                ) : (
+                  <p className="muted supervisao-sem-organizacao">
+                    {TEXTO_ENTREGA_SEM_ORGANIZACAO}
+                  </p>
+                )}
 
                 {/* Controle de Presença: Valeu ou Não Valeu com Comentário */}
                 <div className="supervisao-presenca">

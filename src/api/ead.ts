@@ -302,20 +302,32 @@ export interface RespostaTarefaPayload {
   origem?: "aluno" | "teste";
 }
 
+export interface PayloadOrganizacaoPlantao {
+  grade?: Record<string, TarefaArrastavel[]>;
+  janelasHorarios?: string[];
+  turno?: { tipo?: TipoTurno; duracaoHoras?: number; inicio?: string };
+  marcasPrimeiraVia?: Record<string, MarcaPrimeiraVia>;
+  conduta?: string;
+  prescricaoTeste?: PrescricaoFicticia;
+  data_gravacao?: string;
+}
+
 export interface TarefaTeoricaComResposta {
   id?: string;
   tipo?: string;
   minha_resposta?: {
     status?: "rascunho" | "entregue";
-    payload?: {
-      grade?: Record<string, TarefaArrastavel[]>;
-      janelasHorarios?: string[];
-      turno?: { tipo?: TipoTurno; inicio?: string };
-      marcasPrimeiraVia?: Record<string, MarcaPrimeiraVia>;
-      conduta?: string;
-      prescricaoTeste?: PrescricaoFicticia;
-    };
+    payload?: PayloadOrganizacaoPlantao;
   };
+}
+
+export interface EntregaTarefaTeorica {
+  id: string;
+  origem?: string;
+  entregue_em?: string | null;
+  aluno?: { name?: string; email?: string };
+  presenca?: { valeu: "sim" | "nao"; comentario?: string | null } | null;
+  payload?: PayloadOrganizacaoPlantao | null;
 }
 
 export async function getTarefasTeoricas(turmaId?: string, token?: string | null) {

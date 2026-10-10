@@ -69,6 +69,7 @@
   border-radius: 8px;
   padding: 16px;
   background: var(--bg);
+  min-width: 0;
 }
 
 .supervisao-entrega-topo {
@@ -89,6 +90,7 @@
   font-size: 13px;
   color: var(--muted);
   margin-left: 8px;
+  overflow-wrap: anywhere;
 }
 
 .supervisao-entrega-data {
@@ -106,6 +108,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .supervisao-conduta {
@@ -125,6 +128,7 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 12px;
+  min-width: 0;
 }
 
 .supervisao-opcoes {
@@ -183,3 +187,55 @@
 .supervisao-botao-gravar:disabled {
   cursor: not-allowed;
 }
+
+.supervisao-detalhes {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.supervisao-detalhes-resumo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.supervisao-sem-organizacao {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.supervisao-leitura {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.supervisao-leitura-secao {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.supervisao-leitura-dados-paciente {
+  margin-bottom: 0;
+}
+
+.supervisao-leitura-turno {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.supervisao-leitura-conduta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
