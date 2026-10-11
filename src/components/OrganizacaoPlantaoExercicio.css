@@ -495,6 +495,9 @@
   gap: 2px;
   box-shadow: none;
   max-width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .plantao-tarefa[aria-pressed="true"] {

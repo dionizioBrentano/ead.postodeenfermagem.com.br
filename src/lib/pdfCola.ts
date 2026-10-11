@@ -18,6 +18,14 @@ type Doc = jsPDF & { lastAutoTable: { finalY: number } };
 
 const QUANTIDADE_LINHAS_PENDENCIAS = 4;
 const ALTURA_LINHA_PENDENCIA_MM = 7;
+const TEXTO_LEGENDA_ADMINISTRADO = "/ = administrado";
+const TEXTO_LEGENDA_NAO_ADMINISTRADO =
+  "= não administrado (escreva o motivo na anotação)";
+const RAIO_CIRCULO_LEGENDA_MM = 1.3;
+const DESLOCAMENTO_VERTICAL_CIRCULO_MM = 1.1;
+const ESPACO_ANTES_CIRCULO_MM = 4;
+const ESPACO_DEPOIS_CIRCULO_MM = 1.8;
+const ESPESSURA_LINHA_CIRCULO_MM = 0.35;
 
 export function nomeArquivoCola(cola: ColaPlantao): string {
   const dataComHifens =
@@ -155,17 +163,25 @@ export function gerarPdfCola(cola: ColaPlantao): jsPDF {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...MUTED);
-  const [antesCirculo, depoisCirculo] = TEXTOS_PDF_COLA.legenda.split("○");
-  if (depoisCirculo !== undefined) {
-    doc.text(antesCirculo, M, y);
-    const xCirculo = M + doc.getTextWidth(antesCirculo) + 1.2;
-    doc.setDrawColor(...MUTED);
-    doc.setLineWidth(0.3);
-    doc.circle(xCirculo, y - 1, 1, "S");
-    doc.text(depoisCirculo, xCirculo + 1.3, y);
-  } else {
-    doc.text(TEXTOS_PDF_COLA.legenda, M, y);
-  }
+  doc.text(TEXTO_LEGENDA_ADMINISTRADO, M, y);
+  const xCirculo =
+    M +
+    doc.getTextWidth(TEXTO_LEGENDA_ADMINISTRADO) +
+    ESPACO_ANTES_CIRCULO_MM +
+    RAIO_CIRCULO_LEGENDA_MM;
+  doc.setDrawColor(...MUTED);
+  doc.setLineWidth(ESPESSURA_LINHA_CIRCULO_MM);
+  doc.circle(
+    xCirculo,
+    y - DESLOCAMENTO_VERTICAL_CIRCULO_MM,
+    RAIO_CIRCULO_LEGENDA_MM,
+    "S"
+  );
+  doc.text(
+    TEXTO_LEGENDA_NAO_ADMINISTRADO,
+    xCirculo + RAIO_CIRCULO_LEGENDA_MM + ESPACO_DEPOIS_CIRCULO_MM,
+    y
+  );
 
   y += 7;
   doc.setFont("helvetica", "bold");

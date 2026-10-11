@@ -3,6 +3,7 @@ import {
   useRef,
   useEffect,
   useCallback,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import type { TarefaArrastavel } from "../data/prescricaoFicticia";
@@ -192,14 +193,30 @@ export function useArrastoToque(
       encerrarSessao();
     };
 
+    const onWindowTouchMove = (e: TouchEvent) => {
+      if (sessaoRef.current?.arrastando) {
+        e.preventDefault();
+      }
+    };
+
+    const onWindowContextMenu = (e: Event) => {
+      if (sessaoRef.current) {
+        e.preventDefault();
+      }
+    };
+
     window.addEventListener("pointermove", onWindowPointerMove);
     window.addEventListener("pointerup", onWindowPointerUp);
     window.addEventListener("pointercancel", onWindowPointerCancel);
+    window.addEventListener("touchmove", onWindowTouchMove, { passive: false });
+    window.addEventListener("contextmenu", onWindowContextMenu);
 
     return () => {
       window.removeEventListener("pointermove", onWindowPointerMove);
       window.removeEventListener("pointerup", onWindowPointerUp);
       window.removeEventListener("pointercancel", onWindowPointerCancel);
+      window.removeEventListener("touchmove", onWindowTouchMove);
+      window.removeEventListener("contextmenu", onWindowContextMenu);
     };
   }, [encerrarSessao, finalizarToque, processarMovimento]);
 
@@ -263,6 +280,11 @@ export function useArrastoToque(
           return;
         }
         encerrarSessao();
+      },
+      onContextMenu: (e: ReactMouseEvent<HTMLElement>) => {
+        if (sessaoRef.current) {
+          e.preventDefault();
+        }
       },
     }),
     [ativarArrasto, encerrarSessao, finalizarToque, limparTimer, processarMovimento]
