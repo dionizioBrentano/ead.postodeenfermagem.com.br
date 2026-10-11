@@ -8,28 +8,23 @@ import { ATIVIDADES, GERAIS, type Item, type Nota } from "../data/itens";
 import { corDaNota, rgb } from "./cores";
 import { fmt1, fmtData, media, type Avaliacao } from "./historico";
 
-type Doc = jsPDF & { lastAutoTable: { finalY: number } };
+import {
+  INK,
+  LINE,
+  M,
+  MUTED,
+  TEAL,
+  ZEBRA,
+  desenharCabecalho,
+  desenharRodape,
+  slug,
+} from "./pdfComum";
 
-const TEAL: [number, number, number] = [15, 124, 116];
-const INK: [number, number, number] = [21, 35, 43];
-const MUTED: [number, number, number] = [86, 102, 111];
-const LINE: [number, number, number] = [214, 223, 227];
-const ZEBRA: [number, number, number] = [243, 246, 247];
-const M = 14;
+type Doc = jsPDF & { lastAutoTable: { finalY: number } };
 
 function notaTexto(v: Nota): string {
   if (v === "na") return "Não pratiquei";
   return v == null ? "–" : String(v);
-}
-
-function slug(t: string): string {
-  return (t || "aluno")
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 40);
 }
 
 export function nomeArquivo(av: Avaliacao): string {
@@ -52,16 +47,11 @@ export function gerarPDF(av: Avaliacao, historico: Avaliacao[]): jsPDF {
   const doc = new jsPDF({ unit: "mm", format: "a4" }) as Doc;
   const W = doc.internal.pageSize.getWidth();
 
-  doc.setFillColor(...TEAL);
-  doc.rect(0, 0, W, 4, "F");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.setTextColor(...INK);
-  doc.text("Autoavaliação do Estágio Hospitalar", M, 18);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(...MUTED);
-  doc.text("Curso Técnico em Enfermagem · ead.postodeenfermagem.com.br", M, 24);
+  desenharCabecalho(
+    doc,
+    "Autoavaliação do Estágio Hospitalar",
+    "Curso Técnico em Enfermagem · ead.postodeenfermagem.com.br"
+  );
 
   autoTable(doc, {
     startY: 29,
@@ -184,16 +174,10 @@ export function gerarPDF(av: Avaliacao, historico: Avaliacao[]): jsPDF {
     },
   });
 
-  const paginas = doc.getNumberOfPages();
-  for (let p = 1; p <= paginas; p++) {
-    doc.setPage(p);
-    const pw = doc.internal.pageSize.getWidth();
-    const ph = doc.internal.pageSize.getHeight();
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(...MUTED);
-    doc.text("Autoavaliação do aluno. Não substitui a avaliação do supervisor de estágio.", M, ph - 8);
-    doc.text(`Página ${p} de ${paginas}`, pw - M, ph - 8, { align: "right" });
-  }
+  desenharRodape(
+    doc,
+    "Autoavaliação do aluno. Não substitui a avaliação do supervisor de estágio."
+  );
   return doc;
 }
+

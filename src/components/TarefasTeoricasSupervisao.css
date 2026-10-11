@@ -239,3 +239,108 @@
   white-space: pre-wrap;
 }
 
+.supervisao-leitura-nivel {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.supervisao-leitura-relato {
+  margin-bottom: 0;
+}
+
+.supervisao-conferencia {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.supervisao-conferencia-janelas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 10px;
+}
+
+.supervisao-conferencia-janela {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.supervisao-conferencia-janela-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.supervisao-conferencia-contagem {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--c1s);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.supervisao-conferencia-bloco-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.supervisao-conferencia-rotulo-lista {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.supervisao-conferencia-lista {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--ink);
+}
+
+.supervisao-conferencia-relato-item {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.supervisao-conferencia-sim {
+  font-weight: 700;
+  color: var(--ok);
+}
+
+.supervisao-conferencia-nao {
+  font-weight: 700;
+  color: var(--no);
+}
+
+.supervisao-conferencia-neutro {
+  color: var(--muted);
+}
+
+.supervisao-conferencia-aviso-apoio {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+

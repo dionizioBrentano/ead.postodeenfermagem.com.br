@@ -8,6 +8,7 @@ import {
 } from "../data/cenariosPrescricaoTeste";
 import {
   PRESCRICAO_TESTE,
+  type EventoPlantao,
   type PrescricaoFicticia,
   type PrescricaoItem,
 } from "../data/prescricaoFicticia";
@@ -71,6 +72,8 @@ export function montarPrescricaoTeste(
 
   const faixa = faixaEtariaDoPaciente(cenario.idadeAnos);
   const itens: PrescricaoItem[] = [...cenario.cuidados];
+  const idsCuidados = new Set(cenario.cuidados.map((c) => c.id));
+  const idPorNomeMedicamento = new Map<string, string>();
 
   for (const fixo of cenario.medicamentosFixos) {
     const horariosAprazados =
@@ -87,8 +90,9 @@ export function montarPrescricaoTeste(
       return null;
     }
 
+    const itemId = `teste-${sugestao.id}`;
     const item: PrescricaoItem = {
-      id: `teste-${sugestao.id}`,
+      id: itemId,
       categoria: "medicamento",
       apresentacao: descreverApresentacao(sugestao),
       dose: fixo.dose,
@@ -102,6 +106,7 @@ export function montarPrescricaoTeste(
     }
 
     itens.push(item);
+    idPorNomeMedicamento.set(fixo.nome, itemId);
   }
 
   for (const sn of cenario.medicamentosSeNecessario) {
@@ -110,8 +115,9 @@ export function montarPrescricaoTeste(
       return null;
     }
 
+    const itemId = `teste-${sugestao.id}`;
     itens.push({
-      id: `teste-${sugestao.id}`,
+      id: itemId,
       categoria: "sn",
       apresentacao: descreverApresentacao(sugestao),
       dose: sn.dose,
@@ -119,7 +125,34 @@ export function montarPrescricaoTeste(
       frequencia: "S/N",
       horariosAprazados: `S/N se ${sn.criterio} (intervalo mínimo de ${sn.intervaloMinimoHoras} h)`,
     });
+    idPorNomeMedicamento.set(sn.nome, itemId);
   }
+
+  const eventos: EventoPlantao[] = [];
+  for (const ev of cenario.eventos) {
+    let itemId: string | undefined;
+    if ("cuidadoId" in ev.alvo) {
+      if (idsCuidados.has(ev.alvo.cuidadoId)) {
+        itemId = ev.alvo.cuidadoId;
+      }
+    } else {
+      itemId = idPorNomeMedicamento.get(ev.alvo.medicamento);
+    }
+
+    if (!itemId) {
+      return null;
+    }
+
+    eventos.push({
+      horario: ev.horario,
+      itemId,
+      situacao: ev.situacao,
+      ...(ev.horarioNovo !== undefined ? { horarioNovo: ev.horarioNovo } : {}),
+      relato: ev.relato,
+    });
+  }
+
+  eventos.sort((a, b) => a.horario.localeCompare(b.horario));
 
   return {
     hospital: cenario.hospital,
@@ -133,6 +166,8 @@ export function montarPrescricaoTeste(
     diagnostico: cenario.diagnostico,
     alergias: cenario.alergias,
     itens,
+    nivel: cenario.nivel,
+    eventos,
   };
 }
 

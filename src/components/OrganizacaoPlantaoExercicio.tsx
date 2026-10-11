@@ -10,14 +10,21 @@ import {
   PASSOS_COMO_ORGANIZAR,
   MENSAGEM_ERRO_SALVAR_SEM_TOKEN,
   MENSAGEM_ERRO_SALVAR_API,
+  MENSAGEM_ERRO_GERAR_PDF_COLA,
   MENSAGEM_SUCESSO_RASCUNHO,
   MENSAGEM_SUCESSO_ENTREGUE_ALUNO,
   MENSAGEM_SUCESSO_ENTREGUE_DOCENTE,
+  TEXTO_BOTAO_BAIXAR_COLA_PDF,
+  TEXTO_INSTRUCAO_ARRASTO_CELULAR,
 } from "../data/prescricaoFicticia";
 import {
   CENARIOS_PRESCRICAO_TESTE,
+  ROTULO_NIVEL,
+  TITULO_RELATO_PLANTAO,
+  TOTAL_NIVEIS_DIFICULDADE,
   TEXTO_PREPARANDO_PRESCRICAO,
 } from "../data/cenariosPrescricaoTeste";
+import { montarCola } from "../lib/colaPlantao";
 import {
   extrairTarefasDaPrescricao,
   gerarHorariosTurno,
@@ -35,6 +42,7 @@ import {
   type TarefaTeoricaComResposta,
 } from "../api/ead";
 import { getUserToken } from "../api/client";
+import { useArrastoToque } from "./useArrastoToque";
 import "./OrganizacaoPlantaoExercicio.css";
 
 interface Props {
@@ -109,20 +117,8 @@ export default function OrganizacaoPlantaoExercicio({
   const [grade, setGrade] = useState<Record<string, TarefaArrastavel[]>>({});
   const [tarefaSelecionadaId, setTarefaSelecionadaId] = useState<string | null>(null);
 
-  // Interação por toque: toque na tarefa seleciona; toque de novo solta
-  const handleToqueTarefa = (tarefa: TarefaArrastavel) => {
-    if (tarefaSelecionadaId === tarefa.id) {
-      setTarefaSelecionadaId(null); // Toque de novo solta
-    } else {
-      setTarefaSelecionadaId(tarefa.id);
-    }
-  };
-
-  // Copia tarefa selecionada para a janela tocada
-  const handleCopiarParaJanela = (horario: string) => {
-    if (!tarefaSelecionadaId) return;
-
-    const tarefa = tarefasTeste.find((t) => t.id === tarefaSelecionadaId);
+  const colarNaJanela = (tarefaId: string, horario: string) => {
+    const tarefa = tarefasTeste.find((t) => t.id === tarefaId);
     if (!tarefa) return;
 
     setGrade((prev) => {
@@ -133,7 +129,33 @@ export default function OrganizacaoPlantaoExercicio({
       };
     });
 
-    setTarefaSelecionadaId(null); // Solta após copiar
+    setTarefaSelecionadaId((atual) => (atual === tarefaId ? null : atual));
+  };
+
+  const {
+    fantasma,
+    horarioAlvo,
+    tarefaArrastandoId,
+    criarEventosToque,
+    consumirBloqueioClique,
+  } = useArrastoToque(colarNaJanela);
+
+  // Interação por toque: toque na tarefa seleciona; toque de novo solta
+  const handleToqueTarefa = (tarefa: TarefaArrastavel) => {
+    if (consumirBloqueioClique()) {
+      return;
+    }
+    if (tarefaSelecionadaId === tarefa.id) {
+      setTarefaSelecionadaId(null); // Toque de novo solta
+    } else {
+      setTarefaSelecionadaId(tarefa.id);
+    }
+  };
+
+  // Copia tarefa selecionada para a janela tocada
+  const handleCopiarParaJanela = (horario: string) => {
+    if (!tarefaSelecionadaId) return;
+    colarNaJanela(tarefaSelecionadaId, horario);
   };
 
   const handleRemoverDaJanela = (horario: string, tarefaInstanciaId: string) => {
@@ -156,21 +178,7 @@ export default function OrganizacaoPlantaoExercicio({
     e.preventDefault();
     const tarefaId = e.dataTransfer.getData("text/plain");
     if (!tarefaId) return;
-
-    const tarefa = tarefasTeste.find((t) => t.id === tarefaId);
-    if (!tarefa) return;
-
-    setGrade((prev) => {
-      const listaAtual = prev[horario] || [];
-      return {
-        ...prev,
-        [horario]: [...listaAtual, { ...tarefa, id: `${tarefa.id}-${Date.now()}` }],
-      };
-    });
-
-    if (tarefaSelecionadaId === tarefaId) {
-      setTarefaSelecionadaId(null);
-    }
+    colarNaJanela(tarefaId, horario);
   };
 
   // -------------------------------------------------------------
@@ -326,6 +334,23 @@ export default function OrganizacaoPlantaoExercicio({
     () => tarefasTeste.filter((t) => t.isSN),
     [tarefasTeste]
   );
+
+  const handleBaixarColaPdf = async () => {
+    setErroSalvar(null);
+    try {
+      const cola = montarCola({
+        prescricao: prescricaoTeste,
+        turno: opcaoSelecionada.rotulo,
+        janelasHorarios,
+        grade,
+        seNecessario: cuidadosSN,
+      });
+      const { gerarPdfCola, nomeArquivoCola } = await import("../lib/pdfCola");
+      gerarPdfCola(cola).save(nomeArquivoCola(cola));
+    } catch {
+      setErroSalvar(MENSAGEM_ERRO_GERAR_PDF_COLA);
+    }
+  };
 
   return (
     <div className="plantao-pagina">
@@ -511,6 +536,36 @@ export default function OrganizacaoPlantaoExercicio({
                 <div><strong>Diagnóstico:</strong> {prescricaoTeste.diagnostico}</div>
                 <div><strong>Alergias:</strong> {prescricaoTeste.alergias}</div>
               </div>
+
+              {typeof prescricaoTeste.nivel === "number" && (
+                <div className="plantao-nivel">
+                  {ROTULO_NIVEL}: {prescricaoTeste.nivel} de {TOTAL_NIVEIS_DIFICULDADE}
+                </div>
+              )}
+
+              {Array.isArray(prescricaoTeste.eventos) &&
+                prescricaoTeste.eventos.length > 0 && (
+                  <div className="plantao-relato">
+                    <h3 className="plantao-subsecao-titulo">
+                      {TITULO_RELATO_PLANTAO}
+                    </h3>
+                    <ul className="plantao-relato-lista">
+                      {[...prescricaoTeste.eventos]
+                        .sort((a, b) => a.horario.localeCompare(b.horario))
+                        .map((ev, idx) => (
+                          <li
+                            key={`${ev.horario}-${ev.itemId}-${idx}`}
+                            className="plantao-relato-item"
+                          >
+                            <span className="plantao-relato-horario">
+                              {ev.horario}
+                            </span>{" "}
+                            — {ev.relato}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
 
               {/* Tabela da 1ª Via da Prescrição de Teste (Checar / Circular) */}
               <div className="plantao-subsecao">
@@ -737,12 +792,13 @@ export default function OrganizacaoPlantaoExercicio({
                   Cuidados da Prescrição de Teste (Toque ou Arraste para a Janela)
                 </h3>
                 <p className="muted plantao-subsecao-instrucao">
-                  Toque no cuidado e depois toque no horário da organização para colar. Toque de novo no cuidado para soltar. Arrastar até o horário também cola.
+                  Toque no cuidado e depois toque no horário da organização para colar. Toque de novo no cuidado para soltar. Arrastar até o horário também cola. {TEXTO_INSTRUCAO_ARRASTO_CELULAR}
                 </p>
 
                 <div className="plantao-tarefas-lista">
                   {cuidadosHoraFixa.map((tar) => {
                     const selecionada = tarefaSelecionadaId === tar.id;
+                    const arrastando = tarefaArrastandoId === tar.id;
                     return (
                       <button
                         key={tar.id}
@@ -751,7 +807,8 @@ export default function OrganizacaoPlantaoExercicio({
                         aria-pressed={selecionada}
                         onDragStart={(e) => handleDragStart(e, tar.id)}
                         onClick={() => handleToqueTarefa(tar)}
-                        className="plantao-tarefa"
+                        {...criarEventosToque(tar)}
+                        className={`plantao-tarefa${arrastando ? " plantao-tarefa-arrastando" : ""}`}
                       >
                         <span>{tar.rotulo}</span>
                         {tar.detalhes && (
@@ -797,10 +854,11 @@ export default function OrganizacaoPlantaoExercicio({
                     return (
                       <div
                         key={horario}
+                        data-janela-horario={horario}
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDropJanela(e, horario)}
                         onClick={() => handleCopiarParaJanela(horario)}
-                        className={`plantao-janela${tarefaSelecionadaId ? " plantao-janela-aguardando" : ""}`}
+                        className={`plantao-janela${tarefaSelecionadaId ? " plantao-janela-aguardando" : ""}${horarioAlvo === horario ? " plantao-janela-alvo" : ""}`}
                       >
                         <div className="plantao-janela-topo">
                           <span className="plantao-janela-horario">
@@ -918,6 +976,14 @@ export default function OrganizacaoPlantaoExercicio({
                 <div className="plantao-rodape-acoes">
                   <button
                     type="button"
+                    onClick={handleBaixarColaPdf}
+                    className="plantao-botao-rascunho"
+                  >
+                    {TEXTO_BOTAO_BAIXAR_COLA_PDF}
+                  </button>
+
+                  <button
+                    type="button"
                     disabled={enviando}
                     onClick={() => handleSalvar("rascunho")}
                     className="plantao-botao-rascunho"
@@ -957,6 +1023,18 @@ export default function OrganizacaoPlantaoExercicio({
           )}
         </section>
       </div>
+
+      {fantasma && (
+        <div
+          aria-hidden="true"
+          className="plantao-arrasto-fantasma"
+          style={{
+            transform: `translate3d(${fantasma.x}px, ${fantasma.y}px, 0)`
+          }}
+        >
+          {fantasma.rotulo}
+        </div>
+      )}
     </div>
   );
 }

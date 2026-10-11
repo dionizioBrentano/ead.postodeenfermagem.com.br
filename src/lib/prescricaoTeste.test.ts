@@ -3,6 +3,7 @@ import type { SugestaoPreparo } from "../api/ead";
 import { CENARIOS_PRESCRICAO_TESTE, type CenarioPrescricaoTeste } from "../data/cenariosPrescricaoTeste";
 import { PRESCRICAO_ESTUDO, PRESCRICAO_TESTE } from "../data/prescricaoFicticia";
 import { extrairTarefasDaPrescricao } from "./organizacaoPlantao";
+import { horariosDoItem } from "./gabaritoOrganizacaoPlantao";
 import {
   descreverApresentacao,
   escolherPrescricaoTeste,
@@ -367,3 +368,97 @@ describe("descreverApresentacao", () => {
     expect(texto).not.toContain(")");
   });
 });
+
+describe("níveis de dificuldade e eventos do plantão nos cenários", () => {
+  it("cada cenário tem nível único de 1 a 3 e o número de eventos cresce com o nível", () => {
+    const niveis = CENARIOS_PRESCRICAO_TESTE.map((c) => c.nivel);
+    expect(new Set(niveis)).toEqual(new Set([1, 2, 3]));
+
+    const ordenadosPorNivel = [...CENARIOS_PRESCRICAO_TESTE].sort(
+      (a, b) => a.nivel - b.nivel
+    );
+    for (let i = 1; i < ordenadosPorNivel.length; i++) {
+      expect(ordenadosPorNivel[i].eventos.length).toBeGreaterThan(
+        ordenadosPorNivel[i - 1].eventos.length
+      );
+    }
+  });
+
+  it("todo evento montado aponta para um item existente, tem horário entre as horas do item e respeita horarioNovo conforme a situação", () => {
+    for (const cenario of CENARIOS_PRESCRICAO_TESTE) {
+      const prescricao = montarPrescricaoTeste(
+        CATALOGO_FICTICIO,
+        cenario,
+        "10/10/2026"
+      );
+      expect(prescricao).not.toBeNull();
+      if (!prescricao) continue;
+
+      expect(prescricao.nivel).toBe(cenario.nivel);
+      expect(prescricao.eventos).toBeDefined();
+      const eventos = prescricao.eventos ?? [];
+      expect(eventos).toHaveLength(cenario.eventos.length);
+
+      for (const ev of eventos) {
+        const item = prescricao.itens.find((i) => i.id === ev.itemId);
+        expect(item).toBeDefined();
+        if (!item) continue;
+
+        const horaEvento = parseInt(ev.horario.split(":")[0] ?? "", 10);
+        const { horas } = horariosDoItem(item);
+        expect(horas).toContain(horaEvento);
+
+        if (ev.situacao === "reaprazado") {
+          expect(ev.horarioNovo).toBeTruthy();
+        } else {
+          expect(ev.horarioNovo).toBeUndefined();
+        }
+      }
+    }
+  });
+
+  it("alvo de evento inexistente (cuidadoId ou medicamento) faz montarPrescricaoTeste devolver null", () => {
+    const base = CENARIOS_PRESCRICAO_TESTE[0];
+
+    const comCuidadoInexistente: CenarioPrescricaoTeste = {
+      ...base,
+      eventos: [
+        ...base.eventos,
+        {
+          horario: "10:00",
+          alvo: { cuidadoId: "teste-cuidado-inexistente" },
+          situacao: "nao_feito",
+          relato: "Relato fictício",
+        },
+      ],
+    };
+    expect(
+      montarPrescricaoTeste(
+        CATALOGO_FICTICIO,
+        comCuidadoInexistente,
+        "10/10/2026"
+      )
+    ).toBeNull();
+
+    const comMedicamentoInexistente: CenarioPrescricaoTeste = {
+      ...base,
+      eventos: [
+        ...base.eventos,
+        {
+          horario: "10:00",
+          alvo: { medicamento: "Medicamento Inexistente" },
+          situacao: "nao_feito",
+          relato: "Relato fictício",
+        },
+      ],
+    };
+    expect(
+      montarPrescricaoTeste(
+        CATALOGO_FICTICIO,
+        comMedicamentoInexistente,
+        "10/10/2026"
+      )
+    ).toBeNull();
+  });
+});
+

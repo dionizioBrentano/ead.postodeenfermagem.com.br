@@ -24,6 +24,16 @@ export interface TarefaArrastavel {
   isSN?: boolean;
 }
 
+export type SituacaoEvento = "nao_feito" | "reaprazado";
+
+export interface EventoPlantao {
+  horario: string;
+  itemId: string;
+  situacao: SituacaoEvento;
+  horarioNovo?: string;
+  relato: string;
+}
+
 export interface PrescricaoFicticia {
   hospital: string;
   unidade: string;
@@ -36,6 +46,8 @@ export interface PrescricaoFicticia {
   diagnostico: string;
   alergias: string;
   itens: PrescricaoItem[];
+  nivel?: number;
+  eventos?: EventoPlantao[];
 }
 
 /**
@@ -376,3 +388,61 @@ export const ROTULOS_LEITURA_ORGANIZACAO = {
   colunaMarca: "Marca",
   condutaTitulo: "Conduta",
 } as const;
+
+export const TEXTO_CONFERE_SIM = "Sim";
+export const TEXTO_CONFERE_NAO = "Não";
+export const TEXTO_NAO_CONFERIDO = "Não conferido";
+export const TEXTO_AVISO_GABARITO_APOIO =
+  "A conferência é apoio. A correção e o comentário são do docente.";
+
+export const ROTULOS_CONFERENCIA_GABARITO = {
+  titulo: "Conferência com o gabarito (apoio ao docente)",
+  janelasSubtitulo: "Janelas de horário",
+  janelaPrefixo: "Janela das",
+  cuidadosConferemSufixo: "cuidado(s) confere(m)",
+  faltouRotulo: "Faltou:",
+  sobrandoRotulo: "Colado fora do horário:",
+  seNecessarioEmJanelaRotulo: 'Cuidados "se necessário" colados em janela:',
+  primeiraViaSubtitulo: "1ª Via da Prescrição",
+  colunaItem: "Item",
+  colunaEsperado: "Esperado",
+  colunaMarcado: "Marcado pelo aluno",
+  colunaConfere: "Confere",
+  naoConferidosRotulo: "Não conferido automaticamente:",
+} as const;
+
+export const TEXTO_BOTAO_BAIXAR_COLA_PDF = "Baixar a cola em PDF";
+export const MENSAGEM_ERRO_GERAR_PDF_COLA =
+  "Não foi possível gerar o PDF. Tente de novo.";
+
+export const TEXTOS_PDF_COLA = {
+  titulo: "Organização do plantão",
+  subtitulo: "Curso Técnico em Enfermagem · ead.postodeenfermagem.com.br",
+  rotuloPaciente: "Paciente",
+  rotuloLeito: "Leito",
+  rotuloIdade: "Idade",
+  rotuloPeso: "Peso",
+  rotuloData: "Data",
+  rotuloTurno: "Turno",
+  rotuloDiagnostico: "Diagnóstico",
+  rotuloAlergias: "Alergias",
+  colunaHorario: "Horário",
+  colunaCuidado: "Cuidado",
+  colunaDetalhes: "Detalhes",
+  colunaFeito: "Feito",
+  colunaMedicamentoSN: "Medicamento",
+  colunaRegraSN: "Regra",
+  colunaUltimaDoseSN: "Última dose",
+  colunaProximaDoseSN: "Próxima a partir de",
+  legenda:
+    "/ = administrado · ○ = não administrado (escreva o motivo na anotação)",
+  pendenciasTitulo: "Pendências para o próximo plantão",
+  rodape:
+    "Exercício com dados fictícios. A prescrição original fica no posto.",
+} as const;
+
+export const TEXTO_INSTRUCAO_ARRASTO_CELULAR =
+  "No celular, toque e segure o cuidado para arrastar, ou toque nele e depois na janela.";
+
+
+

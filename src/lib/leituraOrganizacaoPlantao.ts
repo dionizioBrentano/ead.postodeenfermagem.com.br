@@ -2,6 +2,7 @@ import type { PayloadOrganizacaoPlantao } from "../api/ead";
 import {
   OPCOES_TURNO,
   TEXTO_TURNO_NAO_INFORMADO,
+  type MarcaPrimeiraVia,
   type PrescricaoFicticia,
 } from "../data/prescricaoFicticia";
 
@@ -38,6 +39,23 @@ export interface LeituraOrganizacao {
   janelas: JanelaLeitura[];
   primeiraVia: ItemPrimeiraViaLeitura[];
   conduta: string;
+}
+
+export function classificarMarcaPrimeiraVia(
+  marca: MarcaPrimeiraVia | undefined
+): { situacao: SituacaoPrimeiraViaLeitura; horarioNovo?: string } {
+  if (marca?.status === "checado") {
+    return { situacao: "checado" };
+  }
+  if (marca?.status === "circulado") {
+    if (marca.motivo === "reaprazado") {
+      return marca.horarioNovo
+        ? { situacao: "reaprazado", horarioNovo: marca.horarioNovo }
+        : { situacao: "reaprazado" };
+    }
+    return { situacao: "nao_feito" };
+  }
+  return { situacao: "sem_marca" };
 }
 
 function formatarTurno(turno: PayloadOrganizacaoPlantao["turno"]): string {
@@ -107,22 +125,7 @@ export function montarLeituraOrganizacao(
 
   const primeiraVia: ItemPrimeiraViaLeitura[] = Array.isArray(prescricao?.itens)
     ? prescricao.itens.map((item) => {
-        const marca = marcas[item.id];
-        let situacao: SituacaoPrimeiraViaLeitura = "sem_marca";
-        let horarioNovo: string | undefined;
-
-        if (marca?.status === "checado") {
-          situacao = "checado";
-        } else if (marca?.status === "circulado") {
-          if (marca.motivo === "reaprazado") {
-            situacao = "reaprazado";
-            if (marca.horarioNovo) {
-              horarioNovo = marca.horarioNovo;
-            }
-          } else {
-            situacao = "nao_feito";
-          }
-        }
+        const { situacao, horarioNovo } = classificarMarcaPrimeiraVia(marcas[item.id]);
 
         return {
           itemId: item.id,

@@ -4,6 +4,7 @@ import {
   CUIDADO_TESTE_DIETA,
   CUIDADO_TESTE_SSVV,
   type PrescricaoItem,
+  type SituacaoEvento,
 } from "./prescricaoFicticia";
 
 export type FaixaEtaria = "adulto" | "pediatrico";
@@ -24,8 +25,17 @@ export interface MedicamentoSeNecessarioDoCenario {
   intervaloMinimoHoras: number;
 }
 
+export interface EventoDoCenario {
+  horario: string;
+  alvo: { cuidadoId: string } | { medicamento: string };
+  situacao: SituacaoEvento;
+  horarioNovo?: string;
+  relato: string;
+}
+
 export interface CenarioPrescricaoTeste {
   chave: string;
+  nivel: number;
   hospital: string;
   unidade: string;
   leito: string;
@@ -38,6 +48,7 @@ export interface CenarioPrescricaoTeste {
   cuidados: PrescricaoItem[];
   medicamentosFixos: MedicamentoFixoDoCenario[];
   medicamentosSeNecessario: MedicamentoSeNecessarioDoCenario[];
+  eventos: EventoDoCenario[];
 }
 
 export const IDADE_MINIMA_APRESENTACAO_ADULTA = 12;
@@ -54,6 +65,9 @@ export const FREQUENCIA_INSULINA_ESCALA = "AA, AJ e 22h";
 export const DOSE_INSULINA_ESCALA = "Conforme escala de glicemia capilar";
 
 export const TEXTO_PREPARANDO_PRESCRICAO = "Preparando a prescrição de teste...";
+export const ROTULO_NIVEL = "Nível de dificuldade";
+export const TOTAL_NIVEIS_DIFICULDADE = 3;
+export const TITULO_RELATO_PLANTAO = "Relato do plantão";
 
 const HOSPITAL_SIMULADO = "Hospital Escola Simulado";
 const PRONTUARIO_SIMULADO = "000000-SIM";
@@ -63,6 +77,7 @@ const ALERGIAS_SIMULADAS = "Nega alergias medicamentosas conhecidas";
 export const CENARIOS_PRESCRICAO_TESTE: CenarioPrescricaoTeste[] = [
   {
     chave: "cirurgica-abdominal",
+    nivel: 1,
     hospital: HOSPITAL_SIMULADO,
     unidade: "Clínica Cirúrgica",
     leito: "Leito 208-A (simulação)",
@@ -95,9 +110,28 @@ export const CENARIOS_PRESCRICAO_TESTE: CenarioPrescricaoTeste[] = [
       { nome: "Dipirona", dose: "1 g", via: "EV", criterio: "dor ou febre", intervaloMinimoHoras: 6 },
       { nome: "Ondansetrona", dose: "4 mg", via: "EV", criterio: "náuseas ou vômitos", intervaloMinimoHoras: 8 },
     ],
+    eventos: [
+      {
+        horario: "10:00",
+        alvo: { cuidadoId: "teste-curativo" },
+        situacao: "reaprazado",
+        horarioNovo: "11:00",
+        relato:
+          "Às 10h o paciente estava no exame de imagem. O curativo foi feito quando ele voltou, às 11h.",
+      },
+      {
+        horario: "22:00",
+        alvo: { medicamento: "Metronidazol" },
+        situacao: "reaprazado",
+        horarioNovo: "22:40",
+        relato:
+          "Às 22h o acesso venoso estava obstruído. O enfermeiro puncionou novo acesso e a infusão começou às 22h40.",
+      },
+    ],
   },
   {
     chave: "clinica-medica-erisipela",
+    nivel: 2,
     hospital: HOSPITAL_SIMULADO,
     unidade: "Clínica Médica",
     leito: "Leito 312-B (simulação)",
@@ -156,9 +190,42 @@ export const CENARIOS_PRESCRICAO_TESTE: CenarioPrescricaoTeste[] = [
       { nome: "Dipirona", dose: "1 g", via: "EV", criterio: "dor ou febre", intervaloMinimoHoras: 6 },
       { nome: "Tramadol", dose: "50 mg", via: "EV", criterio: "dor moderada", intervaloMinimoHoras: 6 },
     ],
+    eventos: [
+      {
+        horario: "06:00",
+        alvo: { cuidadoId: "teste-peso" },
+        situacao: "nao_feito",
+        relato:
+          "Às 6h o paciente não conseguia ficar de pé por tontura. O enfermeiro foi comunicado e o peso não foi aferido.",
+      },
+      {
+        horario: "08:00",
+        alvo: { medicamento: "Enoxaparina" },
+        situacao: "nao_feito",
+        relato:
+          "Às 8h o paciente recusou a injeção, mesmo após orientação. O enfermeiro foi comunicado.",
+      },
+      {
+        horario: "14:00",
+        alvo: { medicamento: "Cefazolina" },
+        situacao: "reaprazado",
+        horarioNovo: "14:40",
+        relato:
+          "Às 14h o acesso venoso estava infiltrado. O enfermeiro puncionou novo acesso e a infusão começou às 14h40.",
+      },
+      {
+        horario: "18:00",
+        alvo: { medicamento: "Furosemida" },
+        situacao: "reaprazado",
+        horarioNovo: "19:00",
+        relato:
+          "Às 18h o paciente estava no ecocardiograma. A dose foi feita quando ele voltou, às 19h.",
+      },
+    ],
   },
   {
     chave: "clinica-medica-pneumonia",
+    nivel: 3,
     hospital: HOSPITAL_SIMULADO,
     unidade: "Clínica Médica",
     leito: "Leito 315-A (simulação)",
@@ -208,5 +275,46 @@ export const CENARIOS_PRESCRICAO_TESTE: CenarioPrescricaoTeste[] = [
       { nome: "Dipirona", dose: "1 g", via: "EV", criterio: "dor ou febre", intervaloMinimoHoras: 6 },
       { nome: "Ondansetrona", dose: "4 mg", via: "EV", criterio: "náuseas ou vômitos", intervaloMinimoHoras: 8 },
     ],
+    eventos: [
+      {
+        horario: "06:00",
+        alvo: { medicamento: "Piperacilina + Tazobactam" },
+        situacao: "reaprazado",
+        horarioNovo: "07:00",
+        relato:
+          "Às 6h o frasco ainda não tinha chegado da farmácia. A infusão começou às 7h.",
+      },
+      {
+        horario: "08:00",
+        alvo: { medicamento: "Omeprazol" },
+        situacao: "nao_feito",
+        relato:
+          "Às 8h o médico suspendeu a dose da manhã. O enfermeiro registrou a suspensão.",
+      },
+      {
+        horario: "12:00",
+        alvo: { cuidadoId: "teste-decubito" },
+        situacao: "reaprazado",
+        horarioNovo: "12:40",
+        relato:
+          "Às 12h o paciente estava na fisioterapia respiratória. A mudança de decúbito foi feita às 12h40.",
+      },
+      {
+        horario: "14:00",
+        alvo: { medicamento: "Hidrocortisona" },
+        situacao: "reaprazado",
+        horarioNovo: "14:45",
+        relato:
+          "Às 14h o acesso venoso estava infiltrado. O enfermeiro puncionou novo acesso e a dose foi feita às 14h45.",
+      },
+      {
+        horario: "22:00",
+        alvo: { medicamento: "Insulina regular" },
+        situacao: "nao_feito",
+        relato:
+          "Às 22h a glicemia capilar foi 110 mg/dL. Pela escala prescrita, não havia dose de insulina a aplicar.",
+      },
+    ],
   },
 ];
+

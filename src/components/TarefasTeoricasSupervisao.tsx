@@ -10,6 +10,7 @@ import {
   TEXTO_ENTREGA_SEM_ORGANIZACAO,
   TEXTO_VER_ORGANIZACAO_PLANTAO,
 } from "../data/prescricaoFicticia";
+import { conferirOrganizacao } from "../lib/gabaritoOrganizacaoPlantao";
 import { montarLeituraOrganizacao } from "../lib/leituraOrganizacaoPlantao";
 import OrganizacaoPlantaoLeitura from "./OrganizacaoPlantaoLeitura";
 import "./TarefasTeoricasSupervisao.css";
@@ -185,6 +186,7 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
             const condutaTexto = payload.conduta || "";
             const comentarioInputId = `supervisao-comentario-${entrega.id}`;
             const leitura = montarLeituraOrganizacao(entrega.payload);
+            const conferencia = conferirOrganizacao(entrega.payload);
 
             return (
               <div key={entrega.id} className="supervisao-entrega">
@@ -230,7 +232,10 @@ export default function TarefasTeoricasSupervisao({ turmaId }: Props) {
                     <summary className="supervisao-detalhes-resumo">
                       {TEXTO_VER_ORGANIZACAO_PLANTAO}
                     </summary>
-                    <OrganizacaoPlantaoLeitura leitura={leitura} />
+                    <OrganizacaoPlantaoLeitura
+                      leitura={leitura}
+                      conferencia={conferencia}
+                    />
                   </details>
                 ) : (
                   <p className="muted supervisao-sem-organizacao">
