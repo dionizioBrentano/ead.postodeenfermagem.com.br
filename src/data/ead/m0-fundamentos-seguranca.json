@@ -1,0 +1,188 @@
+{
+  "module_id": "m0",
+  "module_title": "Fundamentos de Segurança do Paciente",
+  "order": 0,
+  "learning_objectives": [
+    "Compreender o histórico e os marcos da cultura de segurança do paciente (To Err is Human, OMS e PNSP).",
+    "Identificar o papel dos bundles e POPs na redução de eventos adversos.",
+    "Reconhecer o protagonismo da equipe de enfermagem na prevenção de danos relacionados a dispositivos invasivos.",
+    "Relacionar os fundamentos de segurança com o cuidado seguro de sondas, drenos e cateteres."
+  ],
+  "topics": [
+    {
+      "topic_id": "m0-t1-cultura-historico",
+      "topic_title": "Cultura de Segurança e Histórico",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "O marco To Err is Human",
+          "body": "Em 1999, o Institute of Medicine dos Estados Unidos publicou o relatório To Err is Human: Building a Safer Health System. O documento estimou que dezenas de milhares de mortes anuais em hospitais americanos eram evitáveis e atribuídas a falhas do sistema, não apenas a erros individuais. Esse relatório transformou a segurança do paciente em prioridade global e influenciou diretamente as diretrizes da Organização Mundial da Saúde (OMS)."
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "A cultura de segurança substitui a lógica da culpa individual pela análise sistêmica das falhas. O erro é esperado; o sistema deve ser desenhado para preveni-lo e aprender com ele."
+        },
+        {
+          "type": "text",
+          "title": "OMS e Programa Nacional de Segurança do Paciente (PNSP)",
+          "body": "A OMS lançou a Aliança Mundial para a Segurança do Paciente e metas internacionais (identificação correta do paciente, comunicação efetiva, segurança de medicamentos, cirurgia segura, redução de infecções e prevenção de quedas/lesões). No Brasil, o Ministério da Saúde instituiu em 2013 o Programa Nacional de Segurança do Paciente (PNSP) por meio da Portaria nº 529. O PNSP tornou obrigatória a criação de Núcleos de Segurança do Paciente (NSP), Planos Institucionais de Segurança do Paciente, sistemas de notificação de eventos adversos e a adoção de protocolos básicos."
+        },
+        {
+          "type": "checklist",
+          "title": "Elementos centrais do PNSP",
+          "items": [
+            "Núcleos de Segurança do Paciente (NSP) em todos os serviços de saúde",
+            "Plano Institucional de Segurança do Paciente",
+            "Notificação de eventos adversos (sistema da Anvisa)",
+            "Protocolos básicos: identificação do paciente, higiene das mãos, segurança de medicamentos, cirurgia segura, prevenção de quedas e prevenção de lesões por pressão",
+            "Capacitação e educação permanente das equipes"
+          ]
+        },
+        {
+          "type": "image",
+          "caption": "Linha do tempo da segurança do paciente",
+          "image_prompt": "Clean educational timeline illustration, professional medical style, soft blue and teal colors, white background. Horizontal timeline with four clear milestones: 1999 To Err is Human report (document icon), 2004 OMS World Alliance for Patient Safety, 2008 Rede Brasileira de Enfermagem e Segurança do Paciente, 2013 Programa Nacional de Segurança do Paciente (Brazil flag accent). Minimalist icons, sans-serif labels in Portuguese, high clarity for EAD use, no clutter.",
+          "alt": "Linha do tempo ilustrando os principais marcos da segurança do paciente de 1999 a 2013."
+        }
+      ]
+    },
+    {
+      "topic_id": "m0-t2-bundles-pops",
+      "topic_title": "Bundles e POPs Institucionais",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "O que é um bundle?",
+          "body": "Bundle (ou pacote de cuidados) é um conjunto pequeno de intervenções baseadas em evidência que, quando aplicadas juntas e de forma consistente, produzem resultados significativamente melhores do que quando aplicadas isoladamente. O conceito foi popularizado pelo Institute for Healthcare Improvement (campanha Save 100.000 Lives). Exemplos clássicos incluem bundles de prevenção de infecção de corrente sanguínea relacionada a cateter central e de pneumonia associada à ventilação mecânica."
+        },
+        {
+          "type": "text",
+          "title": "Procedimentos Operacionais Padrão (POPs)",
+          "body": "POPs são documentos institucionais que descrevem passo a passo a execução segura de um procedimento. Eles padronizam a prática, reduzem variação desnecessária e servem como referência para treinamento e auditoria. No contexto de sondas, drenos e cateteres, POPs bem elaborados e atualizados são ferramentas essenciais para a prevenção de eventos adversos."
+        },
+        {
+          "type": "checklist",
+          "title": "Características de um bom bundle / POP",
+          "items": [
+            "Baseado em evidência científica atualizada",
+            "Número limitado de itens (facilita adesão)",
+            "Linguagem clara e aplicável à realidade do serviço",
+            "Inclui critérios de revisão da necessidade do dispositivo",
+            "Prevê monitoramento de adesão e feedback à equipe",
+            "Atualizado periodicamente conforme novas diretrizes (Anvisa, COFEN, INS, OMS)"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança",
+          "body": "A simples existência de um protocolo não garante segurança. Estudos mostram distanciamento entre o prescrito e o praticado. A adesão consistente e a cultura de feedback são determinantes para a redução real de eventos adversos."
+        }
+      ]
+    },
+    {
+      "topic_id": "m0-t3-papel-enfermagem",
+      "topic_title": "Papel da Equipe de Enfermagem e Prevenção de Eventos Adversos",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Protagonismo da enfermagem",
+          "body": "A equipe de enfermagem é a que passa mais tempo em contato direto com o paciente. Por isso, tem papel central na detecção precoce de riscos, na execução segura de procedimentos e na manutenção da cultura de segurança. O cuidado com dispositivos invasivos (sondas, drenos e cateteres) é uma das áreas de maior risco para eventos adversos graves, como infecções de corrente sanguínea, infecções do trato urinário associadas a cateter (ITU-AC), pneumotórax por tração de dreno e lesões de pele por fixação inadequada."
+        },
+        {
+          "type": "checklist",
+          "title": "Responsabilidades da equipe no cuidado de dispositivos",
+          "items": [
+            "Higienizar as mãos rigorosamente antes e após qualquer manipulação",
+            "Checar a integridade, o posicionamento e a fixação do dispositivo a cada plantão",
+            "Garantir a identificação correta de vias, conexões e bolsas coletoras",
+            "Avaliar diariamente a real necessidade de permanência do dispositivo (menos tempo = menor risco)",
+            "Registrar em prontuário todas as manipulações, intercorrências e características de drenagens",
+            "Notificar imediatamente eventos adversos ou quase-falhas (near miss)"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Eventos adversos comuns com dispositivos",
+          "body": "Tração acidental, obstrução por dobra ou coágulo, conexão em via errada (cateter enteral ligado a acesso venoso), perda de fixação e contaminação de conexões são eventos adversos frequentes e preveníveis com vigilância sistemática e adesão aos protocolos."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual é a principal mudança de paradigma proposta pela cultura de segurança do paciente a partir do relatório To Err is Human?",
+      "options": [
+        "Identificar e punir individualmente os profissionais que cometem falhas.",
+        "Substituir a culpa individual pela análise sistêmica dos processos e desenho de barreiras de proteção.",
+        "Eliminar a necessidade de protocolos escritos, priorizando o bom senso de cada profissional.",
+        "Transferir a responsabilidade da segurança exclusivamente para os pacientes e seus familiares."
+      ],
+      "correct_index": 1,
+      "explanation": "O relatório To Err is Human (1999) demonstrou que a maioria dos erros decorre de sistemas falhos, e não de profissionais negligentes. A cultura justa busca entender as falhas sistêmicas para implementar barreiras e prevenir a recorrência."
+    },
+    {
+      "question": "O que caracteriza um bundle (pacote de cuidados) no contexto da assistência de saúde?",
+      "options": [
+        "Um manual extenso com centenas de recomendações teóricas que a equipe deve consultar esporadicamente.",
+        "Um conjunto pequeno de intervenções baseadas em evidência que, quando aplicadas conjuntamente, trazem resultados superiores ao de intervenções isoladas.",
+        "Um checklist punitivo utilizado exclusivamente pela auditoria externa para descontar valores contratuais.",
+        "Um procedimento burocrático criado para substituir a avaliação clínica presencial do enfermeiro."
+      ],
+      "correct_index": 1,
+      "explanation": "Bundles são intervenções focadas (geralmente 3 a 5 itens) com alto nível de evidência que dependem da execução conjunta para maximizar a eficácia na prevenção de infecções e eventos adversos."
+    },
+    {
+      "question": "Em relação à permanência de sondas, drenos e cateteres em pacientes internados, qual é a conduta mais recomendada para a segurança do paciente?",
+      "options": [
+        "Manter o dispositivo pelo maior tempo possível para evitar novos procedimentos invasivos de punção ou sondagem.",
+        "Avaliar diariamente a necessidade de manutenção do dispositivo e providenciar sua retirada assim que não for mais clinicamente indispensável.",
+        "Delegar a decisão de retirada exclusivamente ao paciente quando ele relatar desconforto.",
+        "Trocar preventivamente todos os cateteres venosos centrais a cada 48 horas, mesmo sem sinais flogísticos."
+      ],
+      "correct_index": 1,
+      "explanation": "O tempo de permanência de qualquer dispositivo invasivo é fator de risco direto para infecção e complicações mecânicas. A avaliação diária sobre a indicação de manutenção é diretriz padrão da Anvisa e do CDC."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula magna sobre o Programa Nacional de Segurança do Paciente e a responsabilidade da enfermagem."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Unidade 1 - Prática de Enfermagem",
+      "note": "Capítulo fundamental sobre qualidade, segurança do cuidado e prevenção de complicações hospitalares."
+    },
+    {
+      "type": "article",
+      "title": "Cultura de segurança do paciente em ambiente hospitalar: uma revisão integrativa",
+      "source": "SciELO / Rev. Bras. Enferm.",
+      "url": "https://www.scielo.br/j/reben/",
+      "note": "Revisão sobre os fatores organizacionais que favorecem ou dificultam a cultura não punitiva."
+    },
+    {
+      "type": "article",
+      "title": "Adesão ao checklist de segurança cirúrgica e prevenção de infecção de sítio cirúrgico",
+      "source": "SciELO / Rev. Latino-Am. Enfermagem",
+      "url": "https://www.scielo.br/j/rlae/",
+      "note": "Evidências sobre a eficácia de checklists na redução de eventos adversos na prática cirúrgica."
+    },
+    {
+      "type": "article",
+      "title": "Eventos adversos relacionados a dispositivos invasivos em terapia intensiva",
+      "source": "SciELO / Rev. Esc. Enferm. USP",
+      "url": "https://www.scielo.br/j/reeusp/",
+      "note": "Análise da incidência de infecções e complicações mecânicas associadas a cateteres e drenos."
+    }
+  ]
+}

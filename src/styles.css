@@ -1,9 +1,10 @@
 /* Estilos globais da Sala EAD. Padrão 60plus. */
 :root{
   --bg:#f8f6f1; --paper:#ffffff; --ink:#3a3a3a; --muted:#909090; --line:rgba(0,0,0,0.06);
+  --border:var(--line);
   --c1:#1a3a35; --c2:#b86e00; --c3:#b3363b; --c4:#3c4fa8;
   --c1s:#f0ede6; --c2s:#fbefdc; --c3s:#f9e5e5; --c4s:#e7eafa;
-  --ok:#00ad57; --no:#b3363b; --na:#909090;
+  --ok:#00ad57; --oks:#e6f7ef; --no:#b3363b; --na:#909090;
   --accent:#1a3a35; --accent-ink:#ffffff; --err:var(--no); --errs:var(--c3s);
   --action:#00ad57; --action-ink:#ffffff;
   --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;

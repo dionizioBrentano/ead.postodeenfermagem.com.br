@@ -3,7 +3,7 @@
 // sem precisar de regra de reescrita (.htaccess).
 import { mkdirSync, copyFileSync } from "node:fs";
 
-const rotas = ["participar", "aguardando", "sala", "supervisao", "supervisao/lancamento", "administracao", "convite", "verificacao", "entrar/retorno"];
+const rotas = ["participar", "aguardando", "sala", "supervisao", "supervisao/lancamento", "administracao", "convite", "verificacao", "entrar/retorno", "m0", "ead/m0"];
 
 for (const rota of rotas) {
   mkdirSync(`dist/${rota}`, { recursive: true });

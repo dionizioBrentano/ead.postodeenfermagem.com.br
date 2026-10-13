@@ -21,6 +21,7 @@ import SalaPage from "./pages/SalaPage";
 import SupervisaoPage from "./pages/SupervisaoPage";
 import AdministracaoPage from "./pages/AdministracaoPage";
 import EntrarRetornoPage from "./pages/EntrarRetornoPage";
+import EadModulo0Page from "./pages/EadModulo0Page";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
 
@@ -67,7 +68,7 @@ export default function App() {
   }, [token]);
 
   useEffect(() => {
-    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno") {
+    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno" && rota !== "/m0" && rota !== "/ead/m0" && rota !== "/ead") {
       verificar();
     }
   }, [token, faltando.length, verificar, rota, guard.estado]);
@@ -126,6 +127,15 @@ export default function App() {
         }}
       />
     );
+  }
+
+  if (rota === "/ead") {
+    navegar("/ead/m0", true);
+    return null;
+  }
+
+  if (rota === "/m0" || rota === "/ead/m0") {
+    return <EadModulo0Page onVoltar={() => navegar("/sala")} />;
   }
 
   if (!token) {

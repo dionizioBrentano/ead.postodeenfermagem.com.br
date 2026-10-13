@@ -1,0 +1,12 @@
+[
+  {
+    "id": "m0",
+    "slug": "m0",
+    "number": 0,
+    "title": "Módulo 0: Fundamentos de Segurança do Paciente",
+    "short_description": "Histórico da cultura de segurança, bundles, POPs institucionais e o papel da equipe de enfermagem na prevenção de eventos adversos.",
+    "dataFile": "m0-fundamentos-seguranca.json",
+    "duration_minutes": 60,
+    "topics_count": 3
+  }
+]
