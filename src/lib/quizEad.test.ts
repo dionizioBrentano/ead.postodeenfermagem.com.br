@@ -39,4 +39,15 @@ describe('quizEad - lógica pura de gabarito e desempenho', () => {
     expect(completo.acertos).toBe(3);
     expect(completo.concluido).toBe(true);
   });
+
+  it('valida gabarito e desempenho do Módulo 1 (Sondas Vesicais)', () => {
+    const gabaritoM1 = [0, 1, 2];
+    expect(verificarResposta(gabaritoM1[0], 0).correta).toBe(true);
+    expect(verificarResposta(gabaritoM1[1], 1).correta).toBe(true);
+    expect(verificarResposta(gabaritoM1[2], 2).correta).toBe(true);
+
+    const desempenhoM1 = calcularDesempenhoQuiz({ 0: 0, 1: 1, 2: 2 }, gabaritoM1);
+    expect(desempenhoM1.acertos).toBe(3);
+    expect(desempenhoM1.concluido).toBe(true);
+  });
 });

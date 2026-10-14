@@ -1,0 +1,181 @@
+{
+  "module_id": "m1",
+  "module_title": "Sondas Vesicais",
+  "order": 1,
+  "learning_objectives": [
+    "Identificar indicações, calibres e tipos de sonda vesical de demora (Foley de 2 e 3 vias) e sua relação com a prevenção de infecção do trato urinário associada a cateter (ITU-AC).",
+    "Diferenciar sonda de alívio de sonda de demora e aplicar a técnica correta de descompressão em hematúria.",
+    "Reconhecer a competência legal da enfermagem e os cuidados diários essenciais para a manutenção segura da sonda vesical.",
+    "Aplicar checklists de prevenção de ITU-AC e de fixação/posicionamento adequados."
+  ],
+  "topics": [
+    {
+      "topic_id": "m1-t1-foley-demora",
+      "topic_title": "Sonda de Demora (Foley): Indicações, Calibres e Prevenção de ITU",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Indicações e tipos de sonda de demora",
+          "body": "A sonda vesical de demora (Foley) é indicada quando há necessidade de drenagem contínua da bexiga por período superior a 24 horas. Principais indicações incluem retenção urinária aguda ou crônica, monitoramento rigoroso do débito urinário em pacientes críticos, cirurgias prolongadas, hematúria com coágulos e imobilidade prolongada com incontinência. A sonda de 2 vias é a mais comum (via de drenagem + via do balão). A sonda de 3 vias possui via adicional para irrigação contínua, sendo preferida em hematúria maciça para prevenir obstrução por coágulos."
+        },
+        {
+          "type": "checklist",
+          "title": "Calibres recomendados (escala French)",
+          "items": [
+            "Adultos: 14 a 18 Fr na maioria dos casos",
+            "Hematúria com coágulos: 20 a 24 Fr (preferencialmente 3 vias)",
+            "Crianças e neonatos: calibres menores conforme idade e tamanho (nunca forçar)",
+            "Balão: preencher com volume indicado no fabricante (geralmente 10 mL em adultos; nunca com água destilada ou soro)"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança – Prevenção de ITU-AC",
+          "body": "A infecção do trato urinário associada a cateter é a infecção relacionada à assistência mais frequente. O risco aumenta proporcionalmente ao tempo de permanência. Nunca inserir sonda por conveniência da equipe. Avaliar diariamente a necessidade de manutenção e retirar assim que a indicação clínica cessar."
+        },
+        {
+          "type": "checklist",
+          "title": "Bundle de prevenção de ITU associada a cateter",
+          "items": [
+            "Higienização das mãos antes e após qualquer manipulação",
+            "Técnica asséptica na inserção",
+            "Fixação adequada para evitar tração e movimento",
+            "Bolsa coletora abaixo do nível da bexiga, sem tocar o chão",
+            "Sistema fechado mantido sempre que possível",
+            "Higiene do meato uretral com água e sabão (sem antissépticos rotineiros)",
+            "Revisão diária da indicação e retirada precoce"
+          ]
+        }
+      ]
+    },
+    {
+      "topic_id": "m1-t2-alivio-hematuria",
+      "topic_title": "Sonda de Alívio e Manejo de Hematúria por Descompressão",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Sonda de alívio",
+          "body": "A sonda de alívio (intermitente) é utilizada para esvaziamento único da bexiga, sem permanência. Indicações clássicas incluem retenção urinária aguda de causa reversível, coleta de amostra estéril quando não for possível por jato médio e avaliação de resíduo pós-miccional. A técnica deve ser asséptica e a sonda removida imediatamente após a drenagem."
+        },
+        {
+          "type": "text",
+          "title": "Hematúria e descompressão",
+          "body": "Em hematúria com coágulos, a descompressão rápida e completa da bexiga pode causar hipotensão e sangramento adicional por reperfusão. A conduta correta é drenar gradualmente, em etapas, monitorando o volume e o aspecto da urina. Em casos de hematúria maciça, a sonda de 3 vias com irrigação contínua de soro fisiológico é preferível para manter a via permeável."
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta crítico – Descompressão",
+          "body": "Nunca esvaziar a bexiga de uma só vez quando o volume residual for muito elevado (acima de 800-1000 mL). Interromper a drenagem a cada 300-500 mL, aguardar alguns minutos e reavaliar sinais vitais e aspecto da urina antes de continuar."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados na hematúria",
+          "items": [
+            "Preferir sonda de 3 vias quando houver coágulos",
+            "Irrigação contínua com soro fisiológico 0,9% conforme prescrição",
+            "Monitorar débito e aspecto da drenagem a cada turno",
+            "Registrar volume irrigado e volume drenado separadamente",
+            "Observar sinais de obstrução (parada de drenagem, dor suprapúbica, extravasamento)"
+          ]
+        }
+      ]
+    },
+    {
+      "topic_id": "m1-t3-competencia-cuidados",
+      "topic_title": "Competência Legal e Cuidados Diários",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Competência da enfermagem",
+          "body": "A inserção e a manutenção de sonda vesical são procedimentos de competência do enfermeiro, conforme Resolução COFEN e protocolos institucionais. Técnicos e auxiliares podem auxiliar na manutenção e higiene sob supervisão, mas a inserção, a avaliação da indicação e a retirada são atos privativos do enfermeiro. O registro completo em prontuário é obrigatório (indicação, calibre, volume do balão, intercorrências e débito)."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados diários obrigatórios",
+          "items": [
+            "Higienização das mãos antes e após manipulação",
+            "Verificar fixação e ausência de tração a cada plantão",
+            "Manter bolsa coletora abaixo do nível da bexiga e sem contato com o chão",
+            "Esvaziar a bolsa quando atingir 2/3 da capacidade ou a cada 8 horas",
+            "Higiene do meato e região perineal com água e sabão",
+            "Avaliar diariamente a necessidade de manutenção da sonda",
+            "Registrar débito, aspecto e intercorrências no prontuário"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "A fixação inadequada é causa frequente de lesão uretral, tração acidental e desconforto. Em homens, a sonda deve ser fixada no abdome ou coxa com leve folga; em mulheres, na coxa. Nunca deixar a sonda solta."
+        },
+        {
+          "type": "image",
+          "caption": "Posicionamento correto da bolsa coletora",
+          "image_prompt": "Educational medical illustration, clean professional style, soft teal and white colors. Side view of patient in bed with Foley catheter properly secured to thigh, collection bag hanging below bladder level on bed frame, not touching floor. Clear labels in Portuguese: 'Fixação na coxa', 'Bolsa abaixo da bexiga', 'Sem contato com o chão'. Minimalist, high clarity for EAD.",
+          "alt": "Ilustração do posicionamento correto da sonda vesical e da bolsa coletora abaixo do nível da bexiga, sem contato com o chão."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual é a principal diferença entre a sonda vesical de demora de 2 vias e a de 3 vias?",
+      "options": [
+        "A de 3 vias possui via adicional exclusiva para irrigação contínua, sendo preferida em hematúria com coágulos.",
+        "A de 2 vias é sempre de calibre maior e usada apenas em crianças.",
+        "A de 3 vias não possui balão de retenção e deve ser trocada a cada 12 horas.",
+        "Não existe diferença clínica relevante entre as duas; a escolha é apenas de custo."
+      ],
+      "correct_index": 0,
+      "explanation": "A sonda de 3 vias possui uma via extra para irrigação, essencial para manter a permeabilidade em hematúria maciça. A de 2 vias é a padrão para drenagem simples."
+    },
+    {
+      "question": "Em um paciente com retenção urinária e volume residual estimado acima de 1000 mL, qual é a conduta mais segura na descompressão?",
+      "options": [
+        "Drenar todo o volume de uma só vez para aliviar rapidamente a pressão.",
+        "Drenar em etapas (300-500 mL por vez), interrompendo e reavaliando sinais vitais entre as etapas.",
+        "Inserir sonda de alívio e deixar por 24 horas para monitoramento.",
+        "Não inserir sonda e aguardar micção espontânea por 6 horas."
+      ],
+      "correct_index": 1,
+      "explanation": "A descompressão rápida e completa de grandes volumes pode causar hipotensão e sangramento por reperfusão. A drenagem gradual é a conduta recomendada."
+    },
+    {
+      "question": "Qual medida faz parte do bundle de prevenção de infecção do trato urinário associada a cateter?",
+      "options": [
+        "Troca rotineira da sonda a cada 7 dias mesmo sem indicação clínica.",
+        "Uso diário de antisséptico no meato uretral em todos os pacientes.",
+        "Avaliação diária da necessidade de manutenção da sonda e retirada assim que a indicação cessar.",
+        "Manutenção da bolsa coletora acima do nível da bexiga para facilitar a drenagem por gravidade."
+      ],
+      "correct_index": 2,
+      "explanation": "A permanência desnecessária é o principal fator de risco modificável para ITU-AC. A revisão diária da indicação e a retirada precoce são pilares do bundle."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – fundamentos de segurança e responsabilidade da enfermagem no cuidado de dispositivos."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Capítulos sobre sistema renal e urinário / Cuidados com sonda vesical",
+      "note": "Referência clássica para indicações, técnica, complicações e prevenção de ITU associada a cateter."
+    },
+    {
+      "type": "article",
+      "title": "Prevenção de infecção do trato urinário associada a cateter: revisão de evidências",
+      "source": "SciELO / Rev. Bras. Enferm.",
+      "url": "https://www.scielo.br/j/reben/",
+      "note": "Evidências sobre bundles e tempo de permanência como fator de risco."
+    }
+  ]
+}

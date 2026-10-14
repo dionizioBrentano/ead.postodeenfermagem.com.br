@@ -8,5 +8,15 @@
     "dataFile": "m0-fundamentos-seguranca.json",
     "duration_minutes": 60,
     "topics_count": 3
+  },
+  {
+    "id": "m1",
+    "slug": "m1",
+    "number": 1,
+    "title": "Módulo 1: Sondas Vesicais",
+    "short_description": "Indicações, calibres e tipos de sonda Foley, prevenção de ITU-AC, sonda de alívio e cuidados diários.",
+    "dataFile": "m1-sondas-vesicais.json",
+    "duration_minutes": 60,
+    "topics_count": 3
   }
 ]

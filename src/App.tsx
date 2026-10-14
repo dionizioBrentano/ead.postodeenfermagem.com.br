@@ -22,6 +22,7 @@ import SupervisaoPage from "./pages/SupervisaoPage";
 import AdministracaoPage from "./pages/AdministracaoPage";
 import EntrarRetornoPage from "./pages/EntrarRetornoPage";
 import EadModulo0Page from "./pages/EadModulo0Page";
+import EadModulo1Page from "./pages/EadModulo1Page";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
 
@@ -136,6 +137,10 @@ export default function App() {
 
   if (rota === "/m0" || rota === "/ead/m0") {
     return <EadModulo0Page onVoltar={() => navegar("/sala")} />;
+  }
+
+  if (rota === "/m1" || rota === "/ead/m1") {
+    return <EadModulo1Page onVoltar={() => navegar("/sala")} />;
   }
 
   if (!token) {
