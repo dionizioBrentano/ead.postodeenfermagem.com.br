@@ -3,15 +3,12 @@ import {
   type Profile, 
   type Membership, 
   getUserToken, 
-  adminGetMembros, 
-  adminAprovarMembro, 
-  adminRevogarMembro, 
-  adminReativarMembro, 
-  adminGetConvites, 
-  adminCriarConvite, 
-  adminDeletarConvite, 
-  adminSetAtribuicoes 
 } from "../api/client";
+import {
+  adminGetMembros,
+  getCatalogoAtribuicoes,
+  type CatalogoAtribuicoes,
+} from "../api/organizacao";
 import { 
   adminGetTurmas, adminCreateTurma, adminUpdateTurma, adminDeleteTurma, adminGetTurma, 
   adminAddMembroTurma, adminRemoveMembroTurma, 
@@ -21,9 +18,14 @@ import {
 } from "../api/ead";
 import FrequenciaAdmin from "../components/FrequenciaAdmin";
 import MenuEad from "../components/MenuEad";
-
-
-type Aba = "docentes" | "convites" | "administradores" | "alunos" | "turmas" | "calendario";
+import { OrganizacaoDocentes } from "../components/OrganizacaoDocentes";
+import { OrganizacaoConvites } from "../components/OrganizacaoConvites";
+import { OrganizacaoAdministradores } from "../components/OrganizacaoAdministradores";
+import { OrganizacaoAlunos } from "../components/OrganizacaoAlunos";
+import { TEXTOS_ORGANIZACAO } from "../data/textosOrganizacao";
+import { type AbaAdministracao } from "../data/abasMenu";
+import { abaInicialDaBusca } from "../lib/navegacaoMenu";
+import { buscaAtual } from "../lib/rota";
 
 export default function AdministracaoPage({ perfil, memberships, onSair }: { perfil: Profile; memberships: Membership[]; onSair: () => void }) {
   const adminMembership = memberships.find(m => m.papel === "administrador" && m.situacao === "ativo");
@@ -32,34 +34,32 @@ export default function AdministracaoPage({ perfil, memberships, onSair }: { per
   const canDocentes = atribuicoes.includes("docentes.gerenciar");
   const canAdmin = atribuicoes.includes("administradores.gerenciar");
   const canConvites = canDocentes || canAdmin;
-  const canAlunos = atribuicoes.includes("alunos.ler");
+  const canAlunos = atribuicoes.includes("alunos.ler") || atribuicoes.includes("alunos.cadastrar");
   const canTurmas = atribuicoes.includes("turmas.gerenciar");
   const canCalendario = atribuicoes.includes("calendario.gerenciar");
-  const canFrequencia = atribuicoes.includes("turmas.gerenciar") || atribuicoes.includes("frequencia.ler");
+  const canFrequencia = atribuicoes.includes("turmas.gerenciar") || atribuicoes.includes("frequencia.corrigir");
 
-  const abasDisponiveis: Aba[] = [];
+  const abasDisponiveis: AbaAdministracao[] = [];
   if (canDocentes) abasDisponiveis.push("docentes");
   if (canConvites) abasDisponiveis.push("convites");
   if (canAdmin) abasDisponiveis.push("administradores");
   if (canAlunos) abasDisponiveis.push("alunos");
   if (canTurmas) abasDisponiveis.push("turmas");
   if (canCalendario) abasDisponiveis.push("calendario");
-  if (canFrequencia) abasDisponiveis.push("frequencia" as Aba);
+  if (canFrequencia) abasDisponiveis.push("frequencia");
 
-  const [aba, setAba] = useState<Aba | "frequencia" | "">(abasDisponiveis.length > 0 ? abasDisponiveis[0] : "");
+  const [aba, setAba] = useState<AbaAdministracao | "">(
+    abasDisponiveis.length > 0
+      ? abaInicialDaBusca(buscaAtual(), abasDisponiveis, abasDisponiveis[0])
+      : ""
+  );
 
   const [lista, setLista] = useState<any[]>([]);
   const [carregando, setCarregando] = useState(false);
   const [msg, setMsg] = useState<{tipo: "ok"|"err", texto: string} | null>(null);
 
-  // Convite state
-  const [novoConviteEmail, setNovoConviteEmail] = useState("");
-  const [novoConvitePapel, setNovoConvitePapel] = useState<"docente" | "administrador">("docente");
-  const [novoConviteAtribuicoes, setNovoConviteAtribuicoes] = useState<string[]>([]);
-
-  // Permissoes state
-  const [editandoMembroId, setEditandoMembroId] = useState<string | null>(null);
-  const [membroAtribuicoes, setMembroAtribuicoes] = useState<string[]>([]);
+  const [catalogo, setCatalogo] = useState<CatalogoAtribuicoes>({ atribuicoes: [], perfis: [] });
+  const [erroCatalogo, setErroCatalogo] = useState<string | null>(null);
 
   // Turmas state
   const [editandoTurmaId, setEditandoTurmaId] = useState<string | null>(null);
@@ -98,38 +98,34 @@ export default function AdministracaoPage({ perfil, memberships, onSair }: { per
   const [novoTurmaCalTipo, setNovoTurmaCalTipo] = useState<"feriado" | "recesso">("feriado");
   const [novoTurmaCalDescricao, setNovoTurmaCalDescricao] = useState("");
 
-
   const token = getUserToken() || "";
 
   useEffect(() => {
+    if (!token) return;
+    getCatalogoAtribuicoes(token)
+      .then((res) => setCatalogo(res))
+      .catch((_e: unknown) => {
+        setErroCatalogo(TEXTOS_ORGANIZACAO.catalogoIndisponivel);
+      });
+  }, [token]);
+
+  useEffect(() => {
     if (!aba) return;
-    carregar();
+    if (aba === "turmas" || aba === "calendario") {
+      carregar();
+    }
   }, [aba]);
 
   async function carregar() {
     setCarregando(true);
     setMsg(null);
     try {
-      if (aba === "docentes") {
-        const res = await adminGetMembros(token, "papel=docente");
-        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
-      } else if (aba === "administradores") {
-        const res = await adminGetMembros(token, "papel=administrador");
-        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
-      } else if (aba === "alunos") {
-        const res = await adminGetMembros(token, "papel=aluno");
-        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
-      
-      } else if (aba === "turmas") {
+      if (aba === "turmas") {
         const res = await adminGetTurmas(token);
         setLista(res);
       } else if (aba === "calendario") {
         const res = await adminGetCalendarioPadrao(token);
         setLista(res);
-
-      } else if (aba === "convites") {
-        const res = await adminGetConvites(token);
-        setLista(Array.isArray(res) ? res : ((res as any)?.data || []));
       }
     } catch (e: any) {
       setMsg({ tipo: "err", texto: e.message || "Erro ao carregar dados" });
@@ -363,89 +359,6 @@ export default function AdministracaoPage({ perfil, memberships, onSair }: { per
     });
   };
 
-const handleAprovar = async (id: string) => {
-    try {
-      await adminAprovarMembro(token, id);
-      setMsg({ tipo: "ok", texto: "Membro aprovado com sucesso." });
-      carregar();
-    } catch (e: any) {
-      if (e.status === 422 && e.body?.code === "membro_sem_confirmacao") {
-        setLista(prev => prev.map(m => m.id === id ? { ...m, erroAprovacao: e.body?.message || "O docente não confirmou o e-mail/telefone." } : m));
-      } else {
-        setMsg({ tipo: "err", texto: e.message || "Erro ao aprovar membro." });
-      }
-    }
-  };
-
-  const handleRevogar = async (id: string) => {
-    const motivo = window.prompt("Qual o motivo da revogação?");
-    if (motivo === null) return;
-    try {
-      await adminRevogarMembro(token, id, motivo);
-      setMsg({ tipo: "ok", texto: "Membro revogado com sucesso." });
-      carregar();
-    } catch (e: any) {
-      setMsg({ tipo: "err", texto: e.message || "Erro ao revogar membro." });
-    }
-  };
-
-  const handleReativar = async (id: string) => {
-    try {
-      await adminReativarMembro(token, id);
-      setMsg({ tipo: "ok", texto: "Membro reativado com sucesso." });
-      carregar();
-    } catch (e: any) {
-      setMsg({ tipo: "err", texto: e.message || "Erro ao reativar membro." });
-    }
-  };
-
-  const handleCriarConvite = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await adminCriarConvite(token, {
-        email: novoConviteEmail,
-        papel: novoConvitePapel,
-        atribuicoes: novoConvitePapel === "administrador" ? novoConviteAtribuicoes : undefined
-      });
-      setMsg({ tipo: "ok", texto: "Convite enviado com sucesso." });
-      setNovoConviteEmail("");
-      setNovoConviteAtribuicoes([]);
-      carregar();
-    } catch (e: any) {
-      setMsg({ tipo: "err", texto: e.message || "Erro ao enviar convite." });
-    }
-  };
-
-  const handleCancelarConvite = async (id: string) => {
-    if (!window.confirm("Cancelar este convite?")) return;
-    try {
-      await adminDeletarConvite(token, id);
-      setMsg({ tipo: "ok", texto: "Convite cancelado." });
-      carregar();
-    } catch (e: any) {
-      setMsg({ tipo: "err", texto: e.message || "Erro ao cancelar convite." });
-    }
-  };
-
-  const handleSalvarPermissoes = async () => {
-    if (!editandoMembroId) return;
-    try {
-      await adminSetAtribuicoes(token, editandoMembroId, membroAtribuicoes);
-      setMsg({ tipo: "ok", texto: "Permissões atualizadas." });
-      setEditandoMembroId(null);
-      carregar();
-    } catch (e: any) {
-      setMsg({ tipo: "err", texto: e.message || "Erro ao atualizar permissões." });
-    }
-  };
-
-  const toggleAtribuicao = (list: string[], setList: (l: string[]) => void, att: string) => {
-    if (list.includes(att)) {
-      setList(list.filter(x => x !== att));
-    } else {
-      setList([...list, att]);
-    }
-  };
 
   return (
     <>
@@ -468,167 +381,43 @@ const handleAprovar = async (id: string) => {
           </div>
         )}
 
-        {carregando && <p>Carregando...</p>}
-
-        {!carregando && aba === "docentes" && (
-          <div className="box">
-            <h2>Docentes</h2>
-            <table className="heat" style={{ width: "100%", textAlign: "left" }}>
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Situação</th>
-                  <th>Registro Profissional</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lista.map(m => (
-                  <tr key={m.id}>
-                    <td>
-                      {m.usuario?.name || "N/A"}
-                      {m.erroAprovacao && <span className="e" style={{ display: "block", fontSize: "0.8em", color: "red", marginTop: 4 }}>{m.erroAprovacao}</span>}
-                    </td>
-                    <td>{m.usuario?.email || "N/A"}</td>
-                    <td>{m.situacao}</td>
-                    <td>
-                      {m.registros_profissionais && m.registros_profissionais.length > 0 ? (
-                        m.registros_profissionais.map((r: any) => {
-                          const cor = r.situacao === "regular" ? "green" : (r.situacao === "nao_conferido" ? "gray" : "red");
-                          const situacaoTxt = r.situacao === "nao_conferido" ? "Não conferido" : (r.situacao.charAt(0).toUpperCase() + r.situacao.slice(1));
-                          return (
-                            <div key={r.id} style={{ marginBottom: 4 }}>
-                              <span>{r.conselho}/{r.uf} {r.numero} ({r.categoria})</span>
-                              <span style={{ marginLeft: 8, fontSize: "0.8em", color: "white", backgroundColor: cor, padding: "2px 6px", borderRadius: 4 }}>
-                                {situacaoTxt}
-                              </span>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <span className="muted">{m.situacao === "pendente" ? "Sem registro informado" : "Sem registro"}</span>
-                      )}
-                    </td>
-                    <td>
-                      {m.situacao === "pendente" && <button className="btn small" onClick={() => handleAprovar(m.id)}>Aprovar</button>}
-                      {m.situacao === "ativo" && <button className="btn ghost small" onClick={() => handleRevogar(m.id)}>Revogar</button>}
-                      {m.situacao === "revogado" && <button className="btn ghost small" onClick={() => handleReativar(m.id)}>Reativar</button>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {erroCatalogo && (
+          <p className="alert err">
+            {erroCatalogo}
+          </p>
         )}
 
-        {!carregando && aba === "administradores" && (
-          <div className="box">
-            <h2>Administradores</h2>
-            <table className="heat" style={{ width: "100%", textAlign: "left" }}>
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Permissões</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lista.map(m => (
-                  <tr key={m.id}>
-                    <td>{m.usuario?.name || "N/A"}</td>
-                    <td>{m.usuario?.email || "N/A"}</td>
-                    <td>{(m.atribuicoes || []).join(", ")}</td>
-                    <td>
-                      <button className="btn ghost small" onClick={() => {
-                        setEditandoMembroId(m.id);
-                        setMembroAtribuicoes(m.atribuicoes || []);
-                      }}>Permissões</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {carregando && (aba === "turmas" || aba === "calendario") && <p>Carregando...</p>}
+
+        {aba === "docentes" && (
+          <OrganizacaoDocentes
+            token={token}
+            minhasAtribuicoes={atribuicoes}
+          />
         )}
 
-        {!carregando && aba === "alunos" && (
-          <div className="box">
-            <h2>Alunos</h2>
-            <table className="heat" style={{ width: "100%", textAlign: "left" }}>
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Situação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lista.map(m => (
-                  <tr key={m.id}>
-                    <td>{m.usuario?.name || "N/A"}</td>
-                    <td>{m.usuario?.email || "N/A"}</td>
-                    <td>{m.situacao}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {aba === "convites" && (
+          <OrganizacaoConvites
+            token={token}
+            minhasAtribuicoes={atribuicoes}
+            catalogo={catalogo}
+          />
         )}
 
-        {!carregando && aba === "convites" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <div className="box">
-              <h2>Novo Convite</h2>
-              <form onSubmit={handleCriarConvite} style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 400 }}>
-                <input type="email" value={novoConviteEmail} onChange={e => setNovoConviteEmail(e.target.value)} placeholder="E-mail" required />
-                <select value={novoConvitePapel} onChange={e => setNovoConvitePapel(e.target.value as any)}>
-                  <option value="docente">Docente</option>
-                  {canAdmin && <option value="administrador">Administrador</option>}
-                </select>
-                {novoConvitePapel === "administrador" && (
-                  <div>
-                    <label style={{ display: "block", marginBottom: 5 }}>Atribuições:</label>
-                    <label style={{ display: "block" }}>
-                      <input type="checkbox" checked={novoConviteAtribuicoes.includes("docentes.gerenciar")} onChange={() => toggleAtribuicao(novoConviteAtribuicoes, setNovoConviteAtribuicoes, "docentes.gerenciar")} /> docentes.gerenciar
-                    </label>
-                    <label style={{ display: "block" }}>
-                      <input type="checkbox" checked={novoConviteAtribuicoes.includes("administradores.gerenciar")} onChange={() => toggleAtribuicao(novoConviteAtribuicoes, setNovoConviteAtribuicoes, "administradores.gerenciar")} /> administradores.gerenciar
-                    </label>
-                    <label style={{ display: "block" }}>
-                      <input type="checkbox" checked={novoConviteAtribuicoes.includes("alunos.ler")} onChange={() => toggleAtribuicao(novoConviteAtribuicoes, setNovoConviteAtribuicoes, "alunos.ler")} /> alunos.ler
-                    </label>
-                  </div>
-                )}
-                <button type="submit" className="btn">Enviar Convite</button>
-              </form>
-            </div>
+        {aba === "administradores" && (
+          <OrganizacaoAdministradores
+            token={token}
+            minhasAtribuicoes={atribuicoes}
+            catalogo={catalogo}
+            meuUserId={perfil?.id ? String(perfil.id) : undefined}
+          />
+        )}
 
-            <div className="box">
-              <h2>Convites Pendentes</h2>
-              <table className="heat" style={{ width: "100%", textAlign: "left" }}>
-                <thead>
-                  <tr>
-                    <th>E-mail</th>
-                    <th>Papel</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lista.map(c => (
-                    <tr key={c.id}>
-                      <td>{c.email}</td>
-                      <td>{c.papel}</td>
-                      <td>
-                        <button className="btn ghost small" onClick={() => handleCancelarConvite(c.id)}>Cancelar</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {aba === "alunos" && (
+          <OrganizacaoAlunos
+            token={token}
+            minhasAtribuicoes={atribuicoes}
+          />
         )}
 
         {!carregando && aba === "calendario" && (
@@ -1107,29 +896,6 @@ const handleAprovar = async (id: string) => {
         )}
 
       </main>
-
-      {editandoMembroId && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div className="box" style={{ background: "white", width: 400, padding: 20 }}>
-            <h2>Editar Permissões</h2>
-            <div style={{ margin: "20px 0" }}>
-              <label style={{ display: "block" }}>
-                <input type="checkbox" checked={membroAtribuicoes.includes("docentes.gerenciar")} onChange={() => toggleAtribuicao(membroAtribuicoes, setMembroAtribuicoes, "docentes.gerenciar")} /> docentes.gerenciar
-              </label>
-              <label style={{ display: "block" }}>
-                <input type="checkbox" checked={membroAtribuicoes.includes("administradores.gerenciar")} onChange={() => toggleAtribuicao(membroAtribuicoes, setMembroAtribuicoes, "administradores.gerenciar")} /> administradores.gerenciar
-              </label>
-              <label style={{ display: "block" }}>
-                <input type="checkbox" checked={membroAtribuicoes.includes("alunos.ler")} onChange={() => toggleAtribuicao(membroAtribuicoes, setMembroAtribuicoes, "alunos.ler")} /> alunos.ler
-              </label>
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button className="btn" onClick={handleSalvarPermissoes}>Salvar</button>
-              <button className="btn ghost" onClick={() => setEditandoMembroId(null)}>Cancelar</button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

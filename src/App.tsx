@@ -21,8 +21,9 @@ import SalaPage from "./pages/SalaPage";
 import SupervisaoPage from "./pages/SupervisaoPage";
 import AdministracaoPage from "./pages/AdministracaoPage";
 import EntrarRetornoPage from "./pages/EntrarRetornoPage";
-import EadModulo0Page from "./pages/EadModulo0Page";
-import EadModulo1Page from "./pages/EadModulo1Page";
+import EadModuloPage from "./pages/EadModuloPage";
+import { MODULOS_EAD, SLUGS_MODULOS_EAD, conteudoDoModulo } from "./data/ead/indiceModulos";
+import { slugDoModuloNaRota } from "./lib/modulosEad";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
 
@@ -69,7 +70,7 @@ export default function App() {
   }, [token]);
 
   useEffect(() => {
-    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno" && rota !== "/m0" && rota !== "/ead/m0" && rota !== "/ead") {
+    if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno") {
       verificar();
     }
   }, [token, faltando.length, verificar, rota, guard.estado]);
@@ -128,19 +129,6 @@ export default function App() {
         }}
       />
     );
-  }
-
-  if (rota === "/ead") {
-    navegar("/ead/m0", true);
-    return null;
-  }
-
-  if (rota === "/m0" || rota === "/ead/m0") {
-    return <EadModulo0Page onVoltar={() => navegar("/sala")} />;
-  }
-
-  if (rota === "/m1" || rota === "/ead/m1") {
-    return <EadModulo1Page onVoltar={() => navegar("/sala")} />;
   }
 
   if (!token) {
@@ -265,6 +253,31 @@ export default function App() {
       return null;
     }
     return <SalaPage perfil={guard.perfil} memberships={memberships} onSair={sair} />;
+  }
+
+  const slugModulo = slugDoModuloNaRota(rota, SLUGS_MODULOS_EAD);
+  if (rota === "/ead" || slugModulo) {
+    if (!isAluno && !isAdmin && !isDocente) {
+      navegar("/participar", true);
+      return null;
+    }
+    if (rota === "/ead") {
+      const primeiroSlug = MODULOS_EAD[0]?.slug ?? "m0";
+      navegar(`/ead/${primeiroSlug}`, true);
+      return null;
+    }
+    if (slugModulo) {
+      const dadosModulo = conteudoDoModulo(slugModulo);
+      if (dadosModulo) {
+        return (
+          <EadModuloPage
+            metadados={dadosModulo.metadados}
+            modulo={dadosModulo.modulo}
+            onVoltar={() => navegar("/sala")}
+          />
+        );
+      }
+    }
   }
 
   if (rota === "/supervisao/lancamento") {

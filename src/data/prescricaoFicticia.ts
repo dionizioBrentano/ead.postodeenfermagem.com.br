@@ -211,10 +211,13 @@ export const CUIDADO_TESTE_DIETA: PrescricaoItem = {
   horariosAprazados: "Horários da nutrição",
 };
 
+export const APRESENTACAO_SINAIS_VITAIS =
+  "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)";
+
 export const CUIDADO_TESTE_SSVV: PrescricaoItem = {
   id: "teste-ssvv",
   categoria: "sinais_vitais",
-  apresentacao: "Aferição de sinais vitais (PA, FC, FR, TAx, SpO2)",
+  apresentacao: APRESENTACAO_SINAIS_VITAIS,
   dose: "—",
   via: "Beira do leito",
   frequencia: "4/4h",

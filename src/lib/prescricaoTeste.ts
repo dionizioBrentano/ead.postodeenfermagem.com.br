@@ -183,7 +183,3 @@ export function escolherPrescricaoTeste(opcoes: {
   }
   return PRESCRICAO_TESTE;
 }
-
-export function sortearIndice(quantidade: number): number {
-  return Math.floor(Math.random() * quantidade);
-}

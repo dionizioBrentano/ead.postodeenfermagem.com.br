@@ -256,32 +256,6 @@ export async function acceptInvitation(bearer: string, token: string) {
   return request("POST", `/convites/${token}/aceitar`, { bearer });
 }
 
-// Admin endpoints
-export async function adminGetMembros(bearer: string, query: string) {
-  return request("GET", `/organizacao/membros?${query}`, { bearer });
-}
-export async function adminAprovarMembro(bearer: string, id: string) {
-  return request("POST", `/organizacao/membros/${id}/aprovar`, { bearer });
-}
-export async function adminRevogarMembro(bearer: string, id: string, motivo: string) {
-  return request("POST", `/organizacao/membros/${id}/revogar`, { bearer, body: { motivo } });
-}
-export async function adminReativarMembro(bearer: string, id: string) {
-  return request("POST", `/organizacao/membros/${id}/reativar`, { bearer });
-}
-export async function adminSetAtribuicoes(bearer: string, id: string, atribuicoes: string[]) {
-  return request("PATCH", `/organizacao/membros/${id}/atribuicoes`, { bearer, body: { atribuicoes } });
-}
-export async function adminGetConvites(bearer: string) {
-  return request("GET", `/organizacao/convites`, { bearer });
-}
-export async function adminCriarConvite(bearer: string, payload: { email: string; papel: string; atribuicoes?: string[] }) {
-  return request("POST", `/organizacao/convites`, { bearer, body: payload });
-}
-export async function adminDeletarConvite(bearer: string, id: string) {
-  return request("DELETE", `/organizacao/convites/${id}`, { bearer });
-}
-
 // Registros Profissionais
 export type RegistroProfissional = {
   id: string;

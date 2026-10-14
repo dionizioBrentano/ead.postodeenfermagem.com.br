@@ -1,0 +1,165 @@
+{
+  "module_id": "m2",
+  "module_title": "Sondas Enterais, Gástricas e Estomias",
+  "order": 2,
+  "learning_objectives": [
+    "Diferenciar sonda nasoenteral (SNE) de sonda nasogástrica (SNG) quanto a indicações, posicionamento e riscos.",
+    "Aplicar métodos de confirmação de posição da sonda e medidas de prevenção de aspiração e obstrução.",
+    "Reconhecer cuidados específicos com gastrostomia, jejunostomia e sonda retal.",
+    "Identificar sinais de complicações e condutas imediatas de segurança."
+  ],
+  "topics": [
+    {
+      "topic_id": "m2-t1-sne-sng",
+      "topic_title": "Sonda Nasoenteral (SNE) e Nasogástrica (SNG)",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Diferenças fundamentais",
+          "body": "A sonda nasogástrica (SNG) tem a extremidade no estômago e é utilizada principalmente para drenagem, descompressão gástrica ou administração de medicamentos e dieta em curto prazo. A sonda nasoenteral (SNE) ultrapassa o piloro e tem a ponta no duodeno ou jejuno, sendo indicada para nutrição enteral prolongada quando o estômago não é adequado (risco de aspiração, gastroparesia, cirurgia gástrica). A SNE reduz o risco de refluxo e aspiração em comparação com a SNG."
+        },
+        {
+          "type": "checklist",
+          "title": "Indicações principais",
+          "items": [
+            "SNG: descompressão gástrica, lavagem gástrica, administração de medicamentos ou dieta de curto prazo",
+            "SNE: nutrição enteral quando há risco elevado de aspiração ou disfunção gástrica",
+            "Ambas: via de acesso temporária até definição de via definitiva (estomia) ou recuperação da via oral"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança – Aspiração",
+          "body": "A aspiração de conteúdo gástrico ou de dieta é a complicação mais grave. Pacientes com rebaixamento de consciência, reflexo de tosse comprometido ou posicionamento inadequado têm risco aumentado. Manter cabeceira elevada a 30-45° durante e após a administração de dieta."
+        }
+      ]
+    },
+    {
+      "topic_id": "m2-t2-confirmacao-prevencao",
+      "topic_title": "Confirmação de Posição, Prevenção de Aspiração e Obstrução",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Confirmação de posição",
+          "body": "A posição da sonda deve ser confirmada antes de cada uso. O método mais confiável é a radiografia. Na prática diária, a mensuração do pH do aspirado (pH ≤ 5,5 sugere posição gástrica) e a ausculta epigástrica (método menos confiável) são utilizados como complementares. Nunca administrar dieta ou medicamento sem confirmação da posição."
+        },
+        {
+          "type": "checklist",
+          "title": "Prevenção de obstrução e aspiração",
+          "items": [
+            "Lavar a sonda com 20-30 mL de água antes e após cada medicação ou dieta",
+            "Não misturar medicamentos na dieta sem orientação farmacêutica",
+            "Manter cabeceira elevada 30-45° durante a infusão e por 30-60 min após",
+            "Verificar resíduo gástrico conforme protocolo institucional antes de reiniciar dieta",
+            "Fixar a sonda de forma que não haja tração no nariz ou deslocamento"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta – Obstrução",
+          "body": "Obstrução é frequente quando a lavagem é inadequada ou medicamentos são administrados sem diluição. Em caso de obstrução, tente lavagem com água morna em seringa de 20-50 mL com pressão suave. Não force. Se não resolver, comunique a equipe para avaliação de troca."
+        }
+      ]
+    },
+    {
+      "topic_id": "m2-t3-estomias-retal",
+      "topic_title": "Gastrostomia, Jejunostomia e Sonda Retal",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Gastrostomia e jejunostomia",
+          "body": "A gastrostomia (via estômago) e a jejunostomia (via jejuno) são vias de acesso de médio e longo prazo para nutrição enteral. São indicadas quando a necessidade nutricional ultrapassa 4-6 semanas ou quando a via nasal não é viável. Cuidados incluem higiene do sítio de inserção, prevenção de extravasamento, fixação adequada e observação de sinais de infecção ou deslocamento."
+        },
+        {
+          "type": "text",
+          "title": "Sonda retal",
+          "body": "A sonda retal é utilizada para administração de enemas, descompressão ou coleta de fezes em situações específicas. Não é via de nutrição. Deve ser inserida com lubrificação adequada, sem força, e removida após o procedimento. Risco de lesão de mucosa e perfuração se houver manipulação inadequada."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados com estomias",
+          "items": [
+            "Higiene diária do sítio com água e sabão neutro",
+            "Observar sinais de infecção (hiperemia, secreção, dor, febre)",
+            "Verificar fixação e ausência de tração",
+            "Registrar aspecto do sítio e débito a cada plantão",
+            "Em caso de deslocamento acidental, cobrir o sítio e comunicar imediatamente a equipe médica"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "Deslocamento de sonda de gastrostomia ou jejunostomia nas primeiras 2-4 semanas (antes da formação do trajeto) é emergência. Não tente reintroduzir. Cubra o orifício e acione a equipe médica."
+        },
+        {
+          "type": "image",
+          "caption": "Posicionamento seguro durante nutrição enteral",
+          "image_prompt": "Clean educational medical illustration, professional style, soft teal and white colors. Patient in bed with head of bed elevated 30-45 degrees, nasoenteral tube secured to nose, feeding pump connected. Labels in Portuguese: 'Cabeceira elevada', 'Sonda fixada', 'Bomba de infusão'. Minimalist, high clarity for EAD.",
+          "alt": "Ilustração de paciente com cabeceira elevada recebendo nutrição enteral por sonda, com fixação adequada."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual é a principal vantagem da sonda nasoenteral (SNE) em relação à nasogástrica (SNG) no contexto de nutrição?",
+      "options": [
+        "Permite maior volume de dieta em menos tempo.",
+        "Reduz o risco de refluxo e aspiração por posicionar a ponta além do piloro.",
+        "Não necessita de confirmação de posição por radiografia.",
+        "Pode ser utilizada indefinidamente sem risco de lesão nasal."
+      ],
+      "correct_index": 1,
+      "explanation": "A ponta da SNE no duodeno ou jejuno diminui o refluxo gastroesofágico e o risco de aspiração comparado à SNG, cuja ponta permanece no estômago."
+    },
+    {
+      "question": "Antes de administrar dieta ou medicamento por sonda enteral, qual medida de segurança é obrigatória?",
+      "options": [
+        "Apenas auscultar o estômago, pois é suficiente em todos os casos.",
+        "Confirmar a posição da sonda (preferencialmente por radiografia ou pH do aspirado) e manter a cabeceira elevada.",
+        "Administrar imediatamente para não atrasar a nutrição.",
+        "Trocar a sonda a cada administração para evitar contaminação."
+      ],
+      "correct_index": 1,
+      "explanation": "A confirmação da posição evita administração inadvertida em via respiratória ou em posição inadequada. A elevação da cabeceira reduz risco de aspiração."
+    },
+    {
+      "question": "Em caso de deslocamento acidental de uma sonda de gastrostomia nas primeiras semanas após a inserção, qual é a conduta correta da enfermagem?",
+      "options": [
+        "Tentar reintroduzir a sonda imediatamente com lubrificante.",
+        "Cobrir o sítio com curativo estéril e comunicar a equipe médica sem tentar reintroduzir.",
+        "Lavar o orifício com soro fisiológico e aguardar o próximo plantão.",
+        "Inserir uma sonda nasogástrica no mesmo orifício como substituta."
+      ],
+      "correct_index": 1,
+      "explanation": "Antes da maturação do trajeto (geralmente 2-4 semanas), a reintrodução pode causar falsa via e peritonite. A conduta é proteger o sítio e acionar a equipe médica."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – fundamentos de segurança aplicados ao cuidado de dispositivos."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Capítulos sobre sistema gastrointestinal e nutrição / Sondas enterais e estomias",
+      "note": "Referência para indicações, confirmação de posição, prevenção de complicações e cuidados com estomias."
+    },
+    {
+      "type": "article",
+      "title": "Cuidados de enfermagem na prevenção de aspiração em pacientes com sonda enteral",
+      "source": "SciELO / Rev. Bras. Enferm.",
+      "url": "https://www.scielo.br/j/reben/",
+      "note": "Evidências sobre posicionamento, resíduo gástrico e bundles de prevenção de aspiração."
+    }
+  ]
+}

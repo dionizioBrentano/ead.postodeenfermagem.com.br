@@ -19,19 +19,12 @@ import FrequenciaAdmin from "../components/FrequenciaAdmin";
 import AnotacoesCampoSupervisor from "../components/AnotacoesCampoSupervisor";
 import TarefasTeoricasSupervisao from "../components/TarefasTeoricasSupervisao";
 import MenuEad from "../components/MenuEad";
-
-type Aba =
-  | "avaliacao_sup"
-  | "autoavaliacoes_aluno"
-  | "paralelo"
-  | "grafico"
-  | "anotacoes_campo"
-  | "selecionar_alunos"
-  | "calendario"
-  | "aulas"
-  | "chamada"
-  | "transcrever_auto"
-  | "meu_registro";
+import {
+  ABAS_SUPERVISAO_DO_MENU,
+  type AbaSupervisao,
+} from "../data/abasMenu";
+import { abaInicialDaBusca } from "../lib/navegacaoMenu";
+import { buscaAtual } from "../lib/rota";
 
 export default function SupervisaoPage({
   perfil,
@@ -44,7 +37,15 @@ export default function SupervisaoPage({
   onSair: () => void;
   modoLancamento?: boolean;
 }) {
-  const [aba, setAba] = useState<Aba>(modoLancamento ? "transcrever_auto" : "avaliacao_sup");
+  const [aba, setAba] = useState<AbaSupervisao>(
+    modoLancamento
+      ? "transcrever_auto"
+      : abaInicialDaBusca(
+          buscaAtual(),
+          ABAS_SUPERVISAO_DO_MENU,
+          "avaliacao_sup"
+        )
+  );
   const ehAdmin = memberships.some((m) => m.papel === "administrador" && m.situacao === "ativo");
 
   const [confirmedTurmaId, setConfirmedTurmaId] = useState("");
@@ -164,7 +165,7 @@ export default function SupervisaoPage({
     }
   }, [confirmedStudentId, aba]);
 
-  const ir = (a: Aba) => {
+  const ir = (a: AbaSupervisao) => {
     setAba(a);
     window.scrollTo({ top: 0 });
   };
@@ -201,7 +202,7 @@ export default function SupervisaoPage({
         memberships={memberships}
         papelAtivo={ehAdmin ? "administrador" : "docente"}
         abaAtiva={aba}
-        onSelecionarAba={(a) => ir(a as Aba)}
+        onSelecionarAba={(a) => ir(a as AbaSupervisao)}
         onSair={onSair}
       />
 

@@ -7,7 +7,8 @@ import {
   type RegistroProfissional,
 } from "../api/client";
 import RegistroProfissionalForm from "./RegistroProfissionalForm";
-import { navegar } from "../lib/rota";
+import { navegar, useRota } from "../lib/rota";
+import { destinoDoItemDoMenu, itemDoMenuAtivo } from "../lib/navegacaoMenu";
 
 const LOGIN_CENTRAL = (import.meta.env.VITE_LOGIN_CENTRAL_URL ?? "https://entrar.postodeenfermagem.com.br").replace(/\/+$/, "");
 const LOGO_ETCR = "https://etcr.com.br/site/wp-content/uploads/2025/09/LogoAtualizado.svg";
@@ -240,6 +241,7 @@ export default function MenuEad({
   onSair,
   turmaInfo,
 }: MenuEadProps) {
+  const rotaAtual = useRota();
   const [menuAberto, setMenuAberto] = useState<string | null>(null);
   const [drawerAberto, setDrawerAberto] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -349,10 +351,11 @@ export default function MenuEad({
   const handleItemClick = (chaveAba: string, destinoRota?: string) => {
     setMenuAberto(null);
     setDrawerAberto(false);
-    if (destinoRota) {
-      navegar(destinoRota);
+    const destino = destinoDoItemDoMenu(rotaAtual, chaveAba, destinoRota);
+    if (destino.tipo === "aba") {
+      onSelecionarAba(destino.chave);
     } else {
-      onSelecionarAba(chaveAba);
+      navegar(destino.para);
     }
   };
 
@@ -499,11 +502,8 @@ export default function MenuEad({
         },
       ];
 
-  const isItemAtivo = (itemChave: string) => {
-    if (itemChave === "dashboard" || itemChave === "inicio") {
-      return abaAtiva === "dashboard" || abaAtiva === "inicio";
-    }
-    return itemChave === abaAtiva;
+  const isItemAtivo = (item: { chave: string; rota?: string }) => {
+    return itemDoMenuAtivo(rotaAtual, abaAtiva, item.chave, item.rota);
   };
 
   return (
@@ -597,7 +597,7 @@ export default function MenuEad({
                     onMouseLeave={handleMouseLeaveGroup}
                   >
                     {grupo.itens.map((item) => {
-                      const ativo = isItemAtivo(item.chave);
+                      const ativo = isItemAtivo(item);
                       return (
                         <button
                           key={item.chave}
@@ -827,7 +827,7 @@ export default function MenuEad({
                   </div>
                   <div className="topbar-drawer-group-items">
                     {grupo.itens.map((item) => {
-                      const ativo = isItemAtivo(item.chave);
+                      const ativo = isItemAtivo(item);
                       return (
                         <button
                           key={item.chave}

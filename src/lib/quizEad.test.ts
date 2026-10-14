@@ -50,4 +50,15 @@ describe('quizEad - lógica pura de gabarito e desempenho', () => {
     expect(desempenhoM1.acertos).toBe(3);
     expect(desempenhoM1.concluido).toBe(true);
   });
+
+  it('valida gabarito e desempenho do Módulo 2 (Sondas Enterais, Gástricas e Estomias)', () => {
+    const gabaritoM2 = [1, 1, 1];
+    expect(verificarResposta(gabaritoM2[0], 1).correta).toBe(true);
+    expect(verificarResposta(gabaritoM2[1], 1).correta).toBe(true);
+    expect(verificarResposta(gabaritoM2[2], 1).correta).toBe(true);
+
+    const desempenhoM2 = calcularDesempenhoQuiz({ 0: 1, 1: 1, 2: 1 }, gabaritoM2);
+    expect(desempenhoM2.acertos).toBe(3);
+    expect(desempenhoM2.concluido).toBe(true);
+  });
 });

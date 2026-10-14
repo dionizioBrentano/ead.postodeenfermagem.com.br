@@ -18,5 +18,15 @@
     "dataFile": "m1-sondas-vesicais.json",
     "duration_minutes": 60,
     "topics_count": 3
+  },
+  {
+    "id": "m2",
+    "slug": "m2",
+    "number": 2,
+    "title": "Módulo 2: Sondas Enterais, Gástricas e Estomias",
+    "short_description": "Diferenças entre SNE e SNG, confirmação de posição, prevenção de aspiração e obstrução, cuidados com gastrostomia, jejunostomia e sonda retal.",
+    "dataFile": "m2-sondas-enterais-gastricas-estomias.json",
+    "duration_minutes": 60,
+    "topics_count": 3
   }
 ]

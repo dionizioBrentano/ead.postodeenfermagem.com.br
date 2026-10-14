@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import moduloDataRaw from '../data/ead/m1-sondas-vesicais.json';
 import { verificarResposta } from '../lib/quizEad';
-import type { EadModule, ContentBlock, SourceItem } from '../types/ead';
-import './EadModulo1Page.css';
+import { rotuloTipoFonte } from '../lib/modulosEad';
+import { TEXTOS_MODULOS_EAD, rotuloSeloModulo } from '../data/textosModulosEad';
+import type { EadModule, EadModuleMetadata, ContentBlock, SourceItem } from '../types/ead';
+import './EadModuloPage.css';
 
-const modulo = moduloDataRaw as EadModule;
-
-interface EadModulo1PageProps {
+export interface EadModuloPageProps {
+  metadados: EadModuleMetadata;
+  modulo: EadModule;
   onVoltar?: () => void;
 }
 
-export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
+export function EadModuloPage({ metadados, modulo, onVoltar }: EadModuloPageProps) {
   const [respostas, setRespostas] = useState<Record<number, number>>({});
 
   const handleSelecionarOpcao = (indiceQuestao: number, indiceOpcao: number) => {
@@ -36,7 +37,7 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
             aria-label={bloco.title}
           >
             <span className="ead-alerta-rotulo">
-              {bloco.level === 'warning' ? 'Atenção' : 'Ponto de Atenção'}
+              {bloco.level === 'warning' ? TEXTOS_MODULOS_EAD.alertaWarning : TEXTOS_MODULOS_EAD.alertaInfo}
             </span>
             <strong className="ead-alerta-titulo">{bloco.title}</strong>
             <p className="ead-alerta-corpo">{bloco.body}</p>
@@ -66,7 +67,7 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
               role="img"
               aria-label={bloco.alt}
             >
-              <span className="ead-imagem-simbolo" aria-hidden="true">[Recurso Visual]</span>
+              <span className="ead-imagem-simbolo" aria-hidden="true">{TEXTOS_MODULOS_EAD.recursoVisual}</span>
               <p className="ead-imagem-descricao-alt">{bloco.alt}</p>
             </div>
             {bloco.caption && (
@@ -82,16 +83,9 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
     }
   };
 
-  const formatarTipoFonte = (tipo: string): string => {
-    if (tipo === 'video') return 'Vídeo';
-    if (tipo === 'book') return 'Livro';
-    if (tipo === 'article') return 'Artigo';
-    return tipo;
-  };
-
   return (
     <main className="ead-page">
-      <nav aria-label="Navegação da Sala EAD">
+      <nav aria-label={TEXTOS_MODULOS_EAD.navAriaLabel}>
         <a
           href="/sala"
           className="ead-nav-voltar"
@@ -102,24 +96,24 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
             }
           }}
         >
-          ← Voltar para a Sala EAD
+          {TEXTOS_MODULOS_EAD.voltarSala}
         </a>
       </nav>
 
       <header className="ead-header">
         <span className="ead-badge-modulo">
-          Módulo {modulo.order} • Teórico
+          {rotuloSeloModulo(modulo.order ?? metadados.number)}
         </span>
         <h1 className="ead-titulo-modulo">{modulo.module_title}</h1>
         <p className="ead-subtitulo-modulo">
-          Indicações, calibres, manejo em hematúria, competência legal e bundles de prevenção de ITU-AC no cuidado com sondas vesicais.
+          {metadados.short_description}
         </p>
       </header>
 
       {/* Objetivos de Aprendizagem */}
       <section className="ead-secao" aria-labelledby="titulo-objetivos">
         <h2 id="titulo-objetivos" className="ead-secao-titulo">
-          Objetivos de Aprendizagem
+          {TEXTOS_MODULOS_EAD.tituloObjetivos}
         </h2>
         <div className="ead-card-objetivos">
           <ul className="ead-lista-objetivos">
@@ -136,13 +130,13 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
       {/* Tópicos */}
       <section className="ead-secao" aria-labelledby="titulo-topicos">
         <h2 id="titulo-topicos" className="ead-secao-titulo">
-          Tópicos de Conteúdo
+          {TEXTOS_MODULOS_EAD.tituloTopicos}
         </h2>
         <div className="ead-topicos-grade">
           {modulo.topics.map((topico, idxTopico) => (
             <article key={topico.topic_id} className="ead-card-topico">
               <div className="ead-topico-cabecalho">
-                <span className="ead-topico-ordem">Tópico {idxTopico + 1}</span>
+                <span className="ead-topico-ordem">{`${TEXTOS_MODULOS_EAD.rotuloTopico} ${idxTopico + 1}`}</span>
                 <h3 className="ead-topico-titulo">{topico.topic_title}</h3>
               </div>
               <div className="ead-blocos-fluxo">
@@ -158,10 +152,10 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
       {/* Quiz Interativo */}
       <section className="ead-secao" aria-labelledby="titulo-quiz">
         <h2 id="titulo-quiz" className="ead-secao-titulo">
-          Quiz de Fixação
+          {TEXTOS_MODULOS_EAD.tituloQuiz}
         </h2>
         <p className="ead-secao-descricao">
-          Selecione a resposta correta em cada uma das questões abaixo para verificar sua fixação:
+          {TEXTOS_MODULOS_EAD.descricaoQuiz}
         </p>
 
         <div className="ead-quiz-grade">
@@ -174,11 +168,11 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
             return (
               <fieldset key={idxQuestao} className="ead-quiz-card">
                 <legend className="ead-quiz-enunciado">
-                  <span className="ead-quiz-numero">Questão {idxQuestao + 1}:</span>
+                  <span className="ead-quiz-numero">{`${TEXTOS_MODULOS_EAD.rotuloQuestao} ${idxQuestao + 1}:`}</span>
                   {questao.question}
                 </legend>
 
-                <div className="ead-quiz-opcoes" role="radiogroup">
+                <div className="ead-quiz-opcoes">
                   {questao.options.map((opcaoTexto, idxOpcao) => {
                     const estaSelecionada = resultado.indiceSelecionado === idxOpcao;
                     const ehAGabarito = idxOpcao === questao.correct_index;
@@ -189,10 +183,10 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
                     if (resultado.respondida) {
                       if (ehAGabarito) {
                         classeOpcao += ' ead-quiz-opcao-correta';
-                        rotuloAcessivel = 'Correta';
+                        rotuloAcessivel = TEXTOS_MODULOS_EAD.opcaoCorreta;
                       } else if (estaSelecionada && !resultado.correta) {
                         classeOpcao += ' ead-quiz-opcao-errada';
-                        rotuloAcessivel = 'Sua escolha (Incorreta)';
+                        rotuloAcessivel = TEXTOS_MODULOS_EAD.opcaoErrada;
                       }
                     }
 
@@ -225,7 +219,7 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
                     aria-live="polite"
                   >
                     <p className="ead-feedback-titulo">
-                      {resultado.correta ? '✓ Resposta Correta' : '✕ Resposta Incorreta'}
+                      {resultado.correta ? TEXTOS_MODULOS_EAD.feedbackAcerto : TEXTOS_MODULOS_EAD.feedbackErro}
                     </p>
                     <p className="ead-feedback-explicacao">{questao.explanation}</p>
                   </div>
@@ -239,43 +233,43 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
       {/* Fontes e Referências */}
       <section className="ead-secao" aria-labelledby="titulo-fontes">
         <h2 id="titulo-fontes" className="ead-secao-titulo">
-          Fontes e Referências Bibliográficas
+          {TEXTOS_MODULOS_EAD.tituloFontes}
         </h2>
         <div className="ead-fontes-grade">
           {modulo.sources.map((fonte: SourceItem, idxFonte: number) => (
             <article key={idxFonte} className="ead-card-fonte">
-              <span className="ead-fonte-tipo">{formatarTipoFonte(fonte.type)}</span>
+              <span className="ead-fonte-tipo">{rotuloTipoFonte(fonte.type)}</span>
               <h4 className="ead-fonte-titulo">{fonte.title}</h4>
 
               {fonte.institution && (
                 <p className="ead-fonte-meta">
-                  <strong>Instituição:</strong> {fonte.institution}
+                  <strong>{TEXTOS_MODULOS_EAD.metaInstituicao}</strong> {fonte.institution}
                 </p>
               )}
               {fonte.author && (
                 <p className="ead-fonte-meta">
-                  <strong>Autor:</strong> {fonte.author}
+                  <strong>{TEXTOS_MODULOS_EAD.metaAutor}</strong> {fonte.author}
                 </p>
               )}
               {fonte.authors && (
                 <p className="ead-fonte-meta">
-                  <strong>Autores:</strong> {fonte.authors}
+                  <strong>{TEXTOS_MODULOS_EAD.metaAutores}</strong> {fonte.authors}
                 </p>
               )}
               {fonte.edition && (
                 <p className="ead-fonte-meta">
-                  <strong>Edição:</strong> {fonte.edition}
+                  <strong>{TEXTOS_MODULOS_EAD.metaEdicao}</strong> {fonte.edition}
                   {fonte.chapter && ` — ${fonte.chapter}`}
                 </p>
               )}
               {!fonte.edition && fonte.chapter && (
                 <p className="ead-fonte-meta">
-                  <strong>Capítulo:</strong> {fonte.chapter}
+                  <strong>{TEXTOS_MODULOS_EAD.metaCapitulo}</strong> {fonte.chapter}
                 </p>
               )}
               {fonte.source && (
                 <p className="ead-fonte-meta">
-                  <strong>Origem:</strong> {fonte.source}
+                  <strong>{TEXTOS_MODULOS_EAD.metaOrigem}</strong> {fonte.source}
                 </p>
               )}
               {fonte.note && (
@@ -288,7 +282,7 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
                   rel="noopener noreferrer"
                   className="ead-fonte-link"
                 >
-                  Consultar material original ↗
+                  {TEXTOS_MODULOS_EAD.linkMaterialOriginal}
                 </a>
               )}
             </article>
@@ -299,4 +293,4 @@ export function EadModulo1Page({ onVoltar }: EadModulo1PageProps = {}) {
   );
 }
 
-export default EadModulo1Page;
+export default EadModuloPage;

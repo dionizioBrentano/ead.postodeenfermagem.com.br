@@ -1,0 +1,129 @@
+/* Estilos dos componentes de Organização (Docentes, Administradores, Alunos e Convites) */
+
+.organizacao-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.organizacao-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.organizacao-topo h2,
+.organizacao-topo h3 {
+  margin: 0;
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.organizacao-busca-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.organizacao-busca-wrap input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.organizacao-membro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.organizacao-membro-nome {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.organizacao-membro-detalhe {
+  font-size: 13.5px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.organizacao-erro-linha {
+  color: var(--err);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.organizacao-perfil-descricao {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+.organizacao-checks-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.organizacao-check-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.organizacao-check-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.organizacao-rodape-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.organizacao-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.organizacao-chip-regular {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.organizacao-chip-destaque {
+  background: var(--paper);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.organizacao-chip-aviso {
+  background: var(--errs);
+  color: var(--err);
+  border: 1px solid var(--err);
+}

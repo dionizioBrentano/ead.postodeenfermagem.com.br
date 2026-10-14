@@ -28,3 +28,7 @@ export function useRota(): string {
   }, []);
   return rota;
 }
+
+export function buscaAtual(): string {
+  return window.location.search;
+}

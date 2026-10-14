@@ -32,8 +32,8 @@ import {
 import {
   escolherPrescricaoTeste,
   montarPrescricaoTeste,
-  sortearIndice,
 } from "../lib/prescricaoTeste";
+import { sortearIndice } from "../lib/sorteio";
 import { fmtData, hoje } from "../lib/historico";
 import {
   salvarRespostaTarefa,
