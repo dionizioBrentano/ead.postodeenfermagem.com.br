@@ -8,6 +8,15 @@ import {
   salvarRascunho,
   type Avaliacao,
 } from "../lib/historico";
+import { TEXTOS_PLANO_ESTUDO } from "../data/textosPlanoEstudo";
+import {
+  acrescentarAoTexto,
+  itensDeAtencao,
+  itensDoProximoCiclo,
+  podeSugerirPlano,
+  textoPlanoSugerido,
+} from "../lib/planoEstudo";
+import "./PlanoEstudo.css";
 
 type Props = {
   userKey: string;
@@ -280,6 +289,32 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
         <div className="field">
           <label className="l" htmlFor="obs">O que eu preciso estudar ou praticar mais</label>
           <textarea id="obs" value={s.obs} placeholder="Escreva com suas palavras. Este texto vai no PDF." onChange={(e) => setS({ ...s, obs: e.target.value })} />
+          <div className="acoes-plano">
+            <button
+              type="button"
+              className="btn ghost small"
+              disabled={!podeSugerirPlano(s)}
+              onClick={() => {
+                if (s.etapa === null || s.momento === null) return;
+                const av = {
+                  etapa: s.etapa,
+                  momento: s.momento,
+                  gerais: s.gerais,
+                  atividades: s.atividades,
+                };
+                const texto = textoPlanoSugerido(
+                  itensDeAtencao(av),
+                  itensDoProximoCiclo(av),
+                );
+                setS({ ...s, obs: acrescentarAoTexto(s.obs, texto) });
+              }}
+            >
+              {TEXTOS_PLANO_ESTUDO.botaoSugerirPlano}
+            </button>
+            {!podeSugerirPlano(s) && (
+              <span className="h">{TEXTOS_PLANO_ESTUDO.ajudaBotaoDesativado}</span>
+            )}
+          </div>
         </div>
       </section>
 

@@ -22,8 +22,11 @@ import SupervisaoPage from "./pages/SupervisaoPage";
 import AdministracaoPage from "./pages/AdministracaoPage";
 import EntrarRetornoPage from "./pages/EntrarRetornoPage";
 import EadModuloPage from "./pages/EadModuloPage";
+import EadAssuntoPage from "./pages/EadAssuntoPage";
 import { MODULOS_EAD, SLUGS_MODULOS_EAD, conteudoDoModulo } from "./data/ead/indiceModulos";
+import { SLUGS_ASSUNTOS_ESTUDO, conteudoDoAssunto } from "./data/ead/assuntos/indiceAssuntos";
 import { slugDoModuloNaRota } from "./lib/modulosEad";
+import { slugDoAssuntoNaRota } from "./lib/assuntosEstudo";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
 
@@ -277,6 +280,23 @@ export default function App() {
           />
         );
       }
+    }
+  }
+
+  const slugAssunto = slugDoAssuntoNaRota(rota, SLUGS_ASSUNTOS_ESTUDO);
+  if (slugAssunto) {
+    if (!isAluno && !isAdmin && !isDocente) {
+      navegar("/participar", true);
+      return null;
+    }
+    const dadosAssunto = conteudoDoAssunto(slugAssunto);
+    if (dadosAssunto) {
+      return (
+        <EadAssuntoPage
+          assunto={dadosAssunto}
+          onVoltar={() => navegar("/sala")}
+        />
+      );
     }
   }
 

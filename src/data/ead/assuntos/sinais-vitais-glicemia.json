@@ -1,0 +1,558 @@
+{
+  "format": "assunto-estudo-v1",
+  "slug": "sinais-vitais-glicemia",
+  "title": "Sinais vitais e glicemia capilar",
+  "short_description": "Como verificar temperatura, pulso, respiração, saturação de oxigênio, pressão arterial, dor e glicemia capilar, o que pode alterar o resultado e quando comunicar o enfermeiro.",
+  "assessment_items": [
+    {
+      "block": "atividades",
+      "number": 4
+    }
+  ],
+  "learning_objectives": [
+    "Verificar cada sinal vital e a glicemia capilar com a técnica correta.",
+    "Reconhecer o que pode alterar o resultado e repetir a verificação quando necessário.",
+    "Comparar o valor com as medidas anteriores do mesmo paciente, e não só com uma tabela.",
+    "Comunicar ao enfermeiro, na hora, qualquer valor inesperado ou mudança brusca.",
+    "Registrar o que foi verificado de forma completa e clara."
+  ],
+  "competence": {
+    "status": "em_validacao",
+    "technician": [
+      "Verificar e registrar sinais vitais e glicemia capilar conforme a prescrição e a rotina da unidade.",
+      "Preparar e conferir o material antes do uso e descartar o perfurocortante no recipiente próprio.",
+      "Comunicar ao enfermeiro qualquer valor inesperado, mudança brusca ou queixa do paciente."
+    ],
+    "nurse": [
+      "Avaliar o conjunto dos dados do paciente e decidir a conduta de enfermagem.",
+      "Supervisionar a verificação feita pela equipe técnica.",
+      "Acionar o médico quando a situação exigir conduta médica."
+    ],
+    "source_ids": []
+  },
+  "topics": [
+    {
+      "topic_id": "t1",
+      "topic_title": "Para que servem os sinais vitais",
+      "content_blocks": [
+        {
+          "type": "text",
+          "body": "Os sinais vitais tradicionais são a temperatura, o pulso, a respiração e a pressão arterial. A dor é avaliada como o quinto sinal vital, com a mesma regularidade dos outros. A saturação de oxigênio, medida pela oximetria de pulso, também faz parte da rotina de muitas unidades.",
+          "source_ids": [
+            "brunner-cap05",
+            "brunner-cap13",
+            "brunner-cap21"
+          ]
+        },
+        {
+          "type": "text",
+          "title": "O valor isolado diz pouco",
+          "body": "Mais importante do que um número isolado é a tendência: compare o valor com as medidas anteriores do mesmo paciente. Uma mudança brusca pode ser grave mesmo quando o número ainda parece dentro do normal.",
+          "source_ids": [
+            "brunner-cap05"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alteração se comunica na hora",
+          "body": "Valor inesperado, mudança brusca ou queixa nova do paciente: comunique o enfermeiro imediatamente e registre. A decisão sobre a conduta não é do técnico.",
+          "source_ids": [
+            "brunner-cap05"
+          ],
+          "status": "em_validacao"
+        }
+      ]
+    },
+    {
+      "topic_id": "t2",
+      "topic_title": "Temperatura",
+      "content_blocks": [
+        {
+          "type": "text",
+          "body": "A temperatura do corpo varia ao longo do dia: costuma ser mais baixa pela manhã e mais alta no fim da tarde. O Brunner apresenta os valores pela via oral. Os valores de referência para a via axilar estão sendo conferidos na pesquisa deste assunto.",
+          "source_ids": [
+            "brunner-cap05"
+          ],
+          "status": "em_validacao"
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "No idoso, a febre pode não aparecer",
+          "body": "A temperatura de base do idoso tende a ser mais baixa, e uma infecção pode vir sem febre alta. Fique atento a outros sinais, como confusão mental, sonolência ou respiração alterada, e comunique.",
+          "source_ids": [
+            "brunner-cap12"
+          ],
+          "status": "em_validacao"
+        }
+      ]
+    },
+    {
+      "topic_id": "t3",
+      "topic_title": "Pulso",
+      "content_blocks": [
+        {
+          "type": "checklist",
+          "title": "Como verificar",
+          "items": [
+            "Avalie a frequência, o ritmo e a amplitude (força) do pulso.",
+            "Se o ritmo estiver irregular, conte durante um minuto inteiro.",
+            "Ansiedade e esforço aumentam o pulso: se estiver alto, repita com o paciente em repouso.",
+            "Registre o local verificado e as alterações de ritmo ou amplitude."
+          ],
+          "source_ids": [
+            "brunner-cap26"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Pulso irregular",
+          "body": "Quando o pulso está irregular, a contagem no punho pode ser menor do que os batimentos do coração. Comunique o enfermeiro: ele pode precisar comparar o pulso do punho com o batimento ouvido no peito.",
+          "source_ids": [
+            "brunner-cap26"
+          ],
+          "status": "em_validacao"
+        }
+      ]
+    },
+    {
+      "topic_id": "t4",
+      "topic_title": "Respiração e saturação de oxigênio",
+      "content_blocks": [
+        {
+          "type": "text",
+          "body": "Conte a respiração observando a frequência, a profundidade e o ritmo, de preferência sem avisar o paciente, porque ele tende a mudar o jeito de respirar quando sabe que está sendo observado. O Brunner descreve a respiração normal do adulto em repouso como regular e sem esforço; a faixa de referência está sendo conferida na pesquisa deste assunto.",
+          "source_ids": [
+            "brunner-cap21"
+          ],
+          "status": "em_validacao"
+        },
+        {
+          "type": "checklist",
+          "title": "O que atrapalha a leitura do oxímetro",
+          "items": [
+            "Pouca circulação na extremidade: mãos frias, choque, hipotermia.",
+            "Esmalte nas unhas.",
+            "Movimento do paciente, tremor ou calafrio.",
+            "Luz forte sobre o sensor.",
+            "Anemia e intoxicação por monóxido de carbono.",
+            "Cor da pele: em pele escura, a leitura pode ser menos precisa."
+          ],
+          "source_ids": [
+            "brunner-cap21"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "O oxímetro não substitui olhar o paciente",
+          "body": "Leitura baixa com o paciente bem: confira o sensor, o dedo e a circulação, e repita. Leitura normal com o paciente cansado, com falta de ar ou confuso: comunique mesmo assim. Em quem recebe oxigênio, a saturação pode continuar normal mesmo quando a respiração está insuficiente.",
+          "source_ids": [
+            "brunner-cap21"
+          ]
+        }
+      ]
+    },
+    {
+      "topic_id": "t5",
+      "topic_title": "Pressão arterial",
+      "content_blocks": [
+        {
+          "type": "checklist",
+          "title": "Antes de medir",
+          "items": [
+            "O paciente não deve ter fumado nem tomado café nos 30 minutos anteriores.",
+            "Deixe o paciente sentado e em repouso por 5 minutos.",
+            "Braço apoiado na altura do coração, pés no chão.",
+            "Peça para não conversar durante a medida."
+          ],
+          "source_ids": [
+            "brunner-cap32"
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Na hora de medir",
+          "items": [
+            "Escolha o manguito pelo tamanho do braço: manguito pequeno demais dá valor falsamente alto; grande demais, falsamente baixo.",
+            "Centralize a bolsa do manguito sobre a artéria do braço.",
+            "Estime a pressão máxima pelo pulso antes de usar o estetoscópio.",
+            "Na primeira medida, verifique os dois braços e siga no braço de valor mais alto.",
+            "Registre o valor, o braço e a posição do paciente."
+          ],
+          "source_ids": [
+            "brunner-cap32"
+          ]
+        },
+        {
+          "type": "text",
+          "title": "Classificação dos valores",
+          "body": "O Brunner usa a classificação de um comitê americano de 2003. A classificação adotada hoje no Brasil está sendo conferida na pesquisa deste assunto.",
+          "source_ids": [
+            "brunner-cap26",
+            "brunner-cap32"
+          ],
+          "status": "em_validacao"
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Queda da pressão ao levantar",
+          "body": "Alguns pacientes têm queda da pressão ao sentar ou ficar em pé, com tontura ou escurecimento da visão. Se o paciente tiver esses sintomas, volte a deitá-lo e comunique o enfermeiro. A forma de medir e os critérios estão sendo conferidos na pesquisa deste assunto.",
+          "source_ids": [
+            "brunner-cap26"
+          ],
+          "status": "em_validacao"
+        }
+      ]
+    },
+    {
+      "topic_id": "t6",
+      "topic_title": "Dor, o quinto sinal vital",
+      "content_blocks": [
+        {
+          "type": "text",
+          "body": "Quem sente a dor é o paciente: vale o que ele relata. Pergunte a intensidade numa escala de 0 (sem dor) a 10 (a pior dor que ele consegue imaginar). Para quem não consegue usar números, existem escalas com desenhos de rostos. Use sempre a mesma escala com o mesmo paciente.",
+          "source_ids": [
+            "brunner-cap13"
+          ],
+          "status": "em_validacao"
+        },
+        {
+          "type": "checklist",
+          "title": "O que registrar",
+          "items": [
+            "Local da dor.",
+            "Intensidade, com a escala usada.",
+            "Como é a dor (em pontada, em queimação, em aperto) e desde quando.",
+            "Nova avaliação depois do medicamento ou de outra intervenção."
+          ],
+          "source_ids": [
+            "brunner-cap13"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Cara de dor não mede dor",
+          "body": "Caretas, gemidos e choro ajudam a perceber que algo não vai bem, mas não medem a intensidade. A ausência desses sinais não quer dizer que o paciente não tem dor.",
+          "source_ids": [
+            "brunner-cap13"
+          ]
+        }
+      ]
+    },
+    {
+      "topic_id": "t7",
+      "topic_title": "Glicemia capilar (hemoglicoteste)",
+      "content_blocks": [
+        {
+          "type": "text",
+          "body": "A glicemia capilar mede a glicose numa gota de sangue tirada da ponta do dedo e colocada na fita do glicosímetro. Siga sempre a instrução do fabricante do aparelho e da fita e a rotina da unidade, inclusive o controle de qualidade do aparelho.",
+          "source_ids": [
+            "brunner-cap41"
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Técnica",
+          "items": [
+            "Confira o paciente, a prescrição e o horário.",
+            "Higienize as mãos e calce luvas.",
+            "Limpe e seque bem o local da punção antes de furar.",
+            "Fure a lateral da ponta do dedo e faça rodízio dos dedos.",
+            "Descarte a lanceta no recipiente de perfurocortante.",
+            "Registre o valor, o horário e se foi antes ou depois da refeição."
+          ],
+          "source_ids": [],
+          "status": "em_validacao"
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Glicemia baixa é urgência",
+          "body": "Tremor, suor frio, coração acelerado, fome, confusão ou sonolência podem ser sinais de glicemia baixa. Verifique a glicemia, comunique o enfermeiro imediatamente e siga o protocolo de hipoglicemia da instituição. O Brunner traz valores diferentes para definir a glicemia baixa em pontos diferentes do capítulo; o valor atual está sendo conferido na pesquisa deste assunto.",
+          "source_ids": [
+            "brunner-cap41"
+          ],
+          "status": "em_validacao"
+        }
+      ]
+    },
+    {
+      "topic_id": "t8",
+      "topic_title": "Registro e comunicação",
+      "content_blocks": [
+        {
+          "type": "checklist",
+          "title": "Um bom registro tem",
+          "items": [
+            "O valor e a unidade de medida.",
+            "O horário.",
+            "O local ou a via: braço, axila, dedo.",
+            "A posição do paciente, quando importa (pressão arterial).",
+            "A escala usada para a dor.",
+            "Quando houve alteração: a quem foi comunicada e em que horário."
+          ],
+          "source_ids": [
+            "brunner-cap05",
+            "brunner-cap32"
+          ],
+          "status": "em_validacao"
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Nunca registre o que não verificou",
+          "body": "Registrar um valor que não foi verificado coloca o paciente em risco e é falta ética. Se não conseguiu verificar, registre o motivo e comunique.",
+          "source_ids": [],
+          "status": "em_validacao"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Ao verificar o pulso, você percebe que o ritmo está irregular. O que fazer?",
+      "options": [
+        "Contar 15 segundos e multiplicar por 4.",
+        "Contar durante um minuto inteiro e comunicar o enfermeiro.",
+        "Contar 30 segundos e multiplicar por 2.",
+        "Anotar apenas \"irregular\", sem contar."
+      ],
+      "correct_index": 1,
+      "explanation": "Com ritmo irregular, contar só uma parte do minuto dá erro. Conte durante um minuto inteiro e comunique, porque o pulso no punho pode não mostrar todos os batimentos do coração.",
+      "source_ids": [
+        "brunner-cap26"
+      ]
+    },
+    {
+      "question": "O manguito usado é pequeno demais para o braço do paciente. O que acontece com a medida?",
+      "options": [
+        "A pressão aparece mais alta do que a real.",
+        "A pressão aparece mais baixa do que a real.",
+        "Não muda nada.",
+        "O aparelho não consegue medir."
+      ],
+      "correct_index": 0,
+      "explanation": "Manguito pequeno demais dá valor falsamente alto; grande demais, falsamente baixo. Por isso o tamanho é escolhido pela medida do braço.",
+      "source_ids": [
+        "brunner-cap32"
+      ]
+    },
+    {
+      "question": "O oxímetro mostra 88% num paciente que conversa bem, está com esmalte escuro e mãos frias. Qual a melhor conduta?",
+      "options": [
+        "Registrar 88% e seguir a rotina.",
+        "Instalar oxigênio por conta própria.",
+        "Corrigir o que atrapalha a leitura (trocar de dedo, aquecer a mão, reposicionar o sensor), repetir e comunicar o enfermeiro se o valor continuar baixo.",
+        "Desconsiderar, porque o paciente parece bem."
+      ],
+      "correct_index": 2,
+      "explanation": "Esmalte e pouca circulação atrapalham a leitura. Corrija e repita. Se continuar baixo, comunique. Oxigênio só com prescrição.",
+      "source_ids": [
+        "brunner-cap21"
+      ]
+    },
+    {
+      "question": "O paciente diz que a dor é 8, mas está sorrindo e conversando com a visita. O que registrar?",
+      "options": [
+        "Dor 8, e comunicar o enfermeiro.",
+        "Dor 3, porque ele parece bem.",
+        "Nada, porque ele está distraído.",
+        "Pedir que ele reveja a nota."
+      ],
+      "correct_index": 0,
+      "explanation": "Vale o relato do paciente. Comportamento não mede intensidade de dor.",
+      "source_ids": [
+        "brunner-cap13"
+      ]
+    },
+    {
+      "question": "Paciente com diabetes está suado, trêmulo e confuso. Qual a primeira atitude do técnico?",
+      "options": [
+        "Esperar o próximo horário de glicemia.",
+        "Verificar a glicemia capilar, comunicar o enfermeiro imediatamente e seguir o protocolo de hipoglicemia da instituição.",
+        "Administrar insulina.",
+        "Registrar no fim do plantão."
+      ],
+      "correct_index": 1,
+      "explanation": "Esses sinais podem ser de glicemia baixa, que é urgência. Verifique, comunique na hora e siga o protocolo da instituição.",
+      "source_ids": [
+        "brunner-cap41"
+      ]
+    }
+  ],
+  "study_prompts": [
+    {
+      "id": "entender",
+      "title": "Entender o conteúdo",
+      "accepts_question": false,
+      "text": "Sou aluno do curso técnico em enfermagem no Brasil e estou no primeiro ciclo do estágio hospitalar. Quero estudar a verificação dos sinais vitais em adultos (temperatura, pulso, respiração, saturação de oxigênio, pressão arterial e dor) e da glicemia capilar.\n\nExplique em linguagem simples:\n1. a técnica correta de cada verificação, passo a passo;\n2. os valores de referência para adultos usados hoje no Brasil;\n3. os erros mais comuns que alteram o resultado;\n4. quando o técnico deve comunicar o enfermeiro imediatamente;\n5. o que é atribuição do técnico de enfermagem e o que é só do enfermeiro, segundo a Lei 7.498 de 1986 e o Decreto 94.406 de 1987.\n\nRegras para a sua resposta:\n- Para cada informação, indique a fonte: diretriz brasileira, Ministério da Saúde, Agência Nacional de Vigilância Sanitária, Conselho Federal de Enfermagem ou artigo científico com autores, ano, revista e link direto.\n- Use só fontes que você consiga indicar com link. Se não tiver certeza de uma fonte ou de um valor, diga isso claramente em vez de completar.\n- Não invente referências.\n- Lembre que, na prática, valem o protocolo da instituição e a orientação do enfermeiro supervisor."
+    },
+    {
+      "id": "treinar",
+      "title": "Treinar com situações de estágio",
+      "accepts_question": false,
+      "text": "Sou aluno do curso técnico em enfermagem no Brasil, no primeiro ciclo do estágio hospitalar. Quero treinar a verificação de sinais vitais e de glicemia capilar em adultos.\n\nFaça 8 perguntas sobre situações práticas de enfermaria, uma de cada vez, e espere a minha resposta antes de seguir. Depois de cada resposta, diga se acertei, explique o porquê e indique a fonte (diretriz brasileira, Ministério da Saúde, Agência Nacional de Vigilância Sanitária, Conselho Federal de Enfermagem ou artigo científico com link direto).\n\nUse só situações fictícias. Se não tiver certeza da resposta correta, diga isso. Não invente referências."
+    },
+    {
+      "id": "duvida",
+      "title": "Tirar uma dúvida",
+      "accepts_question": true,
+      "text": "Sou aluno do curso técnico em enfermagem no Brasil, no primeiro ciclo do estágio hospitalar, estudando a verificação de sinais vitais e de glicemia capilar em adultos.\n\nResponda a minha dúvida em linguagem simples. Indique a fonte de cada informação com link direto (diretriz brasileira, Ministério da Saúde, Agência Nacional de Vigilância Sanitária, Conselho Federal de Enfermagem ou artigo científico). Se não tiver certeza, diga isso. Separe o que é do técnico e o que é do enfermeiro. Não invente referências."
+    }
+  ],
+  "sources": [
+    {
+      "id": "brunner-cap05",
+      "type": "book",
+      "short_label": "Brunner, cap. 5",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 5 — Saúde do Adulto e Avaliação Nutricional",
+      "sections": [
+        "Sinais Vitais"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap12",
+      "type": "book",
+      "short_label": "Brunner, cap. 12",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 12 — Cuidado de Saúde do Idoso",
+      "sections": [
+        "Respostas à Dor e Febril Alteradas"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap13",
+      "type": "book",
+      "short_label": "Brunner, cap. 13",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 13 — Tratamento da Dor",
+      "sections": [
+        "Importância do Histórico e Tratamento da Dor",
+        "Escalas Analógicas Visuais e Outras Escalas de Intensidade",
+        "Usando as Escalas de Avaliação da Dor"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap21",
+      "type": "book",
+      "short_label": "Brunner, cap. 21",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 21 — Histórico da Função Respiratória",
+      "sections": [
+        "Padrões de Respiração e Frequências Respiratórias",
+        "Oximetria de Pulso"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap26",
+      "type": "book",
+      "short_label": "Brunner, cap. 26",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 26 — Histórico da Função Cardiovascular",
+      "sections": [
+        "Pressão Arterial",
+        "Alterações Posturais da Pressão Arterial",
+        "Pulsos Arteriais"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap32",
+      "type": "book",
+      "short_label": "Brunner, cap. 32",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 32 — Histórico e Cuidados aos Pacientes com Hipertensão",
+      "sections": [
+        "Tabela 32.1",
+        "Quadro 32.2 — Medindo a Pressão Arterial"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    },
+    {
+      "id": "brunner-cap41",
+      "type": "book",
+      "short_label": "Brunner, cap. 41",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "authors": "Suzanne C. Smeltzer, Brenda G. Bare, Janice L. Hinkle, Kerry H. Cheever",
+      "edition": "12ª edição",
+      "year": 2011,
+      "source": "Guanabara Koogan, Rio de Janeiro",
+      "chapter": "Capítulo 41 — Histórico e Cuidados aos Pacientes com Diabetes Melito",
+      "sections": [
+        "Automonitoramento da Glicemia",
+        "Hipoglicemia (Reações à Insulina)"
+      ],
+      "validation": {
+        "status": "validada",
+        "validated_at": "2026-10-15",
+        "validated_by": "Claude"
+      }
+    }
+  ],
+  "review": {
+    "status": "rascunho",
+    "version": 1,
+    "created_at": "2026-10-15",
+    "reviewed_by": null,
+    "reviewed_at": null,
+    "next_review": null
+  }
+}

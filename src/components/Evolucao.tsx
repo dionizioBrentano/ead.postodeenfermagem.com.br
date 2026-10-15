@@ -1,7 +1,20 @@
 import { useState } from "react";
 import { ATIVIDADES, GERAIS, MOMENTOS, type Item, type Nota } from "../data/itens";
+import { listarAssuntos } from "../data/ead/assuntos/indiceAssuntos";
+import {
+  descricaoProximoCiclo,
+  TEXTOS_PLANO_ESTUDO,
+} from "../data/textosPlanoEstudo";
 import { ESCALA, corDaNota } from "../lib/cores";
 import { fmt1, fmtData, media, type Avaliacao } from "../lib/historico";
+import {
+  avaliacaoMaisRecente,
+  itensDeAtencao,
+  itensDoProximoCiclo,
+} from "../lib/planoEstudo";
+import { slugPublicadoDoItem } from "../lib/assuntosEstudo";
+import { EtiquetaEstudo } from "./EtiquetaEstudo";
+import "./PlanoEstudo.css";
 
 type Props = {
   userKey?: string;
@@ -54,9 +67,10 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
     return l;
   };
 
-  const atencao = [...linhas("gerais", GERAIS), ...linhas("atividades", ATIVIDADES)]
-    .filter((l) => l.ultima != null && l.ultima <= 5)
-    .sort((a, b) => (a.ultima ?? 0) - (b.ultima ?? 0));
+  const maisRecente = avaliacaoMaisRecente(lista);
+  const atencao = maisRecente ? itensDeAtencao(maisRecente) : [];
+  const proximoCiclo = maisRecente ? itensDoProximoCiclo(maisRecente) : null;
+  const assuntos = listarAssuntos();
 
   async function baixar(av: Avaliacao) {
     const id = `${av.etapa}-${av.momento}`;
@@ -137,16 +151,45 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
       {atencao.length > 0 && (
         <section className="box sec">
           <h2 style={{ fontSize: 20 }}>Precisa de atenção</h2>
-          <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>Itens com nota até 5 na sua avaliação mais recente.</p>
+          <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>
+            {TEXTOS_PLANO_ESTUDO.descricaoAtencao}
+          </p>
           <div className="chips">
-            {atencao.map((l) => {
-              const c = corDaNota(l.ultima!);
+            {atencao.map((it) => {
+              const c = corDaNota(it.nota);
               return (
-                <span key={`${l.bloco}-${l.i}`} className="chip" style={{ background: c.fundo, color: c.texto }}>
-                  {l.item.curto} · {l.ultima}
-                </span>
+                <EtiquetaEstudo
+                  key={`${it.ref.block}-${it.ref.number}`}
+                  slug={slugPublicadoDoItem(it.ref, assuntos)}
+                >
+                  <span
+                    className="chip"
+                    style={{ background: c.fundo, color: c.texto }}
+                  >
+                    {it.item.curto} · {it.nota}
+                  </span>
+                </EtiquetaEstudo>
               );
             })}
+          </div>
+        </section>
+      )}
+
+      {proximoCiclo !== null && (
+        <section className="box sec">
+          <h2>{TEXTOS_PLANO_ESTUDO.tituloProximoCiclo}</h2>
+          <p className="muted">{descricaoProximoCiclo(proximoCiclo.ciclo)}</p>
+          <div className="chips">
+            {proximoCiclo.itens.map((it) => (
+              <EtiquetaEstudo
+                key={`${it.ref.block}-${it.ref.number}`}
+                slug={slugPublicadoDoItem(it.ref, assuntos)}
+              >
+                <span className="chip etiqueta-proximo-ciclo">
+                  {it.item.curto}
+                </span>
+              </EtiquetaEstudo>
+            ))}
           </div>
         </section>
       )}

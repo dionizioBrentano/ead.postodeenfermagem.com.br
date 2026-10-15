@@ -1,4 +1,4 @@
-/* Estilos dos Módulos EAD — Padrão 60plus.
+/* Estilos de Conteúdo EAD (Módulos e Assuntos de Estudo) — Padrão 60plus.
    Uso exclusivo de tokens CSS do design system em src/styles.css.
    Mobile-first com área de toque mínima de 44x44px em controles interativos. */
 
@@ -476,7 +476,8 @@
   gap: 6px;
 }
 
-.ead-fonte-tipo {
+.ead-fonte-tipo,
+.ead-selo-validacao {
   display: inline-block;
   align-self: flex-start;
   background: var(--bg);

@@ -27,7 +27,17 @@ for (const mod of modulosOrdenados) {
   rotasModulos.push(`ead/${mod.slug}`);
 }
 
-const rotas = [...rotasFixas, ...rotasModulos];
+// As rotas de assuntos de estudo são lidas dinamicamente a partir de indice.json.
+// Regra idêntica a rotasDosAssuntos em src/lib/assuntosEstudo.ts (conferida em teste).
+const assuntosRaw = JSON.parse(
+  readFileSync(new URL("../src/data/ead/assuntos/indice.json", import.meta.url), "utf-8")
+);
+const rotasAssuntos = [];
+for (const ass of assuntosRaw) {
+  rotasAssuntos.push(`estudo/${ass.slug}`);
+}
+
+const rotas = [...rotasFixas, ...rotasModulos, ...rotasAssuntos];
 
 for (const rota of rotas) {
   mkdirSync(`dist/${rota}`, { recursive: true });

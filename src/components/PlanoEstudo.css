@@ -1,0 +1,23 @@
+/* Estilos para etiquetas de estudo, próximo ciclo e ações de plano de estudo.
+   Regra F-01: Uso exclusivo de tokens CSS do design system em src/styles.css.
+   Regra F-04: Área de toque mínima de 44px. */
+
+.etiqueta-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.etiqueta-proximo-ciclo {
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.acoes-plano {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
