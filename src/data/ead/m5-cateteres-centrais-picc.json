@@ -1,0 +1,173 @@
+{
+  "module_id": "m5",
+  "module_title": "Cateteres Centrais e PICC",
+  "order": 5,
+  "learning_objectives": [
+    "Diferenciar o cateter venoso central (CVC) convencional dos cateteres de hemodiálise — o de duplo lúmen (CDL), conhecido como cateter de Shilley (ou Shiley), de curta permanência, e o tunelizado, de longa permanência — quanto a indicações e cuidados.",
+    "Aplicar critérios de indicação, seleção de sítio e confirmação de ponta do PICC (basílica > braquial > cefálica).",
+    "Executar medidas de prevenção de infecção de corrente sanguínea relacionada a cateter (IPCS), incluindo scrub the hub e técnica de flush.",
+    "Reconhecer riscos relacionados à pressão hidráulica e ao uso inadequado de seringas em cateteres centrais."
+  ],
+  "topics": [
+    {
+      "topic_id": "m5-t1-cvc-cdl",
+      "topic_title": "CVC Convencional e CDL para Hemodiálise",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Cateter venoso central convencional",
+          "body": "O CVC convencional é indicado para administração de soluções hiperosmóticas, drogas vasoativas, nutrição parenteral, monitorização hemodinâmica ou quando o acesso periférico é inviável. Pode ser inserido em veia jugular interna, subclávia ou femoral. O tempo de permanência deve ser o menor possível. A escolha do sítio considera risco de infecção, trombose e complicações mecânicas."
+        },
+        {
+          "type": "text",
+          "title": "Cateteres de hemodiálise: duplo lúmen (CDL ou Shilley) e tunelizado",
+          "body": "O cateter de duplo lúmen (CDL), conhecido como cateter de Shilley (ou Shiley), não é tunelizado e é de curta permanência; o cateter tunelizado, com cuff, é de longa permanência. Os dois são usados para hemodiálise quando não há fístula arteriovenosa funcionante, têm maior calibre e são destinados exclusivamente à terapia dialítica. Não devem ser utilizados para administração de medicamentos ou coleta de sangue de rotina, salvo em situações de emergência e conforme protocolo. Exigem cuidados rigorosos de antissepsia e manipulação."
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança",
+          "body": "Nunca utilize o cateter de hemodiálise para infusão de medicamentos ou nutrição sem autorização explícita e protocolo institucional. Entre as sessões, o cateter fica preenchido com solução anticoagulante; se for usado, ela precisa ser aspirada e desprezada antes, por profissional treinado. A manipulação inadequada aumenta risco de infecção e disfunção do acesso."
+        }
+      ]
+    },
+    {
+      "topic_id": "m5-t2-picc",
+      "topic_title": "PICC: Indicações, Sítios, Confirmação de Ponta e Manutenção",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Indicações e seleção de sítio",
+          "body": "O PICC (cateter central de inserção periférica) é indicado para terapias de média e longa duração (antibióticos, quimioterapia, nutrição parenteral) quando se deseja evitar punções repetidas ou acesso central clássico. A ordem preferencial de veias é: basílica > braquial > cefálica. A cefálica fica por último: é mais fina, tem trajeto tortuoso e entra em ângulo na veia axilar, o que aumenta o risco de trombose, flebite e mau posicionamento da ponta. A inserção deve ser realizada por profissional habilitado, preferencialmente com auxílio de ultrassom."
+        },
+        {
+          "type": "checklist",
+          "title": "Confirmação de ponta e manutenção",
+          "items": [
+            "Confirmação da ponta por radiografia ou método eletrocardiográfico antes do uso",
+            "Ponta ideal: junção cavo-atrial",
+            "Curativo transparente estéril com visualização do sítio",
+            "Troca de curativo conforme protocolo ou sempre que úmido, solto ou sujo",
+            "Avaliação diária da necessidade de permanência"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "PICC com ponta mal posicionada (muito alta ou em átrio) aumenta risco de arritmia, trombose ou mau funcionamento. Não utilize até confirmação da posição."
+        }
+      ]
+    },
+    {
+      "topic_id": "m5-t3-prevencao-ipcs",
+      "topic_title": "Prevenção de IPCS, Scrub the Hub, Pressão Hidráulica e Seringas",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Bundle de prevenção de IPCS",
+          "body": "A infecção de corrente sanguínea relacionada a cateter é evento adverso grave e prevenível. O bundle inclui higienização das mãos, antissepsia máxima na inserção, uso de barreira máxima, escolha adequada do sítio e revisão diária da necessidade. Na manutenção, a desinfecção do hub (scrub the hub) por pelo menos 15 segundos com álcool 70% ou clorexidina é obrigatória antes de cada acesso."
+        },
+        {
+          "type": "checklist",
+          "title": "Scrub the hub e flush",
+          "items": [
+            "Desinfetar o hub com fricção vigorosa por ≥ 15 segundos",
+            "Permitir secagem completa antes de conectar",
+            "Flush com solução fisiológica em técnica de pressão positiva",
+            "Utilizar seringa de 10 mL ou maior para flush e administração (reduz pressão)",
+            "Nunca forçar infusão se houver resistência"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta – Pressão hidráulica",
+          "body": "Seringas de pequeno volume (1 ou 3 mL) geram pressão elevada e podem romper o cateter ou deslocar trombo. Utilize sempre seringa de 10 mL ou maior para flush e administração de medicamentos em cateteres centrais e PICC."
+        },
+        {
+          "type": "image",
+          "caption": "Técnica de scrub the hub",
+          "image_prompt": "Clean educational medical illustration, professional style, soft teal and white colors. Close-up of gloved hands disinfecting catheter hub with alcohol swab using scrubbing motion. Labels in Portuguese: 'Fricção ≥ 15 segundos', 'Hub', 'Secagem completa'. Minimalist, high clarity for EAD.",
+          "alt": "Ilustração da técnica de desinfecção do hub (scrub the hub) com fricção vigorosa por pelo menos 15 segundos."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual é a ordem preferencial de veias para inserção de PICC?",
+      "options": [
+        "Cefálica > braquial > basílica",
+        "Basílica > braquial > cefálica",
+        "Braquial > basílica > cefálica",
+        "Qualquer veia do membro superior, sem ordem de preferência"
+      ],
+      "correct_index": 1,
+      "explanation": "A veia basílica é preferida por ser mais calibrosa e ter trajeto mais reto até a veia cava. Em seguida vem a braquial. A cefálica fica por último, por ser mais fina e entrar em ângulo na veia axilar, com mais risco de trombose e de mau posicionamento."
+    },
+    {
+      "question": "Por que se recomenda o uso de seringa de 10 mL ou maior para flush em cateteres centrais e PICC?",
+      "options": [
+        "Porque seringas maiores permitem infusão mais rápida de medicamentos.",
+        "Porque seringas de menor volume geram maior pressão hidráulica, com risco de ruptura do cateter ou deslocamento de trombo.",
+        "Porque seringas de 10 mL são mais baratas e fáceis de encontrar.",
+        "Porque apenas seringas de 10 mL são compatíveis com os conectores dos cateteres."
+      ],
+      "correct_index": 1,
+      "explanation": "A pressão gerada é inversamente proporcional ao diâmetro do êmbolo. Seringas pequenas produzem pressão elevada e podem danificar o cateter."
+    },
+    {
+      "question": "Qual medida faz parte do bundle de prevenção de infecção de corrente sanguínea relacionada a cateter na manutenção do dispositivo?",
+      "options": [
+        "Troca rotineira do cateter a cada 7 dias.",
+        "Desinfecção do hub (scrub the hub) com fricção por pelo menos 15 segundos antes de cada acesso.",
+        "Uso de antibiótico profilático contínuo em todos os pacientes com CVC.",
+        "Manutenção do curativo oclusivo mesmo quando úmido ou solto."
+      ],
+      "correct_index": 1,
+      "explanation": "A desinfecção adequada do hub antes de cada manipulação é medida fundamental para reduzir a contaminação intraluminal e a IPCS."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Cateteres Centrais e PICC",
+      "institution": "Coren-SP",
+      "author": "Camila",
+      "url": "",
+      "note": "Aula 2 – indicações, inserção, manutenção e prevenção de complicações de cateteres centrais e PICC."
+    },
+    {
+      "type": "video",
+      "title": "Terapia Infusional e Cateteres",
+      "institution": "Coren",
+      "author": "Cida Veloso",
+      "url": "",
+      "note": "Aula 3 – fundamentos de terapia infusional e cuidados com dispositivos."
+    },
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – cultura de segurança aplicada ao cuidado de dispositivos invasivos."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Capítulos sobre acesso vascular central e prevenção de infecções",
+      "note": "Referência para indicações de CVC e PICC, confirmação de ponta e bundles de prevenção de IPCS."
+    },
+    {
+      "type": "article",
+      "title": "Cateteres venosos centrais de inserção periférica: alternativa ou primeira escolha em acesso vascular?",
+      "authors": "Marcelo Kalil Di Santo, Diogo Takemoto, Robert Guimarães Nascimento, Ariele Milano Nascimento, Érika Siqueira, Caio Túlio Duarte, Marco Antônio Caldas Jovino e Jorge Agle Kalil",
+      "source": "Jornal Vascular Brasileiro, v. 16, n. 2, p. 104-112, 2017",
+      "url": "https://doi.org/10.1590/1677-5449.011516",
+      "note": "Estudo brasileiro com PICC: veia basílica como primeira escolha, seguida da braquial; a cefálica é evitada pelo maior risco de trombose."
+    }
+  ]
+}

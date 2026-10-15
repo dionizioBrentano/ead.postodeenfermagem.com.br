@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { verificarResposta } from '../lib/quizEad';
-import { rotuloTipoFonte } from '../lib/modulosEad';
+import { rotuloTipoFonte, caminhoImagemModulo } from '../lib/modulosEad';
 import { TEXTOS_MODULOS_EAD, rotuloSeloModulo } from '../data/textosModulosEad';
 import type { EadModule, EadModuleMetadata, ContentBlock, SourceItem } from '../types/ead';
 import './EadModuloPage.css';
@@ -62,14 +62,26 @@ export function EadModuloPage({ metadados, modulo, onVoltar }: EadModuloPageProp
       case 'image':
         return (
           <figure key={chave} className="ead-bloco-imagem">
-            <div
-              className="ead-imagem-moldura"
-              role="img"
-              aria-label={bloco.alt}
-            >
-              <span className="ead-imagem-simbolo" aria-hidden="true">{TEXTOS_MODULOS_EAD.recursoVisual}</span>
-              <p className="ead-imagem-descricao-alt">{bloco.alt}</p>
-            </div>
+            {bloco.image_file ? (
+              <img
+                src={caminhoImagemModulo(bloco.image_file, import.meta.env.BASE_URL)}
+                alt={bloco.alt}
+                width={bloco.width}
+                height={bloco.height}
+                loading="lazy"
+                decoding="async"
+                className="ead-imagem-foto"
+              />
+            ) : (
+              <div
+                className="ead-imagem-moldura"
+                role="img"
+                aria-label={bloco.alt}
+              >
+                <span className="ead-imagem-simbolo" aria-hidden="true">{TEXTOS_MODULOS_EAD.recursoVisual}</span>
+                <p className="ead-imagem-descricao-alt">{bloco.alt}</p>
+              </div>
+            )}
             {bloco.caption && (
               <figcaption className="ead-imagem-legenda">
                 {bloco.caption}

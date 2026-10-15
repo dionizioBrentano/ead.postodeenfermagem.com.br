@@ -272,6 +272,14 @@
   gap: 8px;
 }
 
+.ead-imagem-foto {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: block;
+}
+
 .ead-imagem-moldura {
   background: var(--c1s);
   border: 1px solid var(--line);

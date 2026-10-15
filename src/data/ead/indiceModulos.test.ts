@@ -1,6 +1,12 @@
+// @ts-ignore - módulo nativo do Node utilizado no teste Vitest
+import { existsSync } from "node:fs";
+// @ts-ignore - módulo nativo do Node utilizado no teste Vitest
+import { resolve } from "node:path";
 import { describe, it, expect } from "vitest";
 import { MODULOS_EAD, SLUGS_MODULOS_EAD, conteudoDoModulo } from "./indiceModulos";
 import { rotasDosModulos } from "../../lib/modulosEad";
+
+declare const __dirname: string;
 
 describe("indiceModulos - integridade do índice e dos arquivos de conteúdo EAD", () => {
   it("carrega conteúdo para todo item de modules.json", () => {
@@ -57,10 +63,39 @@ describe("indiceModulos - integridade do índice e dos arquivos de conteúdo EAD
 
   it("gera rotas consistentes para o gerador de arquivos estáticos (rota-sala.mjs)", () => {
     const rotas = rotasDosModulos(SLUGS_MODULOS_EAD);
-    expect(rotas).toEqual(["m0", "ead/m0", "m1", "ead/m1", "m2", "ead/m2"]);
+    expect(rotas).toEqual(SLUGS_MODULOS_EAD.flatMap((slug) => [slug, `ead/${slug}`]));
   });
 
   it("retorna null para slug inexistente e lança erro caso dataFile não exista", () => {
     expect(conteudoDoModulo("modulo-fantasma")).toBeNull();
+  });
+
+  it("garante integridade de todos os blocos de imagem com image_file", () => {
+    const pastaImagens = resolve(__dirname, "../../../public/ead/imagens");
+    let totalComArquivo = 0;
+
+    for (const metadados of MODULOS_EAD) {
+      const dados = conteudoDoModulo(metadados.slug);
+      expect(dados).not.toBeNull();
+      for (const topico of dados!.modulo.topics) {
+        for (const bloco of topico.content_blocks) {
+          if (bloco.type === "image" && bloco.image_file) {
+            totalComArquivo++;
+            const caminhoArquivo = resolve(pastaImagens, bloco.image_file);
+            expect(existsSync(caminhoArquivo)).toBe(true);
+            expect(bloco.alt).toBeDefined();
+            expect(bloco.alt.trim().length).toBeGreaterThan(0);
+            expect(bloco.caption).toBeDefined();
+            expect(bloco.caption!.trim().length).toBeGreaterThan(0);
+            expect(typeof bloco.width).toBe("number");
+            expect(bloco.width!).toBeGreaterThan(0);
+            expect(typeof bloco.height).toBe("number");
+            expect(bloco.height!).toBeGreaterThan(0);
+          }
+        }
+      }
+    }
+
+    expect(totalComArquivo).toBeGreaterThan(0);
   });
 });

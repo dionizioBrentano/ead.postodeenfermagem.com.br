@@ -1,0 +1,174 @@
+{
+  "module_id": "m6",
+  "module_title": "Integração e Avaliação",
+  "order": 6,
+  "learning_objectives": [
+    "Integrar os conhecimentos dos módulos anteriores em casos clínicos envolvendo sondas, drenos e cateteres.",
+    "Aplicar checklists de segurança e princípios de POPs na tomada de decisão.",
+    "Identificar prioridades de cuidado e condutas imediatas em situações de risco.",
+    "Revisar critérios de avaliação e pontos críticos de segurança do paciente."
+  ],
+  "topics": [
+    {
+      "topic_id": "m6-t1-casos-clinicos",
+      "topic_title": "Casos Clínicos Integrados",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Caso 1 – Sonda vesical e risco de ITU-AC",
+          "body": "Paciente de 72 anos, pós-operatório de cirurgia de quadril, com sonda vesical de demora há 5 dias. Apresenta febre, urina turva e desconforto suprapúbico. A equipe questiona a manutenção da sonda. Qual a prioridade de cuidado e quais medidas do bundle de prevenção de ITU-AC devem ser reforçadas imediatamente?"
+        },
+        {
+          "type": "text",
+          "title": "Caso 2 – Nutrição enteral e risco de aspiração",
+          "body": "Paciente com SNE recebendo dieta contínua. A cabeceira está a 15°. O resíduo gástrico não foi verificado no último turno. O paciente apresenta tosse e dessaturação durante a infusão. Quais falhas de segurança estão presentes e qual a conduta imediata?"
+        },
+        {
+          "type": "text",
+          "title": "Caso 3 – Dreno de tórax e PICC",
+          "body": "Paciente em pós-operatório de cirurgia torácica com dreno de tórax e PICC para antibioticoterapia. Há borbulhamento contínuo vigoroso e o curativo do PICC está úmido. O paciente refere dor súbita no peito. Quais sistemas devem ser avaliados prioritariamente e quais ações de segurança são imediatas?"
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de integração",
+          "body": "Em situações com múltiplos dispositivos, a prioridade é sempre a estabilidade clínica do paciente (via aérea, respiração, circulação) antes da manipulação de qualquer dispositivo. Comunique achados críticos imediatamente."
+        }
+      ]
+    },
+    {
+      "topic_id": "m6-t2-checklists-pops",
+      "topic_title": "Checklists de Segurança e POPs",
+      "content_blocks": [
+        {
+          "type": "checklist",
+          "title": "Checklist geral de dispositivos invasivos (a cada plantão)",
+          "items": [
+            "Higienização das mãos antes e após manipulação",
+            "Verificação de indicação atual de cada dispositivo",
+            "Avaliação de fixação, posicionamento e integridade",
+            "Inspeção do sítio de inserção (sinais flogísticos, secreção, edema)",
+            "Confirmação de sistema fechado e conexões seguras",
+            "Registro de débito, aspecto e intercorrências",
+            "Revisão da necessidade de manutenção (menos tempo = menor risco)"
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Princípios de um POP eficaz",
+          "items": [
+            "Baseado em evidência atualizada (Anvisa, COFEN, INS, OMS)",
+            "Linguagem clara e aplicável à realidade do serviço",
+            "Número limitado de passos críticos",
+            "Inclui critérios de revisão da necessidade do dispositivo",
+            "Prevê monitoramento de adesão e feedback à equipe",
+            "Atualizado periodicamente"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "A existência de um POP não garante segurança. A adesão consistente e a cultura de notificação de quase-falhas são determinantes para a redução de eventos adversos."
+        }
+      ]
+    },
+    {
+      "topic_id": "m6-t3-revisao-avaliacao",
+      "topic_title": "Questões de Revisão e Critérios de Avaliação",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Pontos críticos de revisão",
+          "body": "Revise os seguintes eixos antes da avaliação final: (1) cultura de segurança e análise sistêmica de falhas; (2) bundles de prevenção (ITU-AC, IPCS, aspiração); (3) confirmação de posição e critérios de retirada de dispositivos; (4) diferença entre infiltração e extravasamento; (5) pressão hidráulica e escolha de seringa em cateteres centrais; (6) interpretação de borbulhamento e oscilação em dreno de tórax."
+        },
+        {
+          "type": "checklist",
+          "title": "Critérios de avaliação sugeridos",
+          "items": [
+            "Identifica corretamente a indicação e o risco principal de cada dispositivo",
+            "Aplica o bundle correspondente em situação simulada",
+            "Prioriza a estabilidade clínica antes da manipulação do dispositivo",
+            "Reconhece sinais de complicação e descreve a conduta imediata",
+            "Justifica a retirada ou a manutenção com base em avaliação diária",
+            "Registra de forma completa e objetiva as intercorrências"
+          ]
+        },
+        {
+          "type": "image",
+          "caption": "Ciclo de melhoria contínua em segurança do paciente",
+          "image_prompt": "Clean educational illustration, professional medical style, soft teal and white colors. Circular diagram with four steps: Identificar risco, Aplicar bundle, Monitorar adesão, Aprender com eventos. Labels in Portuguese, minimalist icons, high clarity for EAD.",
+          "alt": "Diagrama circular ilustrando o ciclo de identificação de risco, aplicação de bundle, monitoramento de adesão e aprendizado com eventos adversos."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Em um paciente com múltiplos dispositivos (sonda vesical, SNE e PICC) que apresenta dessaturação súbita, qual deve ser a primeira ação da enfermagem?",
+      "options": [
+        "Verificar imediatamente o posicionamento da SNE e interromper a dieta.",
+        "Avaliar via aérea, respiração e circulação antes de manipular qualquer dispositivo.",
+        "Coletar cultura de todos os dispositivos para identificar foco infeccioso.",
+        "Retirar todos os dispositivos invasivos para reduzir risco de infecção."
+      ],
+      "correct_index": 1,
+      "explanation": "A prioridade é sempre a estabilidade clínica (ABC). Somente após garantir via aérea e ventilação deve-se investigar e manipular os dispositivos."
+    },
+    {
+      "question": "Qual elemento é comum aos bundles de prevenção de ITU-AC, IPCS e aspiração?",
+      "options": [
+        "Troca rotineira do dispositivo a cada 48 horas.",
+        "Avaliação diária da necessidade de manutenção e retirada precoce quando possível.",
+        "Uso obrigatório de antibiótico profilático.",
+        "Manutenção do dispositivo pelo maior tempo possível para evitar novas punções."
+      ],
+      "correct_index": 1,
+      "explanation": "O tempo de permanência é fator de risco modificável em todos os dispositivos invasivos. A revisão diária da indicação é pilar dos bundles de prevenção."
+    },
+    {
+      "question": "Um POP institucional para cuidado de dreno de tórax deve obrigatoriamente incluir:",
+      "options": [
+        "Apenas a técnica de inserção, pois a manutenção é de responsabilidade médica.",
+        "Critérios de monitoramento (oscilação, borbulhamento, débito), cuidados com o sistema e conduta em caso de deslocamento.",
+        "A recomendação de clampeamento rotineiro para transporte.",
+        "A troca diária do sistema de drenagem independentemente do funcionamento."
+      ],
+      "correct_index": 1,
+      "explanation": "Um POP eficaz descreve monitoramento, manutenção segura e condutas diante de intercorrências, incluindo o que não fazer (ex.: clampeamento rotineiro)."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – cultura de segurança, bundles e responsabilidade da enfermagem."
+    },
+    {
+      "type": "video",
+      "title": "Cateteres Centrais e PICC",
+      "institution": "Coren-SP",
+      "author": "Camila",
+      "url": "",
+      "note": "Aula 2 – prevenção de IPCS e cuidados com dispositivos centrais."
+    },
+    {
+      "type": "video",
+      "title": "Terapia Infusional e Cateteres",
+      "institution": "Coren",
+      "author": "Cida Veloso",
+      "url": "",
+      "note": "Aula 3 – terapia infusional e prevenção de complicações."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Unidades de prática de enfermagem, sistema renal/urinário, gastrointestinal, respiratório e acesso vascular",
+      "note": "Referência integrada para todos os dispositivos abordados nos módulos anteriores."
+    }
+  ]
+}

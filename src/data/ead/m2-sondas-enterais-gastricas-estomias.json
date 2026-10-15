@@ -60,6 +60,14 @@
           "level": "warning",
           "title": "Alerta – Obstrução",
           "body": "Obstrução é frequente quando a lavagem é inadequada ou medicamentos são administrados sem diluição. Em caso de obstrução, tente lavagem com água morna em seringa de 20-50 mL com pressão suave. Não force. Se não resolver, comunique a equipe para avaliação de troca."
+        },
+        {
+          "type": "image",
+          "caption": "Posicionamento seguro durante nutrição enteral",
+          "alt": "Ilustração de paciente com cabeceira elevada recebendo nutrição enteral por sonda, com fixação adequada.",
+          "image_file": "m2-01-nutricao-enteral-cabeceira-elevada.webp",
+          "width": 1600,
+          "height": 893
         }
       ]
     },
@@ -93,12 +101,6 @@
           "level": "info",
           "title": "Ponto de atenção",
           "body": "Deslocamento de sonda de gastrostomia ou jejunostomia nas primeiras 2-4 semanas (antes da formação do trajeto) é emergência. Não tente reintroduzir. Cubra o orifício e acione a equipe médica."
-        },
-        {
-          "type": "image",
-          "caption": "Posicionamento seguro durante nutrição enteral",
-          "image_prompt": "Clean educational medical illustration, professional style, soft teal and white colors. Patient in bed with head of bed elevated 30-45 degrees, nasoenteral tube secured to nose, feeding pump connected. Labels in Portuguese: 'Cabeceira elevada', 'Sonda fixada', 'Bomba de infusão'. Minimalist, high clarity for EAD.",
-          "alt": "Ilustração de paciente com cabeceira elevada recebendo nutrição enteral por sonda, com fixação adequada."
         }
       ]
     }

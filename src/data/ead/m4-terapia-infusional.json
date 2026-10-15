@@ -1,0 +1,282 @@
+{
+  "module_id": "m4",
+  "module_title": "Terapia Infusional e Cateteres Periféricos",
+  "order": 4,
+  "learning_objectives": [
+    "Relacionar osmolaridade e pH das soluções com o risco de flebite, infiltração e extravasamento.",
+    "Aplicar critérios de seleção de calibre, antissepsia, flush e tempo de permanência do cateter venoso periférico (CVP) conforme diretrizes da Anvisa.",
+    "Reconhecer indicações e cuidados com cateter midline e especificidades em neonatos e pediátricos.",
+    "Identificar sinais precoces de complicações e condutas imediatas de segurança.",
+    "Identificar, no rótulo, na bula e na lista da instituição, as soluções que não devem correr em veia periférica, e saber quando parar e chamar o enfermeiro."
+  ],
+  "topics": [
+    {
+      "topic_id": "m4-t1-osmolaridade-ph",
+      "topic_title": "Osmolaridade, pH, Infiltração e Extravasamento",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Osmolaridade e pH",
+          "body": "Soluções com osmolaridade elevada (> 600 mOsm/L) ou pH extremo (< 5 ou > 9) aumentam o risco de flebite química e dano endotelial quando infundidas por via periférica. A Anvisa orienta não usar cateter periférico para infusão contínua de soluções vesicantes nem para soluções com osmolaridade acima de 900 mOsm/L; nesses casos, a via indicada é a central. Em via periférica, o tempo de exposição e o calibre do vaso influenciam diretamente o risco."
+        },
+        {
+          "type": "text",
+          "title": "Infiltração versus extravasamento",
+          "body": "Infiltração é a saída de solução não vesicante para o espaço extravascular. Extravasamento é a saída de solução vesicante ou irritante, com potencial de causar necrose tecidual. Ambos exigem interrupção imediata da infusão, aspiração do conteúdo residual quando possível, elevação do membro e notificação. A diferença de conduta depende da natureza da solução."
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança",
+          "body": "Nunca reinicie infusão no mesmo sítio após suspeita de infiltração ou extravasamento. Avalie o membro, registre o evento e escolha novo sítio ou via central conforme a solução e a condição do paciente."
+        }
+      ]
+    },
+    {
+      "topic_id": "m4-t2-cvp",
+      "topic_title": "Cateter Venoso Periférico (CVP): Seleção, Antissepsia, Flush e Permanência",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Seleção de calibre e sítio",
+          "body": "A escolha do calibre deve considerar o tipo de terapia, a viscosidade da solução e o calibre do vaso. Prefira o menor calibre que atenda à necessidade clínica. Sítios preferenciais em adultos: antebraço e dorso da mão (evitar fossa antecubital quando possível). Em pediatria e neonatologia, considerar veias do couro cabeludo, mão ou pé conforme protocolo."
+        },
+        {
+          "type": "checklist",
+          "title": "Antissepsia e inserção",
+          "items": [
+            "Higienização das mãos antes e após o procedimento",
+            "Antissepsia da pele com clorexidina alcoólica > 0,5% (ou conforme protocolo institucional)",
+            "Técnica asséptica sem toque",
+            "Fixação que permita visualização do sítio de inserção",
+            "Registro de data, hora, calibre e sítio no prontuário e no curativo"
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Flush e manutenção",
+          "items": [
+            "Flush com solução fisiológica 0,9% antes e após medicações (volume conforme calibre e protocolo)",
+            "Técnica de pressão positiva (clamp enquanto ainda infunde os últimos 0,5 mL)",
+            "Avaliação do sítio a cada plantão (dor, hiperemia, edema, calor)",
+            "Troca do curativo conforme protocolo ou sempre que úmido, solto ou sujo"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Tempo de permanência (Anvisa)",
+          "body": "A Anvisa não recomenda troca rotineira de CVP em intervalo fixo. A permanência deve ser guiada por avaliação clínica do sítio e pela necessidade da terapia. Troque imediatamente se houver sinais de flebite, infiltração, extravasamento ou disfunção."
+        },
+        {
+          "type": "image",
+          "caption": "Sítio de inserção de CVP com curativo transparente",
+          "alt": "Ilustração de cateter venoso periférico com curativo transparente que permite visualização do sítio de inserção e fixação adequada.",
+          "image_file": "m4-01-cateter-periferico-curativo-transparente.webp",
+          "width": 1600,
+          "height": 893
+        }
+      ]
+    },
+    {
+      "topic_id": "m4-t3-midline-pediatrico",
+      "topic_title": "Midline e Cuidados Neonatais/Pediátricos",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Cateter midline",
+          "body": "O cateter midline é um dispositivo periférico de comprimento intermediário (ponta na altura da axila ou abaixo dela, sem chegar à veia subclávia nem à veia cava). Indicado para terapias de duração prevista entre 1 e 4 semanas, quando o CVP curto não é adequado e o cateter central não é necessário. Exige inserção por profissional habilitado e confirmação de posição."
+        },
+        {
+          "type": "text",
+          "title": "Especificidades neonatais e pediátricas",
+          "body": "Em neonatos e crianças, o calibre do vaso, a fragilidade da pele e o risco de extravasamento exigem atenção redobrada. Prefira o menor calibre possível. Monitore continuamente o sítio durante infusões. Em prematuros, o risco de lesão tecidual por extravasamento é elevado. Utilize dispositivos de segurança e técnicas de contenção adequadas à idade."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados específicos",
+          "items": [
+            "Avaliação frequente do sítio (a cada 1-2 horas em infusões contínuas em neonatos)",
+            "Uso de dispositivos de fixação que não comprometam a circulação",
+            "Registro rigoroso de tentativas de punção",
+            "Envolvimento da família na identificação precoce de sinais de complicação",
+            "Preferência por midline ou central quando a terapia ultrapassar 6-7 dias"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta pediátrico",
+          "body": "Extravasamento em neonatos pode evoluir rapidamente para necrose. Interrompa a infusão ao primeiro sinal de edema ou alteração de coloração e acione a equipe imediatamente."
+        }
+      ]
+    },
+    {
+      "topic_id": "m4-t4-identificar-na-pratica",
+      "topic_title": "Como Identificar na Prática: Osmolaridade, pH e Vesicantes",
+      "content_blocks": [
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Papel do técnico de enfermagem",
+          "body": "O técnico de enfermagem não calcula osmolaridade no plantão e não escolhe a via de administração: essa decisão é do enfermeiro e do médico, com apoio do farmacêutico. O papel do técnico é reconhecer o sinal de alerta antes de instalar a infusão, parar e chamar o enfermeiro."
+        },
+        {
+          "type": "checklist",
+          "title": "Onde procurar a informação",
+          "items": [
+            "Rótulo do frasco ou da bolsa: muitas soluções trazem a osmolaridade (mOsm/L) junto da composição. A nutrição parenteral preparada pela farmácia costuma trazer a osmolaridade final e a indicação “via central” ou “via periférica”.",
+            "Bula: a parte de características ou de modo de usar informa a osmolaridade e o pH e avisa quando o produto é irritante ou vesicante. Frases como “administrar preferencialmente em veia central”, “usar veia de grande calibre” ou “risco de necrose em caso de extravasamento” são sinal de alerta.",
+            "Lista da instituição: a farmácia ou o serviço de controle de infecção costuma manter a lista de medicamentos vesicantes e irritantes, com a via e a diluição indicadas. Conheça a lista do seu campo de estágio; se não houver, pergunte ao enfermeiro.",
+            "Na dúvida, pergunte ao enfermeiro antes de instalar."
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Osmolaridade aproximada de soluções comuns (confira sempre o rótulo e a bula)",
+          "items": [
+            "Soro fisiológico 0,9%: cerca de 308 mOsm/L — uso comum em veia periférica.",
+            "Ringer lactato: cerca de 273 mOsm/L — uso comum em veia periférica.",
+            "Soro glicosado 5%: de 250 a 280 mOsm/L — uso comum em veia periférica.",
+            "Soro glicosado 10%: de 505 a 555 mOsm/L — já irrita a veia; vigiar o sítio com mais frequência.",
+            "Gluconato de cálcio 10%: cerca de 680 mOsm/L — irritante; alto risco de lesão se extravasar.",
+            "Cloreto de sódio 3%: cerca de 1.030 mOsm/L — acima do limite para veia periférica.",
+            "Manitol 20%: cerca de 1.100 mOsm/L — acima do limite para veia periférica.",
+            "Bicarbonato de sódio 8,4%: cerca de 2.000 mOsm/L — acima do limite para veia periférica.",
+            "Glicose 25% e 50%: de 1.260 a 2.780 mOsm/L — acima do limite para veia periférica.",
+            "Cloreto de potássio 19,1% sem diluir: cerca de 5.100 mOsm/L — nunca é administrado sem diluir.",
+            "Cloreto de sódio 20% sem diluir: cerca de 6.800 mOsm/L — nunca é administrado sem diluir.",
+            "Nutrição parenteral para via central: geralmente acima de 1.300 mOsm/L — só em cateter central."
+          ]
+        },
+        {
+          "type": "text",
+          "title": "A diluição muda o valor",
+          "body": "O número que vale é o da solução pronta para infundir. O cloreto de potássio diluído em um soro de grande volume, por exemplo, fica com osmolaridade baixa; o mesmo medicamento sem diluir nunca é administrado. Os valores mudam um pouco entre fabricantes, por isso o rótulo e a bula valem mais que qualquer tabela. Quando há mistura de medicamentos na mesma bolsa, quem informa a osmolaridade final é a farmácia ou o enfermeiro."
+        },
+        {
+          "type": "checklist",
+          "title": "pH extremo (abaixo de 5 ou acima de 9): exemplos",
+          "items": [
+            "Ácidos (pH baixo): vancomicina, amiodarona, prometazina, dopamina e noradrenalina.",
+            "Alcalinos (pH alto): fenitoína e aciclovir.",
+            "O pH de cada produto está na bula: confira sempre com o produto em uso."
+          ]
+        },
+        {
+          "type": "checklist",
+          "title": "Vesicantes mais comuns no hospital",
+          "items": [
+            "Medicamentos que contraem os vasos: noradrenalina, adrenalina, dopamina e vasopressina.",
+            "Eletrólitos concentrados: cloreto de potássio, cálcio e bicarbonato de sódio.",
+            "Glicose concentrada.",
+            "Fenitoína, prometazina e aciclovir.",
+            "Contraste iodado.",
+            "Nutrição parenteral.",
+            "Quimioterápicos."
+          ]
+        },
+        {
+          "type": "text",
+          "title": "Infusão contínua ou dose curta",
+          "body": "Infusão contínua é soro ou bomba correndo por horas. Em situação de urgência, o protocolo da instituição pode aceitar uma dose curta de vesicante em veia periférica, com vigilância do sítio, até haver acesso central. Correr por horas em veia periférica, não."
+        },
+        {
+          "type": "checklist",
+          "title": "Passo a passo do técnico",
+          "items": [
+            "Antes de instalar, ler o rótulo e conferir a via indicada.",
+            "Se o rótulo ou a bula disser “via central”, “vesicante” ou “irritante”, ou se o medicamento estiver na lista da instituição, e o paciente só tiver cateter periférico: não instalar e chamar o enfermeiro.",
+            "Se o enfermeiro decidir pela veia periférica: preferir veia calibrosa e longe de articulações, conferir o retorno de sangue antes de começar e olhar o sítio com mais frequência.",
+            "Ao primeiro sinal de dor, ardor, inchaço, palidez ou vermelhidão no sítio: parar a infusão e seguir a conduta de extravasamento do tópico 1.",
+            "Registrar o que foi feito e quem foi avisado."
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança",
+          "body": "Nunca diminua o gotejamento nem dilua por conta própria uma solução indicada para via central para fazê-la correr em veia periférica. Pare, avise o enfermeiro e aguarde a decisão sobre a via."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual característica da solução aumenta o risco de flebite química quando infundida por cateter venoso periférico?",
+      "options": [
+        "Osmolaridade baixa (< 300 mOsm/L) e pH neutro.",
+        "Osmolaridade elevada (> 600 mOsm/L) ou pH extremo (< 5 ou > 9).",
+        "Volume total da infusão, independentemente da osmolaridade.",
+        "Presença de eletrólitos em concentração fisiológica."
+      ],
+      "correct_index": 1,
+      "explanation": "Soluções hiperosmóticas ou com pH extremo causam dano endotelial mais intenso em vasos periféricos. Diretrizes recomendam via central para essas soluções quando possível."
+    },
+    {
+      "question": "Segundo as diretrizes da Anvisa, qual é a recomendação sobre o tempo de permanência do cateter venoso periférico?",
+      "options": [
+        "Troca obrigatória a cada 72-96 horas, independentemente da condição do sítio.",
+        "Permanência guiada por avaliação clínica do sítio e necessidade da terapia, sem troca rotineira em intervalo fixo.",
+        "Troca diária em todos os pacientes para prevenir infecção.",
+        "Permanência máxima de 24 horas em adultos."
+      ],
+      "correct_index": 1,
+      "explanation": "A Anvisa orienta que a decisão de manter ou trocar o CVP seja baseada na avaliação do sítio e na indicação clínica, e não em um intervalo de tempo pré-determinado."
+    },
+    {
+      "question": "Qual é a conduta imediata ao identificar sinais de extravasamento durante uma infusão?",
+      "options": [
+        "Reduzir a velocidade da infusão e observar por 30 minutos.",
+        "Interromper a infusão, aspirar o conteúdo residual se possível, elevar o membro e notificar a equipe.",
+        "Trocar apenas o equipo e continuar no mesmo sítio.",
+        "Aplicar calor local e manter a infusão em velocidade menor."
+      ],
+      "correct_index": 1,
+      "explanation": "A interrupção imediata, aspiração do residual e elevação do membro são medidas iniciais para limitar o dano tecidual. O evento deve ser registrado e a equipe notificada."
+    },
+    {
+      "question": "Você vai instalar uma bolsa cujo rótulo diz “via central”, e o paciente só tem cateter venoso periférico. Qual é a conduta correta?",
+      "options": [
+        "Instalar com gotejamento lento, para reduzir a irritação da veia.",
+        "Diluir a solução em mais soro antes de instalar.",
+        "Não instalar, avisar o enfermeiro e aguardar a decisão sobre a via.",
+        "Instalar e observar o sítio a cada hora."
+      ],
+      "correct_index": 2,
+      "explanation": "A escolha da via é do enfermeiro e do médico. Gotejamento lento não reduz a osmolaridade, e diluir por conta própria muda a prescrição. O técnico reconhece o alerta do rótulo, não instala e chama o enfermeiro."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Terapia Infusional e Cateteres",
+      "institution": "Coren",
+      "author": "Cida Veloso",
+      "url": "",
+      "note": "Aula 3 – fundamentos de terapia infusional, seleção de dispositivos e prevenção de complicações."
+    },
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – cultura de segurança aplicada ao cuidado de dispositivos invasivos."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Capítulos sobre terapia intravenosa e acesso vascular",
+      "note": "Referência para osmolaridade, complicações de acesso periférico e cuidados de enfermagem."
+    },
+    {
+      "type": "article",
+      "title": "Nota Técnica GVIMS/GGTES/DIRE3/ANVISA nº 04/2022 — cateter intravenoso periférico",
+      "institution": "Anvisa",
+      "url": "https://portaldeboaspraticas.iff.fiocruz.br/atencao-recem-nascido/nt4-cateter-intravenoso-anvisa-2022/",
+      "note": "Boas práticas da Anvisa para seleção do cateter e do sítio, antissepsia da pele, flush e manutenção, remoção do cateter e prevenção de infiltração e extravasamento."
+    }
+  ]
+}

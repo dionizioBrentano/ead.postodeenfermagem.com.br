@@ -43,8 +43,10 @@
         {
           "type": "image",
           "caption": "Linha do tempo da segurança do paciente",
-          "image_prompt": "Clean educational timeline illustration, professional medical style, soft blue and teal colors, white background. Horizontal timeline with four clear milestones: 1999 To Err is Human report (document icon), 2004 OMS World Alliance for Patient Safety, 2008 Rede Brasileira de Enfermagem e Segurança do Paciente, 2013 Programa Nacional de Segurança do Paciente (Brazil flag accent). Minimalist icons, sans-serif labels in Portuguese, high clarity for EAD use, no clutter.",
-          "alt": "Linha do tempo ilustrando os principais marcos da segurança do paciente de 1999 a 2013."
+          "alt": "Linha do tempo ilustrando os principais marcos da segurança do paciente de 1999 a 2013.",
+          "image_file": "m0-01-linha-do-tempo-seguranca-do-paciente.webp",
+          "width": 1600,
+          "height": 893
         }
       ]
     },

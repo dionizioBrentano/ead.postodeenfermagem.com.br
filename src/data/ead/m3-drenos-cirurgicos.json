@@ -1,0 +1,178 @@
+{
+  "module_id": "m3",
+  "module_title": "Drenos Cirúrgicos",
+  "order": 3,
+  "learning_objectives": [
+    "Classificar drenos cirúrgicos em passivos e ativos e reconhecer suas indicações.",
+    "Aplicar o manejo seguro do dreno de tórax, incluindo interpretação de borbulhamento, oscilação e critérios de retirada.",
+    "Identificar características e cuidados específicos com drenos de Penrose, Portovac, Jackson-Pratt, Blake e Kehr.",
+    "Reconhecer sinais de complicações e condutas imediatas de segurança no cuidado com drenos."
+  ],
+  "topics": [
+    {
+      "topic_id": "m3-t1-classificacao",
+      "topic_title": "Classificação: Drenos Passivos e Ativos",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Drenos passivos",
+          "body": "Drenos passivos funcionam por gravidade ou por diferença de pressão natural. Não possuem sistema de sucção ativa. Exemplos clássicos são o dreno de Penrose e o dreno de Kehr. São utilizados principalmente para drenagem de coleções superficiais ou para descompressão de vias biliares. Exigem cuidados rigorosos com a pele ao redor do orifício de saída para prevenir maceração e infecção."
+        },
+        {
+          "type": "text",
+          "title": "Drenos ativos",
+          "body": "Drenos ativos utilizam sucção (contínua ou intermitente) para promover a drenagem. Exemplos incluem o sistema de Portovac, Jackson-Pratt e Blake. São indicados quando se deseja maior eficiência na remoção de secreções ou quando a gravidade sozinha é insuficiente. O sistema deve permanecer fechado e a sucção deve ser verificada conforme protocolo institucional."
+        },
+        {
+          "type": "alert",
+          "level": "info",
+          "title": "Ponto de atenção",
+          "body": "A escolha entre dreno passivo e ativo depende da localização, do tipo de secreção esperada e da necessidade de mensuração precisa do débito. Nunca converter um sistema ativo em passivo sem orientação médica."
+        }
+      ]
+    },
+    {
+      "topic_id": "m3-t2-dreno-torax",
+      "topic_title": "Dreno de Tórax: Manejo, Borbulhamento, Oscilação e Retirada",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Sistema de drenagem torácica",
+          "body": "O dreno de tórax é utilizado para remover ar (pneumotórax) ou líquido (derrame pleural, hemotórax) da cavidade pleural, restabelecendo a pressão negativa intrapleural. O sistema mais comum é o de selo d’água com ou sem sucção. A enfermagem deve monitorar continuamente o funcionamento do sistema, o débito e os sinais de complicação."
+        },
+        {
+          "type": "checklist",
+          "title": "Interpretação de borbulhamento e oscilação",
+          "items": [
+            "Oscilação (flutuação) do nível de água na câmara de selo indica que o sistema está pérvio e conectado à cavidade pleural",
+            "Borbulhamento intermitente pode ser normal em pneumotórax em resolução",
+            "Borbulhamento contínuo e vigoroso sugere fuga de ar (possível desconexão, perfuração ou fístula broncopleural)",
+            "Ausência de oscilação pode indicar obstrução do dreno ou reexpansão pulmonar completa"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta crítico – Dreno de tórax",
+          "body": "Nunca clampeie o dreno de tórax de forma rotineira. O clampeamento só deve ser feito por tempo mínimo e sob orientação médica (ex.: troca de sistema ou transporte). Clampeamento prolongado em paciente com fuga de ar pode causar pneumotórax hipertensivo."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados diários e critérios de atenção para retirada",
+          "items": [
+            "Manter o sistema abaixo do nível do tórax do paciente",
+            "Verificar conexões e ausência de dobras ou desconexões a cada plantão",
+            "Registrar débito, aspecto e presença de borbulhamento/oscilação",
+            "Observar sinais de enfisema subcutâneo, dor súbita ou dificuldade respiratória",
+            "Retirada somente mediante indicação médica, após radiografia de controle e com técnica asséptica"
+          ]
+        }
+      ]
+    },
+    {
+      "topic_id": "m3-t3-outros-drenos",
+      "topic_title": "Penrose, Portovac / Jackson-Pratt / Blake e Kehr",
+      "content_blocks": [
+        {
+          "type": "text",
+          "title": "Dreno de Penrose",
+          "body": "Dreno passivo de látex ou silicone, aberto, utilizado para drenagem de coleções superficiais. A secreção drena para curativo externo. Exige troca frequente de curativo e proteção da pele ao redor para evitar maceração. Não permite mensuração precisa do débito."
+        },
+        {
+          "type": "text",
+          "title": "Portovac, Jackson-Pratt e Blake",
+          "body": "Sistemas ativos de sucção fechada. O Portovac e o Jackson-Pratt utilizam reservatório compressível que gera sucção ao ser esvaziado. O Blake é um dreno de silicone com canais longitudinais, também conectado a sistema de sucção. Permitem mensuração do débito e reduzem risco de contaminação externa. Devem ser esvaziados quando o reservatório estiver parcialmente cheio e a sucção reestabelecida."
+        },
+        {
+          "type": "text",
+          "title": "Dreno de Kehr",
+          "body": "Dreno em T utilizado após cirurgias das vias biliares (ex.: coledocotomia). Uma extremidade fica no ducto biliar comum e a outra exterioriza pela parede abdominal. Permite drenagem de bile e, em alguns casos, realização de colangiografia. Cuidados incluem proteção da pele, registro do débito e observação de sinais de deslocamento ou obstrução."
+        },
+        {
+          "type": "checklist",
+          "title": "Cuidados gerais com drenos",
+          "items": [
+            "Higienizar as mãos antes e após qualquer manipulação",
+            "Manter o sistema fechado sempre que possível",
+            "Fixar o dreno de forma que não haja tração no orifício de saída",
+            "Registrar débito, aspecto e intercorrências a cada plantão",
+            "Observar sinais de infecção no sítio de inserção (hiperemia, secreção purulenta, dor)",
+            "Nunca reintroduzir dreno que tenha se deslocado acidentalmente"
+          ]
+        },
+        {
+          "type": "alert",
+          "level": "warning",
+          "title": "Alerta de segurança",
+          "body": "Deslocamento acidental de dreno de tórax ou de dreno biliar é situação de risco. No dreno de tórax, cubra o orifício imediatamente com curativo estéril, conforme o protocolo da instituição (oclusivo ou fechado em três lados), comunique imediatamente a equipe médica e observe sinais de pneumotórax hipertensivo: falta de ar que piora, queda da saturação, dor no peito e agitação. Não tente reintroduzir."
+        },
+        {
+          "type": "image",
+          "caption": "Sistema de drenagem torácica com selo d’água",
+          "image_prompt": "Clean educational medical illustration, professional style, soft blue and white colors. Chest drainage system with water seal chamber, patient in bed, tube connected to chest. Labels in Portuguese: 'Câmara de selo d’água', 'Oscilação', 'Sistema abaixo do tórax'. Minimalist, high clarity for EAD.",
+          "alt": "Ilustração de sistema de drenagem torácica com câmara de selo d’água, mostrando oscilação e posicionamento correto abaixo do nível do tórax."
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "Qual é a principal diferença entre um dreno passivo e um dreno ativo?",
+      "options": [
+        "O dreno passivo utiliza sucção contínua, enquanto o ativo funciona apenas por gravidade.",
+        "O dreno ativo utiliza sucção (contínua ou intermitente), enquanto o passivo funciona por gravidade ou diferença de pressão natural.",
+        "Não existe diferença clínica relevante; a escolha depende apenas do custo do material.",
+        "O dreno passivo é sempre de maior calibre e usado apenas em cavidade torácica."
+      ],
+      "correct_index": 1,
+      "explanation": "Drenos ativos empregam sucção para promover a drenagem, enquanto os passivos dependem de gravidade ou pressão natural. A escolha depende da indicação clínica."
+    },
+    {
+      "question": "No cuidado com dreno de tórax, qual situação exige atenção imediata?",
+      "options": [
+        "Oscilação leve do nível de água na câmara de selo durante a respiração.",
+        "Borbulhamento contínuo e vigoroso associado a dificuldade respiratória súbita.",
+        "Débito seroso de pequeno volume nas primeiras 24 horas.",
+        "Ausência de borbulhamento após reexpansão pulmonar confirmada por radiografia."
+      ],
+      "correct_index": 1,
+      "explanation": "Borbulhamento contínuo e vigoroso pode indicar fuga de ar significativa (desconexão, fístula ou outra complicação). Associado a alteração respiratória, exige avaliação imediata."
+    },
+    {
+      "question": "Qual é a conduta correta da enfermagem em caso de deslocamento acidental de um dreno de tórax?",
+      "options": [
+        "Tentar reintroduzir o dreno imediatamente com técnica asséptica.",
+        "Cobrir o orifício com curativo estéril conforme o protocolo, comunicar a equipe médica e observar sinais de pneumotórax hipertensivo, sem tentar reintroduzir.",
+        "Clampear o sistema e aguardar o próximo plantão para avaliação.",
+        "Lavar o orifício com soro fisiológico e aplicar curativo simples."
+      ],
+      "correct_index": 1,
+      "explanation": "A reintrodução pode causar lesão ou falsa via. A conduta imediata é proteger o orifício com curativo estéril e acionar a equipe médica. Se ainda houver fuga de ar, um curativo totalmente fechado pode levar ao pneumotórax hipertensivo; por isso a vigilância respiratória é obrigatória."
+    }
+  ],
+  "sources": [
+    {
+      "type": "video",
+      "title": "Segurança do Paciente e Legislação Aplicada",
+      "institution": "Coren-MG",
+      "author": "Diego Néri",
+      "url": "https://www.youtube.com/watch?v=yW6_L9h106s",
+      "note": "Aula 1 – fundamentos de segurança aplicados ao cuidado de dispositivos invasivos."
+    },
+    {
+      "type": "book",
+      "title": "Brunner & Suddarth: Tratado de Enfermagem Médico-Cirúrgica",
+      "edition": "12ª edição",
+      "chapter": "Capítulos sobre sistema respiratório e cuidados com drenos torácicos e cirúrgicos",
+      "note": "Referência para classificação, manejo de dreno de tórax, interpretação de borbulhamento/oscilação e cuidados com drenos ativos e passivos."
+    },
+    {
+      "type": "article",
+      "title": "Cuidados com o sistema de drenagem torácica em adultos internados no Hospital Universitário Regional de Maringá, Estado do Paraná, Brasil",
+      "authors": "Gustavo Nishida, Bruno Donegá Sarrão, Diego Ricardo Colferai, Guilón Otávio Santos Tenório e César Orlando Peralta Bandeira",
+      "source": "Acta Scientiarum. Health Sciences, v. 33, n. 2, p. 173-179, 2011",
+      "url": "https://doi.org/10.4025/actascihealthsci.v33i2.8877",
+      "note": "Estudo sobre falhas no manejo da drenagem torácica: verificação da oscilação do selo d’água, frasco abaixo do nível do tórax, uso de braçadeiras e fixação para evitar deslocamento acidental."
+    }
+  ]
+}

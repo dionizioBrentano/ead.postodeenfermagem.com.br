@@ -112,9 +112,19 @@
         },
         {
           "type": "image",
-          "caption": "Posicionamento correto da bolsa coletora",
-          "image_prompt": "Educational medical illustration, clean professional style, soft teal and white colors. Side view of patient in bed with Foley catheter properly secured to thigh, collection bag hanging below bladder level on bed frame, not touching floor. Clear labels in Portuguese: 'Fixação na coxa', 'Bolsa abaixo da bexiga', 'Sem contato com o chão'. Minimalist, high clarity for EAD.",
-          "alt": "Ilustração do posicionamento correto da sonda vesical e da bolsa coletora abaixo do nível da bexiga, sem contato com o chão."
+          "caption": "Sonda vesical de demora no homem e sistema fechado de drenagem",
+          "alt": "Corte da pelve masculina com a sonda vesical introduzida pela uretra até a bexiga, com o balão insuflado, e o sistema fechado de drenagem com urina na bolsa coletora, presa na cama abaixo do nível da bexiga e sem tocar o chão.",
+          "image_file": "m1-01-bolsa-coletora-abaixo-da-bexiga.webp",
+          "width": 1600,
+          "height": 893
+        },
+        {
+          "type": "image",
+          "caption": "Sonda vesical de demora na mulher e sistema fechado de drenagem",
+          "alt": "Corte da pelve feminina com a sonda vesical introduzida pela uretra até a bexiga, com o balão insuflado, saindo pelo meato uretral, e o sistema fechado de drenagem com urina na bolsa coletora, presa na cama abaixo do nível da bexiga e sem tocar o chão.",
+          "image_file": "m1-02-sonda-vesical-feminina-sistema-fechado.webp",
+          "width": 1600,
+          "height": 893
         }
       ]
     }

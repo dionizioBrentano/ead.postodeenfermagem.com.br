@@ -28,5 +28,45 @@
     "dataFile": "m2-sondas-enterais-gastricas-estomias.json",
     "duration_minutes": 60,
     "topics_count": 3
+  },
+  {
+    "id": "m3",
+    "slug": "m3",
+    "number": 3,
+    "title": "Módulo 3: Drenos Cirúrgicos",
+    "short_description": "Classificação de drenos passivos e ativos, manejo do dreno de tórax (borbulhamento, oscilação e retirada) e cuidados com Penrose, Portovac, Jackson-Pratt, Blake e Kehr.",
+    "dataFile": "m3-drenos-cirurgicos.json",
+    "duration_minutes": 60,
+    "topics_count": 3
+  },
+  {
+    "id": "m4",
+    "slug": "m4",
+    "number": 4,
+    "title": "Módulo 4: Terapia Infusional e Cateteres Periféricos",
+    "short_description": "Osmolaridade e pH, infiltração versus extravasamento, seleção e manutenção de CVP conforme Anvisa, midline, cuidados neonatais/pediátricos e como identificar na prática as soluções que não podem correr em veia periférica.",
+    "dataFile": "m4-terapia-infusional.json",
+    "duration_minutes": 60,
+    "topics_count": 4
+  },
+  {
+    "id": "m5",
+    "slug": "m5",
+    "number": 5,
+    "title": "Módulo 5: Cateteres Centrais e PICC",
+    "short_description": "CVC convencional e CDL para hemodiálise, PICC (indicações, sítios e confirmação de ponta), prevenção de IPCS, scrub the hub e cuidados com pressão hidráulica.",
+    "dataFile": "m5-cateteres-centrais-picc.json",
+    "duration_minutes": 60,
+    "topics_count": 3
+  },
+  {
+    "id": "m6",
+    "slug": "m6",
+    "number": 6,
+    "title": "Módulo 6: Integração e Avaliação",
+    "short_description": "Casos clínicos integrados, checklists de segurança, princípios de POPs e critérios de avaliação com referência cruzada aos módulos anteriores.",
+    "dataFile": "m6-integracao-avaliacao.json",
+    "duration_minutes": 60,
+    "topics_count": 3
   }
 ]

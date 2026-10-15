@@ -3,6 +3,7 @@ import {
   slugDoModuloNaRota,
   rotasDosModulos,
   rotuloTipoFonte,
+  caminhoImagemModulo,
 } from "./modulosEad";
 import { TEXTOS_MODULOS_EAD } from "../data/textosModulosEad";
 
@@ -36,5 +37,12 @@ describe("modulosEad - regras puras de rotas e tipos dos módulos", () => {
     expect(rotuloTipoFonte("article")).toBe(TEXTOS_MODULOS_EAD.tipoFonteArtigo);
     expect(rotuloTipoFonte("podcast")).toBe("podcast");
     expect(rotuloTipoFonte("diretriz")).toBe("diretriz");
+  });
+
+  it("monta caminho de imagem sem barra duplicada para base '/', com e sem barra final", () => {
+    expect(caminhoImagemModulo("foto.webp", "/")).toBe("/ead/imagens/foto.webp");
+    expect(caminhoImagemModulo("foto.webp", "/app/")).toBe("/app/ead/imagens/foto.webp");
+    expect(caminhoImagemModulo("foto.webp", "/app")).toBe("/app/ead/imagens/foto.webp");
+    expect(caminhoImagemModulo("/foto.webp", "/")).toBe("/ead/imagens/foto.webp");
   });
 });

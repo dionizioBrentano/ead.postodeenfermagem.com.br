@@ -35,3 +35,12 @@ export function rotuloTipoFonte(tipo: string): string {
   if (tipo === "article") return TEXTOS_MODULOS_EAD.tipoFonteArtigo;
   return tipo;
 }
+
+export const PASTA_IMAGENS_MODULOS = "ead/imagens/";
+
+export function caminhoImagemModulo(arquivo: string, base: string): string {
+  const baseSemBarraFinal = base.trim().replace(/\/+$/, "");
+  const pastaLimpa = PASTA_IMAGENS_MODULOS.replace(/^\/+/, "").replace(/\/+$/, "");
+  const arquivoLimpo = arquivo.trim().replace(/^\/+/, "");
+  return `${baseSemBarraFinal}/${pastaLimpa}/${arquivoLimpo}`;
+}

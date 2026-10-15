@@ -26,6 +26,9 @@ export interface ImageBlock {
   caption?: string;
   image_prompt?: string;
   alt: string;
+  image_file?: string;
+  width?: number;
+  height?: number;
 }
 
 export type ContentBlock = TextBlock | ChecklistBlock | AlertBlock | ImageBlock;
