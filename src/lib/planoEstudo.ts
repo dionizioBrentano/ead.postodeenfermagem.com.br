@@ -15,10 +15,11 @@ import {
 import {
   linhaItemPlano,
   linhaItemProximoCiclo,
+  promptDePesquisa,
   TEXTOS_PLANO_ESTUDO,
   tituloProximoCicloPlano,
 } from "../data/textosPlanoEstudo";
-import type { ItemFichaRef } from "../types/ead";
+import type { ItemFichaRef, PromptEstudo } from "../types/ead";
 import { cicloDoItemFicha } from "./assuntosEstudo";
 import { media, ordenar, type Avaliacao } from "./historico";
 
@@ -169,4 +170,16 @@ export function acrescentarAoTexto(atual: string, novo: string): string {
     return novo;
   }
   return `${atual.trimEnd()}\n\n${novo}`;
+}
+
+export function promptsDoPlano(
+  itens: ItemDeAtencao[],
+  cicloAluno: number,
+): PromptEstudo[] {
+  return itens.map((it, idx) => ({
+    id: `plano-${it.ref.block}-${it.ref.number}`,
+    title: linhaItemPlano(idx + 1, it.item.curto, it.nota, it.ciclo),
+    text: promptDePesquisa(cicloAluno, it.nota, it.item.texto),
+    accepts_question: false,
+  }));
 }

@@ -22,6 +22,19 @@ export function ordenar(lista: Avaliacao[]): Avaliacao[] {
     .sort((a, b) => a.etapa - b.etapa || MOMENTOS.indexOf(a.momento) - MOMENTOS.indexOf(b.momento));
 }
 
+export function historicoParaPdf(lista: Avaliacao[], av: Avaliacao): Avaliacao[] {
+  const semMesmaEtapaMomento = lista.filter(
+    (x) => !(x.etapa === av.etapa && x.momento === av.momento)
+  );
+  const combinada = [...semMesmaEtapaMomento, av];
+  const ordenada = ordenar(combinada);
+  return ordenada.filter(
+    (x) =>
+      x.etapa < av.etapa ||
+      (x.etapa === av.etapa && MOMENTOS.indexOf(x.momento) <= MOMENTOS.indexOf(av.momento))
+  );
+}
+
 export async function carregarDaAPI(userKey: string, papel: "auto" | "supervisor"): Promise<Avaliacao[]> {
   const items = (await getAvaliacoes(userKey, papel)) as any[];
   const map = new Map<string, Avaliacao>();

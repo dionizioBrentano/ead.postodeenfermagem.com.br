@@ -27,6 +27,7 @@ jobs:
           # Variáveis necessárias para o build do Vite
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_TENANT_ID: ${{ secrets.VITE_TENANT_ID }}
+          VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
 
       - name: 🚀 Deploy via FTP para o cPanel
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

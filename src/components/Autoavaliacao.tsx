@@ -4,19 +4,38 @@ import { ESCALA, corDaNota } from "../lib/cores";
 import {
   apagarRascunho,
   carregarRascunho,
+  historicoParaPdf,
   hoje,
   salvarRascunho,
   type Avaliacao,
 } from "../lib/historico";
+import {
+  ENVIO_SIMULTANEOS,
+  ENVIO_TENTATIVAS,
+  ENVIO_ESPERA_BASE_MS,
+  montarItensDaAvaliacao,
+  enviarEmLotes,
+  motivoDaFalha,
+  esperar,
+} from "../lib/envioAvaliacao";
+import type { AvaliacaoPayload } from "../api/ead";
+import { TEXTOS_ENVIO_AVALIACAO } from "../data/textosEnvioAvaliacao";
+import AvisoEnvioAvaliacao, { type AvisoEnvio } from "./AvisoEnvioAvaliacao";
+import { TEXTOS_ASSUNTOS_ESTUDO } from "../data/textosAssuntosEstudo";
 import { TEXTOS_PLANO_ESTUDO } from "../data/textosPlanoEstudo";
 import {
   acrescentarAoTexto,
   itensDeAtencao,
   itensDoProximoCiclo,
   podeSugerirPlano,
+  promptsDoPlano,
   textoPlanoSugerido,
 } from "../lib/planoEstudo";
+import CartaoPromptEstudo from "./CartaoPromptEstudo";
+import ListaMarcadaEad from "./ListaMarcadaEad";
+import type { PromptEstudo } from "../types/ead";
 import "./PlanoEstudo.css";
+import "./ConteudoEad.css";
 
 type Props = {
   userKey: string;
@@ -58,8 +77,13 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
       : vazio(nomePerfil);
   });
   const [faltando, setFaltando] = useState<Set<string>>(new Set());
-  const [msg, setMsg] = useState<{ tipo: "ok" | "err"; texto: string; arquivo?: string } | null>(null);
+  const [msg, setMsg] = useState<AvisoEnvio | null>(null);
   const [gerando, setGerando] = useState(false);
+  const [itensFalhos, setItensFalhos] = useState<AvaliacaoPayload[] | null>(null);
+  const [totalItensOriginal, setTotalItensOriginal] = useState<number>(0);
+  const [avEmGravacao, setAvEmGravacao] = useState<Avaliacao | null>(null);
+  const [pdfFalhouMotivo, setPdfFalhouMotivo] = useState<string | null>(null);
+  const [planoGerado, setPlanoGerado] = useState<{ cicloAluno: number; prompts: PromptEstudo[] } | null>(null);
   const primeiro = useRef<string | null>(null);
 
   useEffect(() => {
@@ -94,8 +118,85 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
     });
   };
 
+  async function concluirGravacao(av: Avaliacao, erroPdf: string | null) {
+    try {
+      const { carregarDaAPI } = await import("../lib/historico");
+      const nova = await carregarDaAPI(userKey, "auto");
+      onSalvou(nova);
+    } catch {
+      onSalvou(historicoParaPdf(lista, av));
+    }
+    apagarRascunho(userKey);
+    setS({ ...vazio(av.nome), turma: av.turma, unidade: av.unidade });
+    setItensFalhos(null);
+    setAvEmGravacao(null);
+    setPdfFalhouMotivo(null);
+    if (erroPdf) {
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.pdfFalhou(erroPdf) });
+    } else {
+      setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.tudoCerto });
+    }
+  }
+
+  async function tentarSalvarDeNovo() {
+    if (!itensFalhos || itensFalhos.length === 0 || !avEmGravacao) return;
+    setGerando(true);
+    try {
+      const { getUserToken } = await import("../api/client");
+      const token = getUserToken();
+      if (!token) {
+        setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.semSessao });
+        return;
+      }
+      const totalItens = totalItensOriginal || itensFalhos.length;
+      setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(0, itensFalhos.length) });
+
+      const { saveAvaliacao } = await import("../api/ead");
+      const { falhas } = await enviarEmLotes(
+        itensFalhos,
+        (item) => saveAvaliacao(item, token),
+        {
+          simultaneos: ENVIO_SIMULTANEOS,
+          tentativas: ENVIO_TENTATIVAS,
+          esperaBaseMs: ENVIO_ESPERA_BASE_MS,
+          esperar,
+          aoAvancar: (feitos, total) => {
+            setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(feitos, total) });
+          },
+        }
+      );
+
+      if (falhas.length === 0) {
+        await concluirGravacao(avEmGravacao, pdfFalhouMotivo);
+      } else {
+        falhas.forEach(({ erro }) => {
+          console.error(
+            "Falha ao salvar item da avaliação:",
+            erro,
+            "status:",
+            (erro as any)?.status,
+            "corpo:",
+            (erro as any)?.body
+          );
+        });
+        const motivo = motivoDaFalha(falhas[0].erro);
+        setItensFalhos(falhas.map((f) => f.item));
+        setMsg({
+          tipo: "err",
+          texto: TEXTOS_ENVIO_AVALIACAO.gravacaoParcial(falhas.length, totalItens, motivo),
+        });
+      }
+    } catch (e) {
+      console.error("Erro inesperado ao salvar de novo:", e);
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.motivoDesconhecido });
+    } finally {
+      setGerando(false);
+    }
+  }
+
   async function gerar() {
     setMsg(null);
+    setItensFalhos(null);
     const miss: string[] = [];
     if (!s.nome.trim()) miss.push("f-nome");
     if (!s.etapa) miss.push("f-etapa");
@@ -127,51 +228,90 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
       criadoEm: new Date().toISOString(),
     };
     setGerando(true);
+    let erroPdf: string | null = null;
+
+    // 1. PDF primeiro, com dados do aparelho
     try {
-      let apiWarning = "";
-      try {
-        const { getUserToken } = await import("../api/client");
-        const { saveAvaliacao } = await import("../api/ead");
-        const token = getUserToken();
-        if (token) {
-          const promises: Promise<unknown>[] = [];
-          av.gerais.forEach((nota, i) => {
-            if (nota !== null) {
-              promises.push(saveAvaliacao({ aluno_user_id: userKey, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
-            }
-          });
-          av.atividades.forEach((nota, i) => {
-            if (nota !== null) {
-              promises.push(saveAvaliacao({ aluno_user_id: userKey, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel: "auto", nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(av.etapa), momento: av.momento }, token));
-            }
-          });
-          await Promise.allSettled(promises).then(results => {
-            if (results.some(r => r.status === "rejected")) throw new Error("Parcial/falha");
-          });
-        }
-      } catch (err) {
-        console.error("Falha ao salvar no servidor EAD:", err);
-        apiWarning = " Aviso: Houve falha de conexão com a API.";
-      }
-
-      const { carregarDaAPI } = await import("../lib/historico");
-      const nova = await carregarDaAPI(userKey, "auto");
-      onSalvou(nova);
-
       const { gerarPDF, nomeArquivo } = await import("../lib/pdf");
-      const doc = gerarPDF(av, nova.filter((x) => x.etapa < av.etapa || (x.etapa === av.etapa && MOMENTOS.indexOf(x.momento) <= MOMENTOS.indexOf(av.momento))));
+      const doc = gerarPDF(av, historicoParaPdf(lista, av));
       const arquivo = nomeArquivo(av);
       doc.save(arquivo);
-      apagarRascunho(userKey);
-      setS({ ...vazio(av.nome), turma: av.turma, unidade: av.unidade });
-      setMsg({
-        tipo: "ok",
-        arquivo,
-        texto: apiWarning ? "Erro ao salvar na API." + apiWarning : "PDF gerado e autoavaliação salva com sucesso.",
-      });
     } catch (e) {
-      console.error(e);
-      setMsg({ tipo: "err", texto: "Não foi possível gerar o PDF ou salvar na API." });
+      console.error("Falha ao gerar o PDF:", e);
+      erroPdf = e instanceof Error ? e.message : TEXTOS_ENVIO_AVALIACAO.motivoDesconhecido;
+    }
+    setPdfFalhouMotivo(erroPdf);
+
+    const itensAtencao = itensDeAtencao(av);
+    const prompts = promptsDoPlano(itensAtencao, av.etapa);
+    setPlanoGerado({
+      cicloAluno: av.etapa,
+      prompts,
+    });
+
+    // 2. Sem token
+    const { getUserToken } = await import("../api/client");
+    const token = getUserToken();
+    if (!token) {
+      setGerando(false);
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.semSessao });
+      return;
+    }
+
+    // 3. Gravação
+    try {
+      const itens = montarItensDaAvaliacao({
+        alunoId: userKey,
+        papel: "auto",
+        etapa: av.etapa,
+        momento: av.momento,
+        gerais: av.gerais,
+        atividades: av.atividades,
+        comentario: av.obs,
+      });
+      setTotalItensOriginal(itens.length);
+      setAvEmGravacao(av);
+      setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(0, itens.length) });
+
+      const { saveAvaliacao } = await import("../api/ead");
+      const { falhas } = await enviarEmLotes(
+        itens,
+        (item) => saveAvaliacao(item, token),
+        {
+          simultaneos: ENVIO_SIMULTANEOS,
+          tentativas: ENVIO_TENTATIVAS,
+          esperaBaseMs: ENVIO_ESPERA_BASE_MS,
+          esperar,
+          aoAvancar: (feitos, total) => {
+            setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(feitos, total) });
+          },
+        }
+      );
+
+      // 4. Tudo salvo ou 5. Alguma falha
+      if (falhas.length === 0) {
+        await concluirGravacao(av, erroPdf);
+      } else {
+        falhas.forEach(({ erro }) => {
+          console.error(
+            "Falha ao salvar item da avaliação:",
+            erro,
+            "status:",
+            (erro as any)?.status,
+            "corpo:",
+            (erro as any)?.body
+          );
+        });
+        const motivo = motivoDaFalha(falhas[0].erro);
+        setItensFalhos(falhas.map((f) => f.item));
+        setMsg({
+          tipo: "err",
+          texto: TEXTOS_ENVIO_AVALIACAO.gravacaoParcial(falhas.length, itens.length, motivo),
+        });
+      }
+    } catch (e) {
+      console.error("Erro inesperado ao salvar avaliação:", e);
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.motivoDesconhecido });
     } finally {
       setGerando(false);
     }
@@ -239,7 +379,16 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
             <div className="seg" role="radiogroup" aria-label="Etapa">
               {ETAPAS.map((e) => (
                 <label key={e} className={`k${e}`}>
-                  <input type="radio" name="etapa" id={`etapa${e}`} checked={s.etapa === e} onChange={() => setS({ ...s, etapa: e })} />
+                  <input
+                    type="radio"
+                    name="etapa"
+                    id={`etapa${e}`}
+                    checked={s.etapa === e}
+                    onChange={() => {
+                      setS({ ...s, etapa: e });
+                      setPlanoGerado(null);
+                    }}
+                  />
                   <span>Etapa {e}</span>
                 </label>
               ))}
@@ -251,7 +400,16 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
             <div className="seg" role="radiogroup" aria-label="Momento">
               {MOMENTOS.map((m) => (
                 <label key={m}>
-                  <input type="radio" name="momento" id={`m-${m}`} checked={s.momento === m} onChange={() => setS({ ...s, momento: m })} />
+                  <input
+                    type="radio"
+                    name="momento"
+                    id={`m-${m}`}
+                    checked={s.momento === m}
+                    onChange={() => {
+                      setS({ ...s, momento: m });
+                      setPlanoGerado(null);
+                    }}
+                  />
                   <span>{m}</span>
                 </label>
               ))}
@@ -328,18 +486,39 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
             {gerando ? "Gerando…" : "Gerar PDF"}
           </button>
         </div>
-        {msg && (
-          <div className={`msg${msg.tipo === "err" ? " err" : ""}`} role="status" aria-live="polite">
-            {msg.texto}
-            {msg.tipo === "ok" && (
-              <>
-                {" "}
-                <button className="link" onClick={onVerEvolucao}>Ver minha evolução</button>
-              </>
-            )}
-          </div>
-        )}
+        <AvisoEnvioAvaliacao
+          aviso={msg}
+          onTentarDeNovo={itensFalhos && itensFalhos.length > 0 ? tentarSalvarDeNovo : undefined}
+          salvando={gerando}
+          onVerEvolucao={onVerEvolucao}
+        />
       </div>
+
+      {planoGerado && (
+        <section className="box sec">
+          <h2>{TEXTOS_PLANO_ESTUDO.tituloSecao}</h2>
+          <p className="muted">
+            {TEXTOS_PLANO_ESTUDO.descricaoSecao}
+          </p>
+          <div className="box ead-box-regras-ia">
+            <h3 className="ead-subtitulo-regras-ia">
+              {TEXTOS_ASSUNTOS_ESTUDO.subtituloRegrasIA}
+            </h3>
+            <ListaMarcadaEad itens={TEXTOS_ASSUNTOS_ESTUDO.regrasUsoIA} />
+          </div>
+          {planoGerado.prompts.length === 0 ? (
+            <p className="muted">
+              {TEXTOS_PLANO_ESTUDO.semItens}
+            </p>
+          ) : (
+            <div className="ead-prompts-grade">
+              {planoGerado.prompts.map((prompt) => (
+                <CartaoPromptEstudo key={prompt.id} prompt={prompt} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

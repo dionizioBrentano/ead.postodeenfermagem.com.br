@@ -11,6 +11,7 @@ import {
   itensDoProximoCiclo,
   NOTA_MINIMA_ATENCAO,
   podeSugerirPlano,
+  promptsDoPlano,
   textoPlanoSugerido,
   type NotasDaAvaliacao,
 } from "./planoEstudo";
@@ -202,5 +203,44 @@ describe("planoEstudo - regras puras e plano de estudo sugerido", () => {
     const assuntos = listarAssuntos();
     const slug = slugPublicadoDoItem({ block: "atividades", number: 4 }, assuntos);
     expect(slug).toBeNull();
+  });
+
+  describe("promptsDoPlano", () => {
+    it("lista vazia devolve lista vazia", () => {
+      expect(promptsDoPlano([], 1)).toEqual([]);
+    });
+
+    it("mantém ordem e quantidade iguais às de itens, com id e accepts_question false", () => {
+      const gerais = Array<Nota>(GERAIS.length).fill(9);
+      const atividades = Array<Nota>(ATIVIDADES.length).fill(9);
+      gerais[0] = 5;
+      atividades[3] = 6;
+      const av = criarAvaliacaoBase(gerais, atividades);
+      const itens = itensDeAtencao(av);
+
+      const prompts = promptsDoPlano(itens, 2);
+      expect(prompts.length).toBe(itens.length);
+      expect(prompts[0]?.id).toBe("plano-gerais-1");
+      expect(prompts[0]?.accepts_question).toBe(false);
+      expect(prompts[1]?.id).toBe("plano-atividades-4");
+      expect(prompts[1]?.accepts_question).toBe(false);
+    });
+
+    it("o texto do prompt contém o texto completo do item, a nota e o ciclo do aluno", () => {
+      const gerais = Array<Nota>(GERAIS.length).fill(10);
+      const atividades = Array<Nota>(ATIVIDADES.length).fill(10);
+      atividades[0] = 4;
+      const av = criarAvaliacaoBase(gerais, atividades);
+      const itens = itensDeAtencao(av);
+
+      const cicloAluno = 3;
+      const prompts = promptsDoPlano(itens, cicloAluno);
+      expect(prompts.length).toBe(1);
+
+      const p = prompts[0]!;
+      expect(p.text).toContain(`no Ciclo ${cicloAluno}`);
+      expect(p.text).toContain(`dei nota ${itens[0]!.nota} de 10`);
+      expect(p.text).toContain(`"${itens[0]!.item.texto}"`);
+    });
   });
 });

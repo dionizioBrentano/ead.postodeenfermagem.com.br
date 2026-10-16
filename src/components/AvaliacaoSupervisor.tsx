@@ -2,9 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { ATIVIDADES, ETAPAS, GERAIS, MOMENTOS, TOTAL_ITENS, type Item, type Momento, type Nota } from "../data/itens";
 import { corDaNota } from "../lib/cores";
 import { hoje } from "../lib/historico";
-import { saveAvaliacao } from "../api/ead";
-
+import { saveAvaliacao, type AvaliacaoPayload } from "../api/ead";
 import { getUserToken, getSavedProfile } from "../api/client";
+import {
+  ENVIO_SIMULTANEOS,
+  ENVIO_TENTATIVAS,
+  ENVIO_ESPERA_BASE_MS,
+  montarItensDaAvaliacao,
+  enviarEmLotes,
+  motivoDaFalha,
+  esperar,
+} from "../lib/envioAvaliacao";
+import { TEXTOS_ENVIO_AVALIACAO } from "../data/textosEnvioAvaliacao";
+import AvisoEnvioAvaliacao, { type AvisoEnvio } from "./AvisoEnvioAvaliacao";
 
 type Props = {
   alunoId: string;
@@ -34,19 +44,21 @@ const vazio = (nome: string): Estado => ({
 });
 
 export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: Props) {
-  const token = getUserToken();
   const perfil = getSavedProfile();
   const nomeAvaliador = String(perfil?.name || "");
   const [s, setS] = useState<Estado>(() => vazio(nomeAvaliador));
   const [faltando, setFaltando] = useState<Set<string>>(new Set());
-  const [msg, setMsg] = useState<{ tipo: "ok" | "err"; texto: string } | null>(null);
+  const [msg, setMsg] = useState<AvisoEnvio | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [itensFalhos, setItensFalhos] = useState<AvaliacaoPayload[] | null>(null);
+  const [totalItensOriginal, setTotalItensOriginal] = useState<number>(0);
   const primeiro = useRef<string | null>(null);
 
   // Resetar quando mudar o aluno
   useEffect(() => {
     setS(vazio(nomeAvaliador));
     setMsg(null);
+    setItensFalhos(null);
     setFaltando(new Set());
   }, [alunoId, nomeAvaliador]);
 
@@ -77,8 +89,61 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
     });
   };
 
+  async function tentarSalvarDeNovo() {
+    if (!itensFalhos || itensFalhos.length === 0) return;
+    setSalvando(true);
+    try {
+      const token = getUserToken();
+      const totalItens = totalItensOriginal || itensFalhos.length;
+      setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(0, itensFalhos.length) });
+
+      const { falhas } = await enviarEmLotes(
+        itensFalhos,
+        (item) => saveAvaliacao(item, token ?? undefined),
+        {
+          simultaneos: ENVIO_SIMULTANEOS,
+          tentativas: ENVIO_TENTATIVAS,
+          esperaBaseMs: ENVIO_ESPERA_BASE_MS,
+          esperar,
+          aoAvancar: (feitos, total) => {
+            setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(feitos, total) });
+          },
+        }
+      );
+
+      if (falhas.length === 0) {
+        setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.supervisorTudoCerto });
+        setS(vazio(nomeAvaliador));
+        setItensFalhos(null);
+      } else {
+        falhas.forEach(({ erro }) => {
+          console.error(
+            "Falha ao salvar item da avaliação:",
+            erro,
+            "status:",
+            (erro as any)?.status,
+            "corpo:",
+            (erro as any)?.body
+          );
+        });
+        const motivo = motivoDaFalha(falhas[0].erro);
+        setItensFalhos(falhas.map((f) => f.item));
+        setMsg({
+          tipo: "err",
+          texto: TEXTOS_ENVIO_AVALIACAO.supervisorGravacaoParcial(falhas.length, totalItens, motivo),
+        });
+      }
+    } catch (e) {
+      console.error("Erro inesperado ao salvar de novo:", e);
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.motivoDesconhecido });
+    } finally {
+      setSalvando(false);
+    }
+  }
+
   async function salvar() {
     setMsg(null);
+    setItensFalhos(null);
     const miss: string[] = [];
     if (!s.nomeAvaliador.trim()) miss.push("f-nome");
     if (!s.etapa) miss.push("f-etapa");
@@ -100,28 +165,58 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
 
     setSalvando(true);
     try {
-      const promises: Promise<unknown>[] = [];
-      s.gerais.forEach((nota, i) => {
-        if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `gerais.${i}`, item_texto: GERAIS[i].texto, grupo: "gerais", papel, nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
-        }
+      const token = getUserToken();
+      const itens = montarItensDaAvaliacao({
+        alunoId,
+        papel,
+        etapa: s.etapa!,
+        momento: s.momento!,
+        gerais: s.gerais,
+        atividades: s.atividades,
+        comentario: s.obs,
       });
-      s.atividades.forEach((nota, i) => {
-        if (nota !== null) {
-          promises.push(saveAvaliacao({ aluno_user_id: alunoId, item_chave: `atividades.${i}`, item_texto: ATIVIDADES[i].texto, grupo: "atividades", papel, nota: typeof nota === "number" ? nota : null, nao_praticou: nota === "na", etapa: String(s.etapa), momento: s.momento, comentario: s.obs }, token ?? undefined));
+      setTotalItensOriginal(itens.length);
+      setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(0, itens.length) });
+
+      const { falhas } = await enviarEmLotes(
+        itens,
+        (item) => saveAvaliacao(item, token ?? undefined),
+        {
+          simultaneos: ENVIO_SIMULTANEOS,
+          tentativas: ENVIO_TENTATIVAS,
+          esperaBaseMs: ENVIO_ESPERA_BASE_MS,
+          esperar,
+          aoAvancar: (feitos, total) => {
+            setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.enviando(feitos, total) });
+          },
         }
-      });
-      
-      const results = await Promise.allSettled(promises);
-      if (results.some(r => r.status === "rejected")) {
-        throw new Error("Alguns itens falharam ao salvar");
+      );
+
+      if (falhas.length === 0) {
+        setMsg({ tipo: "ok", texto: TEXTOS_ENVIO_AVALIACAO.supervisorTudoCerto });
+        setS(vazio(nomeAvaliador));
+        setItensFalhos(null);
+      } else {
+        falhas.forEach(({ erro }) => {
+          console.error(
+            "Falha ao salvar item da avaliação:",
+            erro,
+            "status:",
+            (erro as any)?.status,
+            "corpo:",
+            (erro as any)?.body
+          );
+        });
+        const motivo = motivoDaFalha(falhas[0].erro);
+        setItensFalhos(falhas.map((f) => f.item));
+        setMsg({
+          tipo: "err",
+          texto: TEXTOS_ENVIO_AVALIACAO.supervisorGravacaoParcial(falhas.length, itens.length, motivo),
+        });
       }
-      
-      setMsg({ tipo: "ok", texto: "Avaliação salva com sucesso!" });
-      setS(vazio(nomeAvaliador));
     } catch (e) {
       console.error(e);
-      setMsg({ tipo: "err", texto: "Erro ao salvar avaliação no servidor. Tente novamente." });
+      setMsg({ tipo: "err", texto: TEXTOS_ENVIO_AVALIACAO.motivoDesconhecido });
     } finally {
       setSalvando(false);
     }
@@ -214,11 +309,11 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
             {salvando ? "Salvando…" : "Salvar Avaliação no Banco"}
           </button>
         </div>
-        {msg && (
-          <div className={`msg${msg.tipo === "err" ? " err" : ""}`} role="status" aria-live="polite">
-            {msg.texto}
-          </div>
-        )}
+        <AvisoEnvioAvaliacao
+          aviso={msg}
+          onTentarDeNovo={itensFalhos && itensFalhos.length > 0 ? tentarSalvarDeNovo : undefined}
+          salvando={salvando}
+        />
       </div>
     </div>
   );

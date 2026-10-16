@@ -39,6 +39,10 @@ export function configMissing(): string[] {
   return missing;
 }
 
+export function tenantAtual(): string {
+  return TENANT_ID;
+}
+
 /* ---------- Armazenamento do token do usuário ---------- */
 
 function safeGet(key: string): string | null {

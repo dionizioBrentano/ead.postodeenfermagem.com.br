@@ -13,6 +13,7 @@ import {
   logout,
 } from "./api/client";
 import { navegar, useRota } from "./lib/rota";
+import { useAnalise } from "./lib/useAnalise";
 
 import ParticiparPage from "./pages/ParticiparPage";
 import AguardandoPage from "./pages/AguardandoPage";
@@ -97,6 +98,8 @@ export default function App() {
       apiErrorListeners.delete(cb);
     };
   }, []);
+
+  useAnalise(rota, guard.estado === "ok" ? guard.memberships : null);
 
   const sair = async () => {
     if (token) await logout(token);

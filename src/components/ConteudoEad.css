@@ -531,6 +531,57 @@
   color: var(--c1);
 }
 
+/* Regras de IA e Prompts de Estudo */
+.ead-box-regras-ia {
+  margin-bottom: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.ead-subtitulo-regras-ia {
+  font-family: var(--f-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.ead-prompts-grade {
+  display: grid;
+  gap: 16px;
+}
+
+.ead-card-prompt {
+  display: grid;
+  gap: 14px;
+}
+
+.ead-prompt-titulo {
+  font-family: var(--f-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.ead-prompt-texto {
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0;
+  word-break: break-word;
+}
+
+.ead-prompt-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
 /* Desktop aprimorado (>= 600px) */
 @media (min-width: 600px) {
   .ead-page {

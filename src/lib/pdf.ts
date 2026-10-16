@@ -5,8 +5,11 @@
 import { jsPDF } from "jspdf";
 import autoTable, { type CellHookData } from "jspdf-autotable/es";
 import { ATIVIDADES, GERAIS, type Item, type Nota } from "../data/itens";
+import { TEXTOS_ASSUNTOS_ESTUDO } from "../data/textosAssuntosEstudo";
+import { TEXTOS_PLANO_ESTUDO } from "../data/textosPlanoEstudo";
 import { corDaNota, rgb } from "./cores";
 import { fmt1, fmtData, media, type Avaliacao } from "./historico";
+import { itensDeAtencao, promptsDoPlano } from "./planoEstudo";
 
 import {
   INK,
@@ -21,6 +24,21 @@ import {
 } from "./pdfComum";
 
 type Doc = jsPDF & { lastAutoTable: { finalY: number } };
+
+function verificarQuebraPagina(
+  doc: jsPDF,
+  yAtual: number,
+  alturaNecessaria: number,
+  largura: number,
+): number {
+  if (yAtual + alturaNecessaria > 280) {
+    doc.addPage("a4", "portrait");
+    doc.setFillColor(...TEAL);
+    doc.rect(0, 0, largura, 4, "F");
+    return 20;
+  }
+  return yAtual;
+}
 
 function notaTexto(v: Nota): string {
   if (v === "na") return "Não pratiquei";
@@ -105,10 +123,7 @@ export function gerarPDF(av: Avaliacao, historico: Avaliacao[]): jsPDF {
 
   let y = doc.lastAutoTable.finalY + 9;
   const obs = doc.splitTextToSize(av.obs || "(não preenchido)", W - 2 * M) as string[];
-  if (y + 12 + obs.length * 5 > 280) {
-    doc.addPage();
-    y = 20;
-  }
+  y = verificarQuebraPagina(doc, y, 12 + obs.length * 5, W);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.text("O que preciso estudar ou praticar mais", M, y);
@@ -173,6 +188,72 @@ export function gerarPDF(av: Avaliacao, historico: Avaliacao[]): jsPDF {
       pintarNota(d, 2);
     },
   });
+
+  // Seu plano de estudo
+  doc.addPage("a4", "portrait");
+  const PW = doc.internal.pageSize.getWidth();
+  doc.setFillColor(...TEAL);
+  doc.rect(0, 0, PW, 4, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(...INK);
+  doc.text(TEXTOS_PLANO_ESTUDO.tituloSecao, M, 16);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(...MUTED);
+  const descLinhas = doc.splitTextToSize(
+    TEXTOS_PLANO_ESTUDO.descricaoSecao,
+    PW - 2 * M,
+  ) as string[];
+  doc.text(descLinhas, M, 22);
+
+  let py = 22 + descLinhas.length * 4.5 + 4;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  doc.setTextColor(...INK);
+  doc.text(TEXTOS_PLANO_ESTUDO.tituloRegrasIAPdf, M, py);
+  py += 5;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(...INK);
+  TEXTOS_ASSUNTOS_ESTUDO.regrasUsoIA.forEach((regra) => {
+    const linhasRegra = doc.splitTextToSize(`- ${regra}`, PW - 2 * M) as string[];
+    doc.text(linhasRegra, M, py);
+    py += linhasRegra.length * 4 + 1.5;
+  });
+  py += 4;
+
+  const itens = itensDeAtencao(av);
+  const prompts = promptsDoPlano(itens, av.etapa);
+
+  if (prompts.length === 0) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...MUTED);
+    doc.text(TEXTOS_PLANO_ESTUDO.semItens, M, py);
+  } else {
+    for (const p of prompts) {
+      const linhasTexto = doc.splitTextToSize(p.text, PW - 2 * M) as string[];
+      const alturaBloco = 6 + linhasTexto.length * 4 + 6;
+      py = verificarQuebraPagina(doc, py, alturaBloco, PW);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(...INK);
+      doc.text(p.title, M, py);
+      py += 5;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(...INK);
+      doc.text(linhasTexto, M, py);
+      py += linhasTexto.length * 4 + 6;
+    }
+  }
 
   desenharRodape(
     doc,
