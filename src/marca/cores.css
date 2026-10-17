@@ -21,6 +21,22 @@
   --cor-erro-suave: #f9e5e5;
   --cor-neutro: #909090;
 
+  /* Realces, bordas, véus e cores sobre imagem */
+  --cor-realce: #f0ede6;
+  --cor-realce-suave: #faf9f6;
+  --cor-borda: #e6e4e1;
+  --cor-borda-forte: #d8d5d0;
+  --cor-linha-media: rgba(0, 0, 0, 0.08);
+  --cor-linha-forte: rgba(0, 0, 0, 0.1);
+  --cor-primaria-escura: #0d201d;
+  --cor-primaria-transparente: rgba(26, 58, 53, 0.2);
+  --cor-tinta-inversa: #ffffff;
+  --cor-tinta-sobre-imagem: rgba(255, 255, 255, 0.85);
+  --cor-superficie-sobre-imagem: rgba(255, 255, 255, 0.95);
+  --cor-veu: rgba(0, 0, 0, 0.45);
+  --cor-veu-imagem-topo: rgba(0, 0, 0, 0.35);
+  --cor-veu-imagem-base: rgba(0, 0, 0, 0.78);
+
   /* Apelidos dos nomes antigos — para o CSS existente continuar valendo.
      Removidos tela por tela na limpeza. */
   --bg: var(--cor-fundo);
