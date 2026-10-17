@@ -35,6 +35,32 @@
   --sombra-janela: 0 20px 60px rgba(0, 0, 0, 0.2);
   --sombra-gaveta: 4px 0 24px rgba(0, 0, 0, 0.15);
 
+  /* Espaçamento. O nome é o valor padrão em pixels; a marca pode sobrepor. */
+  --espaco-2: 2px;
+  --espaco-3: 3px;
+  --espaco-4: 4px;
+  --espaco-5: 5px;
+  --espaco-6: 6px;
+  --espaco-7: 7px;
+  --espaco-8: 8px;
+  --espaco-9: 9px;
+  --espaco-10: 10px;
+  --espaco-12: 12px;
+  --espaco-14: 14px;
+  --espaco-16: 16px;
+  --espaco-18: 18px;
+  --espaco-20: 20px;
+  --espaco-22: 22px;
+  --espaco-24: 24px;
+  --espaco-26: 26px;
+  --espaco-28: 28px;
+  --espaco-32: 32px;
+  --espaco-36: 36px;
+  --espaco-42: 42px;
+  --espaco-44: 44px;
+  --espaco-48: 48px;
+  --espaco-64: 64px;
+
   /* Escala de nota universal (0 a 10). Padrão da rede; marca pode sobrepor. */
   --cor-nota-0: #b71c1c;
   --cor-nota-1: #d32f2f;

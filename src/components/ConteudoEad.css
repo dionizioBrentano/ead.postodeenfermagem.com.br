@@ -6,8 +6,8 @@
   width: 100%;
   max-width: 820px;
   margin: 0 auto;
-  padding-inline: 16px;
-  padding-block: 20px 64px;
+  padding-inline: var(--espaco-16);
+  padding-block: var(--espaco-20) var(--espaco-64);
   color: var(--ink);
   font-family: var(--f-body);
   font-size: var(--fs-base);
@@ -20,7 +20,7 @@
   align-items: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 8px 0;
+  padding: var(--espaco-8) 0;
   color: var(--accent);
   font-family: var(--f-body);
   font-size: var(--fs-base);
@@ -30,11 +30,11 @@
 
 .ead-header {
   display: grid;
-  gap: 10px;
-  margin-top: 8px;
-  margin-bottom: 28px;
+  gap: var(--espaco-10);
+  margin-top: var(--espaco-8);
+  margin-bottom: var(--espaco-28);
   border-bottom: 1px solid var(--line);
-  padding-bottom: 20px;
+  padding-bottom: var(--espaco-20);
 }
 
 .ead-badge-modulo {
@@ -47,7 +47,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 4px 10px;
+  padding: var(--espaco-4) var(--espaco-10);
   border-radius: var(--raio-sm);
 }
 
@@ -70,8 +70,8 @@
 /* Seções */
 .ead-secao {
   display: grid;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: var(--espaco-16);
+  margin-bottom: var(--espaco-32);
 }
 
 .ead-secao-titulo {
@@ -80,7 +80,7 @@
   font-weight: 700;
   color: var(--ink);
   border-left: 4px solid var(--accent);
-  padding-left: 10px;
+  padding-left: var(--espaco-10);
   line-height: 1.2;
 }
 
@@ -95,7 +95,7 @@
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--raio-caixa);
-  padding: 18px 20px;
+  padding: var(--espaco-18) var(--espaco-20);
 }
 
 .ead-lista-objetivos {
@@ -103,13 +103,13 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 12px;
+  gap: var(--espaco-12);
 }
 
 .ead-item-objetivo {
   display: grid;
   grid-template-columns: 20px 1fr;
-  gap: 10px;
+  gap: var(--espaco-10);
   align-items: start;
   font-size: var(--fs-base);
   line-height: 1.5;
@@ -124,21 +124,21 @@
 /* Tópicos */
 .ead-topicos-grade {
   display: grid;
-  gap: 20px;
+  gap: var(--espaco-20);
 }
 
 .ead-card-topico {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--raio-caixa);
-  padding: 18px 20px;
+  padding: var(--espaco-18) var(--espaco-20);
   display: grid;
-  gap: 16px;
+  gap: var(--espaco-16);
 }
 
 .ead-topico-cabecalho {
   display: grid;
-  gap: 4px;
+  gap: var(--espaco-4);
 }
 
 .ead-topico-ordem {
@@ -160,13 +160,13 @@
 
 .ead-blocos-fluxo {
   display: grid;
-  gap: 16px;
+  gap: var(--espaco-16);
 }
 
 /* Bloco de Texto */
 .ead-bloco-texto {
   display: grid;
-  gap: 6px;
+  gap: var(--espaco-6);
 }
 
 .ead-bloco-subtitulo {
@@ -187,9 +187,9 @@
 /* Bloco Alert */
 .ead-bloco-alerta {
   border-radius: var(--raio-lg);
-  padding: 12px 16px;
+  padding: var(--espaco-12) var(--espaco-16);
   display: grid;
-  gap: 4px;
+  gap: var(--espaco-4);
 }
 
 .ead-alerta-info {
@@ -230,9 +230,9 @@
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--raio-lg);
-  padding: 14px 16px;
+  padding: var(--espaco-14) var(--espaco-16);
   display: grid;
-  gap: 10px;
+  gap: var(--espaco-10);
 }
 
 .ead-checklist-titulo {
@@ -247,13 +247,13 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 8px;
+  gap: var(--espaco-8);
 }
 
 .ead-checklist-item {
   display: grid;
   grid-template-columns: 20px 1fr;
-  gap: 8px;
+  gap: var(--espaco-8);
   align-items: start;
   font-size: var(--fs-base);
   line-height: 1.45;
@@ -269,7 +269,7 @@
 .ead-bloco-imagem {
   margin: 0;
   display: grid;
-  gap: 8px;
+  gap: var(--espaco-8);
 }
 
 .ead-imagem-foto {
@@ -284,12 +284,12 @@
   background: var(--c1s);
   border: 1px solid var(--line);
   border-radius: var(--raio-lg);
-  padding: 24px 16px;
+  padding: var(--espaco-24) var(--espaco-16);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--espaco-6);
   text-align: center;
 }
 
@@ -312,22 +312,22 @@
   font-size: var(--fs-sm);
   color: var(--muted);
   line-height: 1.4;
-  padding-inline: 4px;
+  padding-inline: var(--espaco-4);
 }
 
 /* Quiz Interativo */
 .ead-quiz-grade {
   display: grid;
-  gap: 20px;
+  gap: var(--espaco-20);
 }
 
 .ead-quiz-card {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--raio-caixa);
-  padding: 18px 20px;
+  padding: var(--espaco-18) var(--espaco-20);
   display: grid;
-  gap: 16px;
+  gap: var(--espaco-16);
   margin: 0;
 }
 
@@ -344,22 +344,22 @@
 .ead-quiz-numero {
   color: var(--accent);
   font-family: var(--f-mono);
-  margin-right: 6px;
+  margin-right: var(--espaco-6);
 }
 
 .ead-quiz-opcoes {
   display: grid;
-  gap: 10px;
+  gap: var(--espaco-10);
 }
 
 .ead-quiz-opcao-btn {
   display: grid;
   grid-template-columns: 36px 1fr auto;
-  gap: 10px;
+  gap: var(--espaco-10);
   align-items: center;
   width: 100%;
   min-height: 48px;
-  padding: 10px 14px;
+  padding: var(--espaco-10) var(--espaco-14);
   background: var(--paper);
   border: 1.5px solid var(--line);
   border-radius: var(--raio-lg);
@@ -401,7 +401,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 3px 8px;
+  padding: var(--espaco-3) var(--espaco-8);
   border-radius: var(--raio-xs);
 }
 
@@ -431,9 +431,9 @@
 
 .ead-quiz-feedback {
   border-radius: var(--raio-lg);
-  padding: 12px 16px;
+  padding: var(--espaco-12) var(--espaco-16);
   display: grid;
-  gap: 6px;
+  gap: var(--espaco-6);
 }
 
 .ead-feedback-acerto {
@@ -464,16 +464,16 @@
 /* Fontes */
 .ead-fontes-grade {
   display: grid;
-  gap: 14px;
+  gap: var(--espaco-14);
 }
 
 .ead-card-fonte {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--raio-caixa);
-  padding: 16px 18px;
+  padding: var(--espaco-16) var(--espaco-18);
   display: grid;
-  gap: 6px;
+  gap: var(--espaco-6);
 }
 
 .ead-fonte-tipo,
@@ -488,7 +488,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 2px 8px;
+  padding: var(--espaco-2) var(--espaco-8);
   border-radius: var(--raio-xs);
 }
 
@@ -523,7 +523,7 @@
   font-size: var(--fs-base);
   font-weight: 700;
   text-decoration: underline;
-  margin-top: 4px;
+  margin-top: var(--espaco-4);
 }
 
 .ead-fonte-link:hover,
@@ -533,9 +533,9 @@
 
 /* Regras de IA e Prompts de Estudo */
 .ead-box-regras-ia {
-  margin-bottom: 20px;
+  margin-bottom: var(--espaco-20);
   display: grid;
-  gap: 12px;
+  gap: var(--espaco-12);
 }
 
 .ead-subtitulo-regras-ia {
@@ -548,12 +548,12 @@
 
 .ead-prompts-grade {
   display: grid;
-  gap: 16px;
+  gap: var(--espaco-16);
 }
 
 .ead-card-prompt {
   display: grid;
-  gap: 14px;
+  gap: var(--espaco-14);
 }
 
 .ead-prompt-titulo {
@@ -578,14 +578,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: var(--espaco-10);
   min-height: 44px;
 }
 
 /* Desktop aprimorado (>= 600px) */
 @media (min-width: 600px) {
   .ead-page {
-    padding-inline: 20px;
+    padding-inline: var(--espaco-20);
   }
 
   .ead-topico-titulo {

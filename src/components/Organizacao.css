@@ -3,7 +3,7 @@
 .organizacao-painel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--espaco-16);
 }
 
 .organizacao-topo {
@@ -11,7 +11,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--espaco-12);
 }
 
 .organizacao-topo h2,
@@ -24,7 +24,7 @@
 .organizacao-busca-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--espaco-12);
   flex-wrap: wrap;
   width: 100%;
 }
@@ -37,7 +37,7 @@
 .organizacao-membro-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--espaco-4);
   flex: 1;
   min-width: 200px;
 }
@@ -53,7 +53,7 @@
   color: var(--muted);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--espaco-8);
   align-items: center;
 }
 
@@ -61,22 +61,22 @@
   color: var(--err);
   font-size: var(--fs-sm);
   font-weight: 600;
-  margin-top: 4px;
+  margin-top: var(--espaco-4);
 }
 
 .organizacao-perfil-descricao {
   font-size: var(--fs-sm);
   color: var(--muted);
-  margin: 6px 0 0;
+  margin: var(--espaco-6) 0 0;
   line-height: 1.4;
 }
 
 .organizacao-checks-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 10px;
+  gap: var(--espaco-8);
+  margin-top: var(--espaco-8);
+  padding: var(--espaco-10);
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--raio-md);
@@ -85,7 +85,7 @@
 .organizacao-check-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--espaco-8);
   font-size: var(--fs-base);
   cursor: pointer;
   color: var(--ink);
@@ -98,16 +98,16 @@
 .organizacao-rodape-modal {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 16px;
+  gap: var(--espaco-10);
+  margin-top: var(--espaco-16);
   flex-wrap: wrap;
 }
 
 .organizacao-chips-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
+  gap: var(--espaco-4);
+  margin-top: var(--espaco-4);
 }
 
 .organizacao-chip-regular {

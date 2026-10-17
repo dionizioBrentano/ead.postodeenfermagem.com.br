@@ -4,25 +4,25 @@
 
 .ead-bloco-envoltorio {
   display: grid;
-  gap: 8px;
+  gap: var(--espaco-8);
 }
 
 .ead-bloco-rodape {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 12px;
+  gap: var(--espaco-8) var(--espaco-12);
   font-size: var(--fs-sm);
   line-height: 1.4;
   color: var(--muted);
-  padding-top: 4px;
+  padding-top: var(--espaco-4);
 }
 
 .ead-bloco-fontes {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--espaco-4);
 }
 
 .ead-bloco-fonte-rotulo {
@@ -37,7 +37,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 4px 0;
+  padding: var(--espaco-4) 0;
 }
 
 .ead-bloco-fonte-link:hover,
@@ -51,18 +51,18 @@
 }
 
 .ead-selo-validacao-titulo {
-  margin-left: 10px;
+  margin-left: var(--espaco-10);
   vertical-align: middle;
 }
 
 .ead-atribuicoes-bloco {
   display: grid;
-  gap: 16px;
+  gap: var(--espaco-16);
 }
 
 .ead-atribuicao-item {
   display: grid;
-  gap: 8px;
+  gap: var(--espaco-8);
 }
 
 .ead-atribuicao-subtitulo {
@@ -76,7 +76,7 @@
 .ead-revisao-lista {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 8px 16px;
+  gap: var(--espaco-8) var(--espaco-16);
   align-items: baseline;
   font-size: var(--fs-base);
   margin: 0;
@@ -95,10 +95,10 @@
 @media (max-width: 480px) {
   .ead-revisao-lista {
     grid-template-columns: 1fr;
-    gap: 4px 0;
+    gap: var(--espaco-4) 0;
   }
 
   .ead-revisao-item-dt {
-    margin-top: 8px;
+    margin-top: var(--espaco-8);
   }
 }
