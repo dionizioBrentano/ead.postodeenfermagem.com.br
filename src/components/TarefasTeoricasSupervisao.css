@@ -1,7 +1,7 @@
 .supervisao-painel {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--raio-xl);
   padding: 20px 24px;
   color: var(--ink);
 }
@@ -41,7 +41,7 @@
 
 .supervisao-filtro-selecao {
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   border: 1px solid var(--line);
   font-size: var(--fs-sm);
   background: var(--paper);
@@ -66,7 +66,7 @@
 
 .supervisao-entrega {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 16px;
   background: var(--bg);
   min-width: 0;
@@ -101,7 +101,7 @@
 .supervisao-resumo {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   padding: 12px;
   margin-bottom: 12px;
   font-size: var(--fs-sm);
@@ -126,7 +126,7 @@
 .supervisao-presenca {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   padding: 12px;
   min-width: 0;
 }
@@ -168,7 +168,7 @@
   width: 100%;
   min-width: 0;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   border: 1px solid var(--line);
   font-size: var(--fs-sm);
 }
@@ -178,7 +178,7 @@
   background: var(--accent);
   color: var(--accent-ink);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   font-size: var(--fs-sm);
   font-weight: 600;
   cursor: pointer;
@@ -191,7 +191,7 @@
 .supervisao-detalhes {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   padding: 10px 12px;
   margin-bottom: 12px;
   min-width: 0;
@@ -251,7 +251,7 @@
 .supervisao-conferencia {
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -268,7 +268,7 @@
 .supervisao-conferencia-janela {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   padding: 10px 12px;
   font-size: var(--fs-sm);
   display: flex;
@@ -291,7 +291,7 @@
   color: var(--ink);
   background: var(--c1s);
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--raio-xs);
 }
 
 .supervisao-conferencia-bloco-lista {

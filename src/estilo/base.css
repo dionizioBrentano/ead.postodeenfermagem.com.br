@@ -10,6 +10,31 @@
   --altura-barra: 72px;
   --alvo-toque: 44px;
 
+  /* Cantos arredondados */
+  --raio-fio: 2px;
+  --raio-xs: 4px;
+  --raio-selo: 5px;
+  --raio-sm: 6px;
+  --raio-md: 8px;
+  --raio-campo: 9px;
+  --raio-lg: 10px;
+  --raio-abas: 11px;
+  --raio-xl: 12px;
+  --raio-caixa: 14px;
+  --raio-etiqueta: 20px;
+  --raio-pilula: 999px;
+  --raio-circulo: 50%;
+
+  /* Sombras */
+  --sombra-fina: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --sombra-barra: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --sombra-cartao: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --sombra-cartao-realce: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --sombra-flutuante: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --sombra-flutuante-dupla: 0 20px 60px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --sombra-janela: 0 20px 60px rgba(0, 0, 0, 0.2);
+  --sombra-gaveta: 4px 0 24px rgba(0, 0, 0, 0.15);
+
   /* Escala de nota universal (0 a 10). Padrão da rede; marca pode sobrepor. */
   --cor-nota-0: #b71c1c;
   --cor-nota-1: #d32f2f;
