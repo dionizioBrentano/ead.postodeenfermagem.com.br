@@ -9,7 +9,7 @@ Sempre ligado. Vale para todo arquivo novo ou alterado em `src/`.
 
 ## Design: usar o que existe, não inventar
 
-F-01 — O padrão visual é o que já existe em `src/styles.css` (variáveis em `:root`, "Padrão 60plus") e em `src/content/guia.css`. Não criar cor, fonte, tamanho de fonte, raio, sombra ou espaçamento novo. Usar sempre as variáveis `var(--...)` existentes.
+F-01 — O padrão visual é o que já existe em `src/styles.css` (variáveis em `:root`) e em `src/content/guia.css`. Não criar cor, fonte, tamanho de fonte, raio, sombra, largura ou espaçamento novo. Tamanho de fonte vem dos tokens `--fs-*` (controle único `--escala`); largura de conteúdo vem dos tokens `--largura-*`; cor vem das variáveis de `:root`. Usar sempre as variáveis `var(--...)` existentes.
 F-02 — Antes de criar classe CSS ou componente visual, procurar o equivalente no inventário de `projeto/ead.md` e no próprio CSS. Existe: usar. Não existe: parar, registrar a dúvida no relatório e não inventar.
 F-03 — Tela nova segue a estrutura das telas existentes (barra superior, `.page`, `.box`, `.btn`, `.field`, `.alert`).
 F-04 — Funciona em celular com 360 px de largura, sem rolagem horizontal da página. Alvo de toque com no mínimo 44 px de altura.
@@ -24,6 +24,7 @@ F-06 — Acessível: todo controle tem nome acessível; estado não nativo usa a
 F-07 — Proibido `style={{...}}` e atributo `style` em código novo. Estilo vai em arquivo `.css`, com classe nomeada pelo que o elemento é (por exemplo `.cola-horario`), nunca pela aparência (por exemplo `.texto-vermelho`).
 F-08 — O CSS de uma funcionalidade nova fica em arquivo próprio da funcionalidade, importado por ela, usando só as variáveis de `src/styles.css`. `src/styles.css` só recebe o que for global.
 F-09 — Sem `!important` e sem seletor por id para estilo.
+F-19 — Tokens obrigatórios. Proibido `font-size` ou largura em pixel fixo, e cor fora das variáveis, inclusive em arquivo CSS. Fonte usa `--fs-*` (e `--escala`); largura de conteúdo usa `--largura-*`; cor usa as variáveis de `:root`. A única exceção é `clamp(...)` em título, que fica registrada no relatório.
 
 ## Valores fixos
 
@@ -40,7 +41,7 @@ F-14 — Não misturar linguagens: sem HTML montado em texto, sem CSS escrito em
 
 F-15 — Antes de escrever uma função ou componente, procurar se já existe em `src/lib`, `src/api` ou `src/components` (PRE-03). Existe: reaproveitar.
 F-16 — Proibido copiar e colar rotina. Se a mesma lógica ou o mesmo bloco visual aparece em dois lugares, extrair para função em `src/lib` ou componente em `src/components` e usar nos dois. Neste repositório generaliza-se no segundo uso, não no terceiro (decisão em `decisoes/2026-10-09-reaproveitamento-e-estilo.md`).
-F-17 — Código antigo que viola estas regras (por exemplo os `style={{...}}` que já existem) não é corrigido de passagem (EST-14.1, ESC-02). A parte nova nasce conforme; o desvio encontrado vai para o relatório. Corrigir o antigo exige prompt próprio.
+F-17 — Código antigo que viola estas regras (por exemplo os `style={{...}}` que já existem) não é corrigido de passagem (EST-14.1, ESC-02), para não espalhar risco. A parte nova nasce conforme; o desvio encontrado vai para o relatório. Corrigir o antigo exige prompt próprio — e esse prompt é criado e agendado por quem revisa: o desvio não fica em aberto indefinidamente, entra na fila de limpeza, uma tarefa por tela ou área, até zerar.
 
 ## Dados
 

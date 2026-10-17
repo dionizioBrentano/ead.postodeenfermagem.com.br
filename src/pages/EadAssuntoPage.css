@@ -12,7 +12,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 12px;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   line-height: 1.4;
   color: var(--muted);
   padding-top: 4px;
@@ -67,7 +67,7 @@
 
 .ead-atribuicao-subtitulo {
   font-family: var(--f-display);
-  font-size: 16px;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--ink);
   margin: 0;
@@ -78,7 +78,7 @@
   grid-template-columns: auto 1fr;
   gap: 8px 16px;
   align-items: baseline;
-  font-size: 14.5px;
+  font-size: var(--fs-base);
   margin: 0;
 }
 

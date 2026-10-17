@@ -15,7 +15,7 @@
   border: none;
   color: var(--ink);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   padding: 6px 0;
   margin-bottom: 16px;
@@ -42,7 +42,7 @@
 
 .plantao-etiqueta-data {
   display: inline-block;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--ink);
   background: var(--c1s);
@@ -52,14 +52,14 @@
 }
 
 .plantao-titulo {
-  font-size: 24px;
+  font-size: var(--fs-lg);
   margin: 4px 0 8px;
   color: var(--ink);
 }
 
 .plantao-subtitulo {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .plantao-selo-docente {
@@ -68,7 +68,7 @@
   border: 1px solid var(--c2);
   padding: 6px 12px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -94,18 +94,18 @@
 }
 
 .plantao-bloco-titulo {
-  font-size: 18px;
+  font-size: var(--fs-md);
   margin: 0 0 4px;
   color: var(--ink);
 }
 
 .plantao-bloco-descricao {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .plantao-selo-leitura {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
   background: var(--bg);
   padding: 4px 10px;
@@ -119,7 +119,7 @@
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 16px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   gap: 8px;
@@ -132,7 +132,7 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -151,7 +151,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--ink);
 }
 
@@ -171,7 +171,7 @@
 .plantao-tabela {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .plantao-tabela-linha-cabecalho {
@@ -191,7 +191,7 @@
 }
 
 .plantao-estudo-th-ajuda {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--muted);
   margin-top: 2px;
@@ -240,7 +240,7 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--ink);
   line-height: 1.5;
 }
@@ -254,7 +254,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--ink);
 }
@@ -272,14 +272,14 @@
 }
 
 .plantao-subsecao-titulo {
-  font-size: 15px;
+  font-size: var(--fs-base);
   margin: 0 0 8px;
   color: var(--ink);
 }
 
 .plantao-subsecao-instrucao {
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .plantao-tabela-cabecalho {
@@ -331,7 +331,7 @@
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   cursor: pointer;
 }
@@ -353,7 +353,7 @@
   border: 1px solid var(--c2);
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -381,7 +381,7 @@
 }
 
 .plantao-reaprazamento-rotulo {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--c2);
 }
 
@@ -389,7 +389,7 @@
   padding: 3px 6px;
   border-radius: 4px;
   border: 1px solid var(--c2);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   width: 90px;
   background: var(--paper);
   color: var(--ink);
@@ -417,7 +417,7 @@
   color: var(--ink);
   font-weight: 500;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .plantao-turno-opcao[aria-pressed="true"] {
@@ -435,7 +435,7 @@
 }
 
 .plantao-turno-inicio-rotulo {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 500;
 }
 
@@ -443,7 +443,7 @@
   padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid var(--line);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--ink);
   background: var(--paper);
 }
@@ -454,7 +454,7 @@
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   cursor: pointer;
 }
@@ -465,13 +465,13 @@
   border: 1px dashed var(--line);
   background: var(--paper);
   color: var(--ink);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   cursor: pointer;
 }
 
 .plantao-turno-resumo {
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 
 .plantao-tarefas-lista {
@@ -486,7 +486,7 @@
   border: 1.5px solid var(--line);
   border-radius: 8px;
   padding: 8px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -508,7 +508,7 @@
 }
 
 .plantao-tarefa-detalhes {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -532,7 +532,7 @@
   border: 1.5px solid var(--accent);
   border-radius: 8px;
   padding: 8px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   display: flex;
   flex-direction: column;
@@ -546,7 +546,7 @@
   padding: 8px 12px;
   background: var(--c1s);
   border-radius: 6px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--ink);
   font-weight: 500;
   display: flex;
@@ -562,7 +562,7 @@
   color: var(--ink);
   font-weight: 700;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .plantao-janelas-grade {
@@ -604,13 +604,13 @@
 }
 
 .plantao-janela-horario {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: var(--ink);
 }
 
 .plantao-janela-dica-colar {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--ok);
   font-weight: 600;
 }
@@ -620,14 +620,14 @@
   border: 1px solid var(--c2);
   border-radius: 4px;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--c2);
   margin-bottom: 8px;
   line-height: 1.4;
 }
 
 .plantao-janela-vazia {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-style: italic;
   padding: 8px 0;
 }
@@ -650,27 +650,27 @@
 }
 
 .plantao-janela-item-rotulo {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--ink);
 }
 
 .plantao-janela-item-detalhes {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .plantao-botao-remover-item {
   background: transparent;
   border: none;
   color: var(--no);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 700;
   cursor: pointer;
   padding: 2px 4px;
 }
 
 .plantao-sn-vazio {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-style: italic;
 }
 
@@ -685,7 +685,7 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -697,12 +697,12 @@
 }
 
 .plantao-sn-detalhes {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .plantao-conduta-rotulo {
   display: block;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 8px;
@@ -714,7 +714,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid var(--line);
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--ink);
   background: var(--paper);
   resize: vertical;
@@ -734,14 +734,14 @@
 
 .plantao-rodape-aviso {
   margin: 0 0 4px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--ink);
 }
 
 .plantao-rodape-detalhe {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 
 .plantao-rodape-acoes {
@@ -756,7 +756,7 @@
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 10px 18px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
 }
@@ -767,7 +767,7 @@
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
 }

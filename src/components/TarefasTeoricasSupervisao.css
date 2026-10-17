@@ -16,14 +16,14 @@
 }
 
 .supervisao-titulo {
-  font-size: 18px;
+  font-size: var(--fs-md);
   margin: 0 0 4px;
   color: var(--ink);
 }
 
 .supervisao-subtitulo {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--muted);
 }
 
@@ -35,7 +35,7 @@
 }
 
 .supervisao-filtro-rotulo {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -43,7 +43,7 @@
   padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid var(--line);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   background: var(--paper);
   color: var(--ink);
   max-width: 100%;
@@ -54,7 +54,7 @@
 }
 
 .supervisao-aviso {
-  font-size: 14px;
+  font-size: var(--fs-base);
   margin: 0;
 }
 
@@ -82,19 +82,19 @@
 }
 
 .supervisao-aluno-nome {
-  font-size: 15px;
+  font-size: var(--fs-base);
   color: var(--ink);
 }
 
 .supervisao-aluno-email {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--muted);
   margin-left: 8px;
   overflow-wrap: anywhere;
 }
 
 .supervisao-entrega-data {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -104,7 +104,7 @@
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -119,7 +119,7 @@
 }
 
 .supervisao-contagem {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -140,7 +140,7 @@
 }
 
 .supervisao-opcoes-pergunta {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -148,7 +148,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   cursor: pointer;
 }
 
@@ -170,7 +170,7 @@
   padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid var(--line);
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .supervisao-botao-gravar {
@@ -179,7 +179,7 @@
   color: var(--accent-ink);
   border: none;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   cursor: pointer;
 }
@@ -198,7 +198,7 @@
 }
 
 .supervisao-detalhes-resumo {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--ink);
   cursor: pointer;
@@ -206,7 +206,7 @@
 
 .supervisao-sem-organizacao {
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 .supervisao-leitura {
@@ -228,13 +228,13 @@
 
 .supervisao-leitura-turno {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--ink);
 }
 
 .supervisao-leitura-conduta {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--ink);
   white-space: pre-wrap;
 }
@@ -270,7 +270,7 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -286,7 +286,7 @@
 }
 
 .supervisao-conferencia-contagem {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--ink);
   background: var(--c1s);
@@ -298,7 +298,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 
 .supervisao-conferencia-rotulo-lista {
@@ -317,7 +317,7 @@
 
 .supervisao-conferencia-relato-item {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--muted);
 }
@@ -338,7 +338,7 @@
 
 .supervisao-conferencia-aviso-apoio {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--muted);
 }

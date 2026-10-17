@@ -1,0 +1,6 @@
+/* Logomarca da escola ETCR.
+   Usada no cabeçalho desktop (.topbar-ead-logo) e no painel da gaveta (.topbar-drawer-logo) em MenuEad.tsx.
+   Atualmente renderizada via tag <img> apontando para a URL oficial da ETCR. */
+:root {
+  --logo-escola: url("https://etcr.com.br/site/wp-content/uploads/2025/09/LogoAtualizado.svg");
+}

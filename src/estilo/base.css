@@ -1,0 +1,25 @@
+/* Base estrutural comum. Padrões do sistema; a marca sobrepõe o que for dela. */
+:root {
+  /* Larguras de conteúdo */
+  --largura-pagina: 1080px;
+  --largura-leitura: 820px;
+  --largura-form: 440px;
+  --largura-topo: 1200px;
+
+  /* Dimensões recorrentes */
+  --altura-barra: 72px;
+  --alvo-toque: 44px;
+
+  /* Escala de nota universal (0 a 10). Padrão da rede; marca pode sobrepor. */
+  --cor-nota-0: #b71c1c;
+  --cor-nota-1: #d32f2f;
+  --cor-nota-2: #e64a19;
+  --cor-nota-3: #f57c00;
+  --cor-nota-4: #ffa000;
+  --cor-nota-5: #fbc02d;
+  --cor-nota-6: #c0ca33;
+  --cor-nota-7: #7cb342;
+  --cor-nota-8: #43a047;
+  --cor-nota-9: #2e7d32;
+  --cor-nota-10: #1b5e20;
+}

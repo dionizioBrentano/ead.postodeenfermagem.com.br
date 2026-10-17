@@ -17,7 +17,7 @@
 .organizacao-topo h2,
 .organizacao-topo h3 {
   margin: 0;
-  font-size: 19px;
+  font-size: var(--fs-md);
   color: var(--ink);
 }
 
@@ -45,11 +45,11 @@
 .organizacao-membro-nome {
   font-weight: 700;
   color: var(--ink);
-  font-size: 15px;
+  font-size: var(--fs-base);
 }
 
 .organizacao-membro-detalhe {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--muted);
   display: flex;
   flex-wrap: wrap;
@@ -59,13 +59,13 @@
 
 .organizacao-erro-linha {
   color: var(--err);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   margin-top: 4px;
 }
 
 .organizacao-perfil-descricao {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--muted);
   margin: 6px 0 0;
   line-height: 1.4;
@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   cursor: pointer;
   color: var(--ink);
 }

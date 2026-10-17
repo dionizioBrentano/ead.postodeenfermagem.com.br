@@ -1,0 +1,48 @@
+/* Cores da marca Sala EAD. Valores atuais, nomes por significado. */
+:root {
+  --cor-fundo: #f8f6f1;
+  --cor-superficie: #ffffff;
+  --cor-linha: rgba(0, 0, 0, 0.06);
+  --cor-tinta: #3a3a3a;
+  --cor-tinta-suave: #909090;
+  --cor-primaria: #1a3a35;
+  --cor-primaria-contraste: #ffffff;
+  --cor-acao: #00ad57;
+  --cor-acao-contraste: #ffffff;
+  --cor-etapa-1: #1a3a35;
+  --cor-etapa-2: #b86e00;
+  --cor-etapa-3: #b3363b;
+  --cor-etapa-4: #3c4fa8;
+  --cor-etapa-1-suave: #f0ede6;
+  --cor-etapa-2-suave: #fbefdc;
+  --cor-etapa-3-suave: #f9e5e5;
+  --cor-etapa-4-suave: #e7eafa;
+  --cor-erro: #b3363b;
+  --cor-erro-suave: #f9e5e5;
+  --cor-neutro: #909090;
+
+  /* Apelidos dos nomes antigos — para o CSS existente continuar valendo.
+     Removidos tela por tela na limpeza. */
+  --bg: var(--cor-fundo);
+  --paper: var(--cor-superficie);
+  --line: var(--cor-linha);
+  --ink: var(--cor-tinta);
+  --muted: var(--cor-tinta-suave);
+  --accent: var(--cor-primaria);
+  --accent-ink: var(--cor-primaria-contraste);
+  --action: var(--cor-acao);
+  --action-ink: var(--cor-acao-contraste);
+  --ok: var(--cor-acao);
+  --no: var(--cor-erro);
+  --err: var(--cor-erro);
+  --errs: var(--cor-erro-suave);
+  --na: var(--cor-neutro);
+  --c1: var(--cor-etapa-1);
+  --c2: var(--cor-etapa-2);
+  --c3: var(--cor-etapa-3);
+  --c4: var(--cor-etapa-4);
+  --c1s: var(--cor-etapa-1-suave);
+  --c2s: var(--cor-etapa-2-suave);
+  --c3s: var(--cor-etapa-3-suave);
+  --c4s: var(--cor-etapa-4-suave);
+}
