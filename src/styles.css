@@ -96,10 +96,43 @@ textarea{min-height:110px;resize:vertical}
 .bar{position:sticky;bottom:0;margin-top:var(--espaco-22);background:var(--paper);border:1px solid var(--line);border-radius:var(--raio-caixa) var(--raio-caixa) 0 0;padding:var(--espaco-12) var(--espaco-16) calc(var(--espaco-12) + env(safe-area-inset-bottom,0px));display:grid;gap:var(--espaco-8);z-index:4}
 .bar .in{display:flex;gap:var(--espaco-14);align-items:center;flex-wrap:wrap}
 .prog{flex:1;min-width:160px;display:grid;gap:var(--espaco-5);font-size:var(--fs-base)}
-.track{height:6px;background:var(--line);border-radius:var(--raio-sm);overflow:hidden}
-.fill{height:100%;background:var(--accent);transition:width .2s}
 .msg{font-size:var(--fs-base)}
 .msg.err{color:var(--err);font-weight:700}
+
+/* Página: padrões comuns */
+.pagina-topo { margin-top: var(--espaco-28); }
+.pagina-titulo { font-size: clamp(30px, 6vw, 44px); font-weight: 800; letter-spacing: -.02em; }
+.sobretitulo { font-family: var(--f-mono); font-size: var(--fs-sm); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.texto-sem-margem { margin: 0; }
+.titulo-secao,
+.sec .titulo-secao { font-size: var(--fs-lg); }
+.titulo-secao-espacado { margin-top: var(--espaco-6); }
+.texto-apoio { margin: 0; font-size: var(--fs-base); }
+.bloco-avaliacao { margin-top: var(--espaco-34); }
+.bloco-avaliacao-cabecalho { display: grid; gap: var(--espaco-4); }
+.progresso {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--altura-progresso);
+  border: 0;
+  border-radius: var(--raio-sm);
+  background: var(--line);
+  overflow: hidden;
+}
+.progresso::-webkit-progress-bar {
+  background: var(--line);
+  border-radius: var(--raio-sm);
+}
+.progresso::-webkit-progress-value {
+  background: var(--accent);
+  border-radius: var(--raio-sm);
+  transition: width .2s;
+}
+.progresso::-moz-progress-bar {
+  background: var(--accent);
+  border-radius: var(--raio-sm);
+}
 
 /* Evolução */
 .heat-wrap{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:var(--raio-caixa)}

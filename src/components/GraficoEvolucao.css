@@ -6,18 +6,6 @@
   padding: 0 0 var(--espaco-42);
 }
 
-.grafico-topo {
-  margin-top: var(--espaco-28);
-}
-
-.grafico-titulo {
-  font-size: var(--fs-lg);
-}
-
-.grafico-descricao {
-  margin: 0;
-}
-
 .grafico-legenda {
   display: flex;
   gap: var(--espaco-16);
@@ -73,11 +61,6 @@
 
 .grafico-carregando {
   text-align: center;
-  margin-top: var(--espaco-28);
-}
-
-.grafico-erro {
-  margin-top: var(--espaco-28);
 }
 
 .grafico-linha-aluno polyline {

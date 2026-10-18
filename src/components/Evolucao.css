@@ -1,42 +1,14 @@
 /* Estilos do componente Evolucao */
 
-.evolucao-topo {
-  margin-top: var(--espaco-28);
-}
-
 .evolucao-vazio-titulo {
   font-size: var(--fs-xl);
 }
 
-.evolucao-vazio-texto {
-  margin: 0;
-}
-
-.evolucao-titulo {
-  font-size: clamp(30px, 6vw, 44px);
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-
 .evolucao-descricao {
-  margin: 0;
   max-width: var(--largura-maxima-texto);
 }
 
 .evolucao-legenda {
-  max-width: var(--largura-legenda-nota);
-  display: grid;
-  gap: var(--espaco-4);
-}
-
-.evolucao-secao-titulo {
-  font-size: var(--fs-lg);
-}
-
-.evolucao-secao-texto {
-  margin: 0;
-  font-size: var(--fs-base);
-}
 
 .variacao {
   font-weight: 700;

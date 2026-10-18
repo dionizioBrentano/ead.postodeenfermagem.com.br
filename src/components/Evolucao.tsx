@@ -48,9 +48,9 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
   if (!lista.length) {
     return (
       <div className="narrow">
-        <section className="box sec evolucao-topo">
+        <section className="box sec pagina-topo">
           <h1 className="evolucao-vazio-titulo">Minha evolução</h1>
-          <p className="evolucao-vazio-texto">
+          <p className="texto-sem-margem">
             Aqui aparece um quadro colorido com as suas notas em cada autoavaliação, do vermelho (não conhece) ao verde
             escuro (domina). Você ainda não fez nenhuma autoavaliação neste aparelho.
           </p>
@@ -134,9 +134,9 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
 
   return (
     <div className="wrap">
-      <header className="sec evolucao-topo">
-        <h1 className="evolucao-titulo">Minha evolução</h1>
-        <p className="muted evolucao-descricao">
+      <header className="sec pagina-topo">
+        <h1 className="pagina-titulo">Minha evolução</h1>
+        <p className="muted texto-sem-margem evolucao-descricao">
           Cada coluna é uma autoavaliação. Vermelho mostra o que você ainda não domina; verde escuro, o que já domina. A
           última coluna mostra quanto a nota mudou desde a primeira vez.
         </p>
@@ -152,8 +152,8 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
 
       {atencao.length > 0 && (
         <section className="box sec">
-          <h2 className="evolucao-secao-titulo">Precisa de atenção</h2>
-          <p className="muted evolucao-secao-texto">
+          <h2 className="titulo-secao">Precisa de atenção</h2>
+          <p className="muted texto-apoio">
             {TEXTOS_PLANO_ESTUDO.descricaoAtencao}
           </p>
           <div className="chips">
@@ -226,8 +226,8 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
       </section>
 
       <section className="box sec">
-        <h2 className="evolucao-secao-titulo">Autoavaliações salvas</h2>
-        <p className="muted evolucao-secao-texto">
+        <h2 className="titulo-secao">Autoavaliações salvas</h2>
+        <p className="muted texto-apoio">
           Guarde os PDFs com você. As avaliações estão sincronizadas com o servidor.
         </p>
         <ul className="saved">

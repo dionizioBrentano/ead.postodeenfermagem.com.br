@@ -224,11 +224,11 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
 
   return (
     <div className="narrow">
-      <header className="sec" style={{ marginTop: 28 }}>
-        <h1 style={{ fontSize: "clamp(30px,6vw,44px)", fontWeight: 800, letterSpacing: "-.02em" }}>
+      <header className="sec pagina-topo">
+        <h1 className="pagina-titulo">
           {papel === "auto" ? "Transcrever autoavaliação" : "Avaliação do Supervisor"}
         </h1>
-        <p className="muted" style={{ margin: 0 }}>
+        <p className="muted texto-sem-margem">
           {papel === "auto"
             ? "Copie aqui as notas que o aluno deu a si mesmo no PDF da autoavaliação. Elas ficam gravadas como autoavaliação do aluno."
             : "Dê uma nota de 0 a 10 para o quanto o aluno domina cada item."}
@@ -236,7 +236,7 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
       </header>
 
       <section className="box sec">
-        <h2 style={{ fontSize: 21 }}>Dados da Avaliação</h2>
+        <h2 className="titulo-secao">Dados da Avaliação</h2>
         <div className="fields">
           <div className="field full" id="f-nome">
             <label className="l" htmlFor="nome">Nome do Avaliador *</label>
@@ -303,7 +303,7 @@ export default function AvaliacaoSupervisor({ alunoId, papel = "supervisor" }: P
         <div className="in">
           <div className="prog">
             <span>{respondidos} de {TOTAL_ITENS} itens respondidos</span>
-            <div className="track"><div className="fill" style={{ width: `${(respondidos / TOTAL_ITENS) * 100}%` }} /></div>
+            <progress className="progresso" value={respondidos} max={TOTAL_ITENS} aria-label="Itens respondidos" />
           </div>
           <button className="btn" onClick={salvar} disabled={salvando}>
             {salvando ? "Salvando…" : "Salvar Avaliação no Banco"}
@@ -330,10 +330,10 @@ function Bloco(props: {
 }) {
   const { titulo, sub, itens, bloco, notas, faltando, setNota } = props;
   return (
-    <section className="sec" style={{ marginTop: 34 }}>
-      <div style={{ display: "grid", gap: 4 }}>
+    <section className="sec bloco-avaliacao">
+      <div className="bloco-avaliacao-cabecalho">
         <h2>{titulo}</h2>
-        <p className="muted" style={{ margin: 0 }}>{sub}</p>
+        <p className="muted texto-sem-margem">{sub}</p>
       </div>
       <div className="items">
         {itens.map((it, i) => {

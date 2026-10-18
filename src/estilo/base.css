@@ -55,6 +55,7 @@
   --espaco-26: 26px;
   --espaco-28: 28px;
   --espaco-32: 32px;
+  --espaco-34: 34px;
   --espaco-36: 36px;
   --espaco-42: 42px;
   --espaco-44: 44px;
@@ -91,4 +92,5 @@
   --largura-maxima-texto: 70ch;
   --tamanho-marcador-legenda: 12px;
   --grafico-traco: 2px;
+  --altura-progresso: 6px;
 }

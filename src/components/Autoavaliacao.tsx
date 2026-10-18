@@ -319,20 +319,20 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
 
   return (
     <div className="narrow">
-      <header className="sec" style={{ marginTop: 28 }}>
-        <span className="mono muted" style={{ fontSize: 12.5, letterSpacing: ".08em", textTransform: "uppercase" }}>
+      <header className="sec pagina-topo">
+        <span className="sobretitulo">
           Estágio hospitalar
         </span>
-        <h1 style={{ fontSize: "clamp(30px,6vw,44px)", fontWeight: 800, letterSpacing: "-.02em" }}>Autoavaliação</h1>
-        <p className="muted" style={{ margin: 0 }}>
+        <h1 className="pagina-titulo">Autoavaliação</h1>
+        <p className="muted texto-sem-margem">
           Dê uma nota de 0 a 10 para o quanto você domina cada item da ficha de avaliação. Esta autoavaliação é para você
           enxergar sua evolução; ela não entra na sua nota. O questionário é o mesmo em todas as etapas.
         </p>
       </header>
 
       <section className="box sec">
-        <h2 style={{ fontSize: 21 }}>Quando fazer</h2>
-        <p style={{ margin: 0 }}>
+        <h2 className="titulo-secao">Quando fazer</h2>
+        <p className="texto-sem-margem">
           Três vezes em cada etapa. Guarde todos os PDFs numa mesma pasta.
         </p>
         <div className="when">
@@ -340,7 +340,7 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
           <div><b>Meio da etapa</b>Na metade do período, para corrigir o rumo a tempo.</div>
           <div><b>Final da etapa</b>Na última semana, antes da avaliação do supervisor.</div>
         </div>
-        <h2 style={{ fontSize: 21, marginTop: 6 }}>Como dar a nota</h2>
+        <h2 className="titulo-secao titulo-secao-espacado">Como dar a nota</h2>
         <div className="legend-scale" aria-hidden="true">
           {ESCALA_DE_NOTAS.map((i) => (
             <span key={i} className={`nota-pintada ${classeDaNota(i)}`}>{i}</span>
@@ -354,13 +354,13 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
           <span>7 a 8: faço com supervisão e segurança</span>
           <span>9 a 10: faço com segurança e sei explicar</span>
         </div>
-        <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>
+        <p className="muted texto-apoio">
           Se o item ainda não foi trabalhado na sua etapa, marque <b>Ainda não pratiquei</b>.
         </p>
       </section>
 
       <section className="box sec">
-        <h2 style={{ fontSize: 21 }}>Seus dados</h2>
+        <h2 className="titulo-secao">Seus dados</h2>
         <div className="fields">
           <div className="field full" id="f-nome">
             <label className="l" htmlFor="nome">Nome completo *</label>
@@ -480,7 +480,7 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
         <div className="in">
           <div className="prog">
             <span>{respondidos} de {TOTAL_ITENS} itens respondidos</span>
-            <div className="track"><div className="fill" style={{ width: `${(respondidos / TOTAL_ITENS) * 100}%` }} /></div>
+            <progress className="progresso" value={respondidos} max={TOTAL_ITENS} aria-label="Itens respondidos" />
           </div>
           <button className="btn" onClick={gerar} disabled={gerando}>
             {gerando ? "Gerando…" : "Gerar PDF"}
@@ -534,10 +534,10 @@ function Bloco(props: {
 }) {
   const { titulo, sub, itens, bloco, notas, faltando, setNota } = props;
   return (
-    <section className="sec" style={{ marginTop: 34 }}>
-      <div style={{ display: "grid", gap: 4 }}>
+    <section className="sec bloco-avaliacao">
+      <div className="bloco-avaliacao-cabecalho">
         <h2>{titulo}</h2>
-        <p className="muted" style={{ margin: 0 }}>{sub}</p>
+        <p className="muted texto-sem-margem">{sub}</p>
       </div>
       <div className="items">
         {itens.map((it, i) => {

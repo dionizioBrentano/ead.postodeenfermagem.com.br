@@ -135,8 +135,8 @@ export default function GraficoEvolucao({ alunoId }: { alunoId: string }) {
     };
   }, [alunoId]);
 
-  if (carregando) return <p className="muted grafico-carregando">Carregando gráfico…</p>;
-  if (erro) return <div className="alert err grafico-erro">{erro}</div>;
+  if (carregando) return <p className="muted pagina-topo grafico-carregando">Carregando gráfico…</p>;
+  if (erro) return <div className="alert err pagina-topo">{erro}</div>;
 
   const bloco = (titulo: string, itens: Item[], prefixo: "gerais" | "atividades") => (
     <section className="grafico-secao">
@@ -156,9 +156,9 @@ export default function GraficoEvolucao({ alunoId }: { alunoId: string }) {
 
   return (
     <div className="grafico-embrulho">
-      <header className="sec grafico-topo">
-        <h2 className="grafico-titulo">Evolução por quesito</h2>
-        <p className="muted grafico-descricao">
+      <header className="sec pagina-topo">
+        <h2 className="titulo-secao">Evolução por quesito</h2>
+        <p className="muted texto-sem-margem">
           Nota de 0 a 10 em cada momento do ciclo (início, meio e final de cada etapa).
         </p>
         <div className="grafico-legenda">
