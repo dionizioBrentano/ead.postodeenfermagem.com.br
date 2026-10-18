@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/rota-sala.mjs",
+    "build": "tsc -b && vite build && node scripts/rota-sala.mjs && node scripts/confere-css-compilado.mjs",
     "preview": "vite preview",
-    "test": "vitest run --passWithNoTests"
+    "test": "node scripts/travas-css.mjs && vitest run --passWithNoTests"
   },
   "dependencies": {
     "jspdf": "^2.5.2",

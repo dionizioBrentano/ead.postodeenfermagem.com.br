@@ -21,6 +21,9 @@ jobs:
       - name: 📦 Instalar dependências
         run: npm install
 
+      - name: 🧪 Testes e travas de CSS
+        run: npm test
+
       - name: 🛠️ Compilar o projeto (Build)
         run: npm run build
         env:
