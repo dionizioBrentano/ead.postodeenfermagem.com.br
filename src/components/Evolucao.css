@@ -9,6 +9,10 @@
 }
 
 .evolucao-legenda {
+  max-width: var(--largura-legenda-nota);
+  display: grid;
+  gap: var(--espaco-4);
+}
 
 .variacao {
   font-weight: 700;
