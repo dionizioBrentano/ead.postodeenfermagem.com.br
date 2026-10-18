@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ATIVIDADES, ETAPAS, GERAIS, MOMENTOS, TOTAL_ITENS, type Item, type Momento, type Nota } from "../data/itens";
-import { ESCALA, corDaNota } from "../lib/cores";
+import { ESCALA_DE_NOTAS, classeDaNota } from "../estilo/cores-nota";
 import {
   apagarRascunho,
   carregarRascunho,
@@ -342,8 +342,8 @@ export default function Autoavaliacao({ userKey, nomePerfil, lista, onSalvou, on
         </div>
         <h2 style={{ fontSize: 21, marginTop: 6 }}>Como dar a nota</h2>
         <div className="legend-scale" aria-hidden="true">
-          {ESCALA.map((c, i) => (
-            <span key={i} style={{ background: c.fundo, color: c.texto }}>{i}</span>
+          {ESCALA_DE_NOTAS.map((i) => (
+            <span key={i} className={`nota-pintada ${classeDaNota(i)}`}>{i}</span>
           ))}
         </div>
         <div className="legend-cap">
@@ -557,15 +557,12 @@ function Bloco(props: {
                   <input type="radio" name={nome} checked={notas[i] === "na"} onChange={() => setNota(bloco, i, "na")} />
                   <span>Ainda não pratiquei</span>
                 </label>
-                {Array.from({ length: 11 }, (_, v) => {
-                  const c = corDaNota(v);
-                  return (
-                    <label key={v} style={{ ["--sel" as string]: c.fundo, ["--selt" as string]: c.texto }}>
-                      <input type="radio" name={nome} checked={notas[i] === v} onChange={() => setNota(bloco, i, v)} aria-label={`Nota ${v}`} />
-                      <span>{v}</span>
-                    </label>
-                  );
-                })}
+                {Array.from({ length: 11 }, (_, v) => (
+                  <label key={v} className={classeDaNota(v)}>
+                    <input type="radio" name={nome} checked={notas[i] === v} onChange={() => setNota(bloco, i, v)} aria-label={`Nota ${v}`} />
+                    <span>{v}</span>
+                  </label>
+                ))}
               </div>
             </div>
           );

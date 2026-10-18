@@ -7,7 +7,7 @@ import autoTable, { type CellHookData } from "jspdf-autotable/es";
 import { ATIVIDADES, GERAIS, type Item, type Nota } from "../data/itens";
 import { TEXTOS_ASSUNTOS_ESTUDO } from "../data/textosAssuntosEstudo";
 import { TEXTOS_PLANO_ESTUDO } from "../data/textosPlanoEstudo";
-import { corDaNota, rgb } from "./cores";
+import { corDaNotaParaPdf } from "../estilo/cores-nota";
 import { fmt1, fmtData, media, type Avaliacao } from "./historico";
 import { itensDeAtencao, promptsDoPlano } from "./planoEstudo";
 
@@ -54,9 +54,9 @@ function pintarNota(d: CellHookData, col: number) {
   const raw = String(d.cell.raw ?? "");
   const n = Number(raw.replace(",", "."));
   if (raw !== "" && raw !== "–" && !Number.isNaN(n)) {
-    const c = corDaNota(n);
-    d.cell.styles.fillColor = rgb(c.fundo);
-    d.cell.styles.textColor = rgb(c.texto);
+    const c = corDaNotaParaPdf(n);
+    d.cell.styles.fillColor = c.fundo;
+    d.cell.styles.textColor = c.texto;
     d.cell.styles.fontStyle = "bold";
   }
 }

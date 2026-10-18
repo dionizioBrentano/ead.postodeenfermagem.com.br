@@ -1,4 +1,5 @@
 @import "./estilo/base.css";
+@import "./estilo/nota.css";
 @import "./marca/cores.css";
 @import "./marca/tipografia.css";
 @import "./marca/logos.css";
@@ -90,7 +91,7 @@ textarea{min-height:110px;resize:vertical}
 .rate span{display:flex;align-items:center;justify-content:center;height:36px;border:1.5px solid var(--line);border-radius:var(--raio-md);font-family:var(--f-mono);font-size:var(--fs-base);background:var(--paper);font-variant-numeric:tabular-nums}
 .rate .na{grid-column:1/-1;justify-self:start}
 .rate .na span{font-family:var(--f-body);font-size:var(--fs-sm);padding:0 var(--espaco-12);height:32px}
-.rate input:checked + span{background:var(--sel,var(--accent));border-color:var(--sel,var(--accent));color:var(--selt,var(--accent-ink))}
+.rate input:checked + span{background:var(--nota-fundo,var(--accent));border-color:var(--nota-fundo,var(--accent));color:var(--nota-texto,var(--accent-ink))}
 .rate input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
 .bar{position:sticky;bottom:0;margin-top:var(--espaco-22);background:var(--paper);border:1px solid var(--line);border-radius:var(--raio-caixa) var(--raio-caixa) 0 0;padding:var(--espaco-12) var(--espaco-16) calc(var(--espaco-12) + env(safe-area-inset-bottom,0px));display:grid;gap:var(--espaco-8);z-index:4}
 .bar .in{display:flex;gap:var(--espaco-14);align-items:center;flex-wrap:wrap}

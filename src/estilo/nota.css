@@ -1,0 +1,14 @@
+/* Classes utilitárias para a escala de notas universal (0 a 10) */
+.nota-0 { --nota-fundo: var(--cor-nota-0); --nota-texto: var(--cor-nota-0-texto); }
+.nota-1 { --nota-fundo: var(--cor-nota-1); --nota-texto: var(--cor-nota-1-texto); }
+.nota-2 { --nota-fundo: var(--cor-nota-2); --nota-texto: var(--cor-nota-2-texto); }
+.nota-3 { --nota-fundo: var(--cor-nota-3); --nota-texto: var(--cor-nota-3-texto); }
+.nota-4 { --nota-fundo: var(--cor-nota-4); --nota-texto: var(--cor-nota-4-texto); }
+.nota-5 { --nota-fundo: var(--cor-nota-5); --nota-texto: var(--cor-nota-5-texto); }
+.nota-6 { --nota-fundo: var(--cor-nota-6); --nota-texto: var(--cor-nota-6-texto); }
+.nota-7 { --nota-fundo: var(--cor-nota-7); --nota-texto: var(--cor-nota-7-texto); }
+.nota-8 { --nota-fundo: var(--cor-nota-8); --nota-texto: var(--cor-nota-8-texto); }
+.nota-9 { --nota-fundo: var(--cor-nota-9); --nota-texto: var(--cor-nota-9-texto); }
+.nota-10 { --nota-fundo: var(--cor-nota-10); --nota-texto: var(--cor-nota-10-texto); }
+
+.nota-pintada { background: var(--nota-fundo); color: var(--nota-texto); }

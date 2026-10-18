@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ATIVIDADES, ETAPAS, GERAIS, MOMENTOS, TOTAL_ITENS, type Item, type Momento, type Nota } from "../data/itens";
-import { corDaNota } from "../lib/cores";
+import { classeDaNota } from "../estilo/cores-nota";
 import { hoje } from "../lib/historico";
 import { saveAvaliacao, type AvaliacaoPayload } from "../api/ead";
 import { getUserToken, getSavedProfile } from "../api/client";
@@ -353,15 +353,12 @@ function Bloco(props: {
                   <input type="radio" name={nome} checked={notas[i] === "na"} onChange={() => setNota(bloco, i, "na")} />
                   <span>Ainda não pratiquei</span>
                 </label>
-                {Array.from({ length: 11 }, (_, v) => {
-                  const c = corDaNota(v);
-                  return (
-                    <label key={v} style={{ ["--sel" as string]: c.fundo, ["--selt" as string]: c.texto }}>
-                      <input type="radio" name={nome} checked={notas[i] === v} onChange={() => setNota(bloco, i, v)} aria-label={`Nota ${v}`} />
-                      <span>{v}</span>
-                    </label>
-                  );
-                })}
+                {Array.from({ length: 11 }, (_, v) => (
+                  <label key={v} className={classeDaNota(v)}>
+                    <input type="radio" name={nome} checked={notas[i] === v} onChange={() => setNota(bloco, i, v)} aria-label={`Nota ${v}`} />
+                    <span>{v}</span>
+                  </label>
+                ))}
               </div>
             </div>
           );

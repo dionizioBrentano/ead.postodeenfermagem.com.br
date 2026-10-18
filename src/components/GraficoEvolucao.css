@@ -1,0 +1,99 @@
+/* Estilos do componente GraficoEvolucao */
+
+.grafico-embrulho {
+  max-width: var(--largura-pagina);
+  margin: 0 auto;
+  padding: 0 0 var(--espaco-42);
+}
+
+.grafico-topo {
+  margin-top: var(--espaco-28);
+}
+
+.grafico-titulo {
+  font-size: var(--fs-lg);
+}
+
+.grafico-descricao {
+  margin: 0;
+}
+
+.grafico-legenda {
+  display: flex;
+  gap: var(--espaco-16);
+  margin-top: var(--espaco-8);
+  font-size: var(--fs-base);
+}
+
+.grafico-legenda-marcador {
+  display: inline-block;
+  width: var(--tamanho-marcador-legenda);
+  height: var(--tamanho-marcador-legenda);
+  border-radius: var(--raio-sm);
+  margin-right: var(--espaco-6);
+}
+
+.grafico-legenda-marcador-aluno {
+  background: var(--cor-grafico-aluno);
+}
+
+.grafico-legenda-marcador-supervisor {
+  background: var(--cor-grafico-supervisor);
+}
+
+.grafico-secao {
+  margin-top: var(--espaco-24);
+}
+
+.grafico-secao-titulo {
+  font-size: var(--fs-md);
+  margin-bottom: var(--espaco-12);
+}
+
+.grafico-grade {
+  display: grid;
+  gap: var(--espaco-12);
+  grid-template-columns: repeat(auto-fill, minmax(var(--largura-minima-quadro-grafico), 1fr));
+}
+
+.grafico-quadro {
+  padding: var(--espaco-12);
+}
+
+.grafico-quadro-titulo {
+  font-weight: 700;
+  font-size: var(--fs-base);
+  margin-bottom: var(--espaco-4);
+}
+
+.grafico-quadro-vazio {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.grafico-carregando {
+  text-align: center;
+  margin-top: var(--espaco-28);
+}
+
+.grafico-erro {
+  margin-top: var(--espaco-28);
+}
+
+.grafico-linha-aluno polyline {
+  stroke: var(--cor-grafico-aluno);
+  stroke-width: var(--grafico-traco);
+}
+
+.grafico-linha-aluno circle {
+  fill: var(--cor-grafico-aluno);
+}
+
+.grafico-linha-supervisor polyline {
+  stroke: var(--cor-grafico-supervisor);
+  stroke-width: var(--grafico-traco);
+}
+
+.grafico-linha-supervisor circle {
+  fill: var(--cor-grafico-supervisor);
+}

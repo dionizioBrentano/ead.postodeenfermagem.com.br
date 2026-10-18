@@ -73,4 +73,22 @@
   --cor-nota-8: #43a047;
   --cor-nota-9: #2e7d32;
   --cor-nota-10: #1b5e20;
+  --cor-nota-0-texto: #ffffff;
+  --cor-nota-1-texto: #ffffff;
+  --cor-nota-2-texto: #1a1a1a;
+  --cor-nota-3-texto: #1a1a1a;
+  --cor-nota-4-texto: #1a1a1a;
+  --cor-nota-5-texto: #1a1a1a;
+  --cor-nota-6-texto: #1a1a1a;
+  --cor-nota-7-texto: #1a1a1a;
+  --cor-nota-8-texto: #1a1a1a;
+  --cor-nota-9-texto: #ffffff;
+  --cor-nota-10-texto: #ffffff;
+
+  /* Dimensões de componentes */
+  --largura-legenda-nota: 520px;
+  --largura-minima-quadro-grafico: 280px;
+  --largura-maxima-texto: 70ch;
+  --tamanho-marcador-legenda: 12px;
+  --grafico-traco: 2px;
 }

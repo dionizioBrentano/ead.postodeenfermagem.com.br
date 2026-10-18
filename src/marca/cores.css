@@ -36,6 +36,8 @@
   --cor-veu: rgba(0, 0, 0, 0.45);
   --cor-veu-imagem-topo: rgba(0, 0, 0, 0.35);
   --cor-veu-imagem-base: rgba(0, 0, 0, 0.78);
+  --cor-grafico-aluno: #0f7c74;
+  --cor-grafico-supervisor: var(--cor-etapa-2);
 
   /* Apelidos dos nomes antigos — para o CSS existente continuar valendo.
      Removidos tela por tela na limpeza. */

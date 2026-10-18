@@ -5,7 +5,7 @@ import {
   descricaoProximoCiclo,
   TEXTOS_PLANO_ESTUDO,
 } from "../data/textosPlanoEstudo";
-import { ESCALA, corDaNota } from "../lib/cores";
+import { ESCALA_DE_NOTAS, classeDaNota } from "../estilo/cores-nota";
 import { fmt1, fmtData, media, type Avaliacao } from "../lib/historico";
 import {
   avaliacaoMaisRecente,
@@ -15,6 +15,7 @@ import {
 import { slugPublicadoDoItem } from "../lib/assuntosEstudo";
 import { EtiquetaEstudo } from "./EtiquetaEstudo";
 import "./PlanoEstudo.css";
+import "./Evolucao.css";
 
 type Props = {
   userKey?: string;
@@ -47,9 +48,9 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
   if (!lista.length) {
     return (
       <div className="narrow">
-        <section className="box sec" style={{ marginTop: 28 }}>
-          <h1 style={{ fontSize: 28 }}>Minha evolução</h1>
-          <p style={{ margin: 0 }}>
+        <section className="box sec evolucao-topo">
+          <h1 className="evolucao-vazio-titulo">Minha evolução</h1>
+          <p className="evolucao-vazio-texto">
             Aqui aparece um quadro colorido com as suas notas em cada autoavaliação, do vermelho (não conhece) ao verde
             escuro (domina). Você ainda não fez nenhuma autoavaliação neste aparelho.
           </p>
@@ -88,7 +89,7 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
 
   const celula = (v: Nota, key: string) =>
     typeof v === "number" ? (
-      <td key={key} className="cell" style={{ background: corDaNota(v).fundo, color: corDaNota(v).texto }}>{v}</td>
+      <td key={key} className={`cell nota-pintada ${classeDaNota(v)}`}>{v}</td>
     ) : (
       <td key={key} className="cell na" title="Ainda não praticado">–</td>
     );
@@ -98,8 +99,9 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
     const b = ultimaNota(lista, bloco, i);
     if (a == null || b == null || lista.length < 2) return <td className="label mono muted">–</td>;
     const d = b - a;
+    const classe = d > 0 ? "variacao-sobe" : d < 0 ? "variacao-desce" : "variacao-igual";
     return (
-      <td className="label mono" style={{ color: d > 0 ? "var(--ok)" : d < 0 ? "var(--no)" : "var(--muted)", fontWeight: 700 }}>
+      <td className={`label mono variacao ${classe}`}>
         {d > 0 ? `+${d}` : d === 0 ? "=" : `${d}`}
       </td>
     );
@@ -122,7 +124,7 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
           return m == null ? (
             <td key={k} className="cell na">–</td>
           ) : (
-            <td key={k} className="cell" style={{ background: corDaNota(m).fundo, color: corDaNota(m).texto }}>{fmt1(m)}</td>
+            <td key={k} className={`cell nota-pintada ${classeDaNota(m)}`}>{fmt1(m)}</td>
           );
         })}
         <td />
@@ -132,16 +134,16 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
 
   return (
     <div className="wrap">
-      <header className="sec" style={{ marginTop: 28 }}>
-        <h1 style={{ fontSize: "clamp(30px,6vw,44px)", fontWeight: 800, letterSpacing: "-.02em" }}>Minha evolução</h1>
-        <p className="muted" style={{ margin: 0, maxWidth: "70ch" }}>
+      <header className="sec evolucao-topo">
+        <h1 className="evolucao-titulo">Minha evolução</h1>
+        <p className="muted evolucao-descricao">
           Cada coluna é uma autoavaliação. Vermelho mostra o que você ainda não domina; verde escuro, o que já domina. A
           última coluna mostra quanto a nota mudou desde a primeira vez.
         </p>
-        <div style={{ maxWidth: 520, display: "grid", gap: 4 }}>
+        <div className="evolucao-legenda">
           <div className="legend-scale" aria-hidden="true">
-            {ESCALA.map((c, i) => (
-              <span key={i} style={{ background: c.fundo, color: c.texto }}>{i}</span>
+            {ESCALA_DE_NOTAS.map((i) => (
+              <span key={i} className={`nota-pintada ${classeDaNota(i)}`}>{i}</span>
             ))}
           </div>
           <div className="legend-cap"><span>Não conhece</span><span>Domina</span></div>
@@ -150,27 +152,23 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
 
       {atencao.length > 0 && (
         <section className="box sec">
-          <h2 style={{ fontSize: 20 }}>Precisa de atenção</h2>
-          <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>
+          <h2 className="evolucao-secao-titulo">Precisa de atenção</h2>
+          <p className="muted evolucao-secao-texto">
             {TEXTOS_PLANO_ESTUDO.descricaoAtencao}
           </p>
           <div className="chips">
-            {atencao.map((it) => {
-              const c = corDaNota(it.nota);
-              return (
-                <EtiquetaEstudo
-                  key={`${it.ref.block}-${it.ref.number}`}
-                  slug={slugPublicadoDoItem(it.ref, assuntos)}
+            {atencao.map((it) => (
+              <EtiquetaEstudo
+                key={`${it.ref.block}-${it.ref.number}`}
+                slug={slugPublicadoDoItem(it.ref, assuntos)}
+              >
+                <span
+                  className={`chip nota-pintada ${classeDaNota(it.nota)}`}
                 >
-                  <span
-                    className="chip"
-                    style={{ background: c.fundo, color: c.texto }}
-                  >
-                    {it.item.curto} · {it.nota}
-                  </span>
-                </EtiquetaEstudo>
-              );
-            })}
+                  {it.item.curto} · {it.nota}
+                </span>
+              </EtiquetaEstudo>
+            ))}
           </div>
         </section>
       )}
@@ -228,8 +226,8 @@ export default function Evolucao({ lista, onAutoavaliar }: Props) {
       </section>
 
       <section className="box sec">
-        <h2 style={{ fontSize: 20 }}>Autoavaliações salvas</h2>
-        <p className="muted" style={{ margin: 0, fontSize: 14.5 }}>
+        <h2 className="evolucao-secao-titulo">Autoavaliações salvas</h2>
+        <p className="muted evolucao-secao-texto">
           Guarde os PDFs com você. As avaliações estão sincronizadas com o servidor.
         </p>
         <ul className="saved">
