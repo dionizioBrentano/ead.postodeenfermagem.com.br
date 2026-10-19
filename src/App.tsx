@@ -1,19 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ApiError,
   clearSession,
   configMissing,
   currentUser,
+  getSavedMembershipsOuNulo,
   getSavedProfile,
   getUserToken,
   fetchMembershipsAndSave,
   apiErrorListeners,
-  type Profile,
-  type Membership,
   logout,
 } from "./api/client";
 import { navegar, useRota } from "./lib/rota";
 import { useAnalise } from "./lib/useAnalise";
+import { guardaInicial, type Guarda } from "./lib/guardaInicial";
 
 import ParticiparPage from "./pages/ParticiparPage";
 import AguardandoPage from "./pages/AguardandoPage";
@@ -30,12 +30,6 @@ import { slugDoModuloNaRota } from "./lib/modulosEad";
 import { slugDoAssuntoNaRota } from "./lib/assuntosEstudo";
 import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
 
-
-type Guard =
-  | { estado: "verificando" }
-  | { estado: "ok"; perfil: Profile; memberships: Membership[] }
-  | { estado: "erro"; mensagem: string };
-
 export default function App() {
   const rotaRaw = useRota();
   const urlParams = new URLSearchParams(window.location.search);
@@ -44,13 +38,16 @@ export default function App() {
   
   const faltando = configMissing();
   const [aviso, setAviso] = useState<string | null>(null);
-  const [guard, setGuard] = useState<Guard>({ estado: "verificando" });
+  const [guard, setGuard] = useState<Guarda>(() =>
+    guardaInicial(getUserToken(), getSavedProfile(), getSavedMembershipsOuNulo()),
+  );
+  const confirmarPorTras = useRef(guard.estado === "ok");
 
   const token = getUserToken();
 
-  const verificar = useCallback(() => {
+  const verificar = useCallback((emSegundoPlano = false) => {
     if (!token) return;
-    setGuard({ estado: "verificando" });
+    if (!emSegundoPlano) setGuard({ estado: "verificando" });
     
     Promise.all([
       currentUser(token),
@@ -64,7 +61,7 @@ export default function App() {
           clearSession();
           setAviso("Sua sessão terminou. Entre novamente.");
           navegar("/", true);
-        } else {
+        } else if (!emSegundoPlano) {
           setGuard({
             estado: "erro",
             mensagem: e instanceof Error ? e.message : "Não foi possível confirmar seu acesso.",
@@ -72,6 +69,13 @@ export default function App() {
         }
       });
   }, [token]);
+
+  useEffect(() => {
+    if (confirmarPorTras.current && token && !faltando.length) {
+      confirmarPorTras.current = false;
+      verificar(true);
+    }
+  }, [token, faltando.length, verificar]);
 
   useEffect(() => {
     if (token && !faltando.length && guard.estado === "verificando" && rota !== "/" && rota !== "/convite" && rota !== "/entrar/retorno") {
@@ -142,11 +146,8 @@ export default function App() {
       <main className="page auth">
         <div className="auth-card">
           <div className="brand">
-            <span className="eyebrow">Posto de Enfermagem · Curso Técnico em Enfermagem</span>
             <h1>Sala EAD</h1>
-            <p className="muted" style={{ margin: 0 }}>
-              Guia do estágio hospitalar e autoavaliação. Entre com a mesma conta da rede Posto de Enfermagem.
-            </p>
+            <p className="muted">Guia do estágio hospitalar e autoavaliação.</p>
           </div>
           {aviso && <div className="alert info" role="status">{aviso}</div>}
           <div className="box" style={{ display: "grid", gap: 12 }}>
@@ -169,7 +170,7 @@ export default function App() {
           <div className="box" style={{ display: "grid", gap: 12 }}>
             <p style={{ margin: 0 }}>{guard.mensagem}</p>
             <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-              <button className="btn" onClick={verificar}>Tentar de novo</button>
+              <button className="btn" onClick={() => verificar()}>Tentar de novo</button>
               <button className="btn ghost" onClick={sair}>Sair</button>
             </div>
           </div>

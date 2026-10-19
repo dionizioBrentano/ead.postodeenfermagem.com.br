@@ -88,12 +88,17 @@ export function getSavedProfile(): Profile | null {
   }
 }
 export function getSavedMemberships(): Membership[] {
+  return getSavedMembershipsOuNulo() ?? [];
+}
+// null quando nada foi guardado ainda (diferente de uma lista vazia guardada).
+export function getSavedMembershipsOuNulo(): Membership[] | null {
   const raw = safeGet(MEMBERSHIPS_KEY);
-  if (!raw) return [];
+  if (!raw) return null;
   try {
-    return JSON.parse(raw) as Membership[];
+    const lista: unknown = JSON.parse(raw);
+    return Array.isArray(lista) ? (lista as Membership[]) : null;
   } catch {
-    return [];
+    return null;
   }
 }
 export function clearSession() {

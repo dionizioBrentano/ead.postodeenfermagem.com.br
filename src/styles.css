@@ -39,6 +39,7 @@ textarea{min-height:110px;resize:vertical}
 .auth{min-height:100vh;display:grid;place-items:center;padding-block:var(--espaco-32)}
 .auth-card{width:100%;max-width:var(--largura-form);display:grid;gap:var(--espaco-18)}
 .brand{display:grid;gap:var(--espaco-6)}
+.brand p{margin:0}
 .brand .eyebrow{font-family:var(--f-mono);font-size:var(--fs-sm);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .brand h1{font-size:clamp(30px,7vw,40px);font-weight:800;letter-spacing:-.02em}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:var(--raio-abas);padding:var(--espaco-4);gap:var(--espaco-4)}
