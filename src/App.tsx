@@ -189,12 +189,6 @@ export default function App() {
     );
   }
 
-  if (guard.perfil.confirmacao_obrigatoria) {
-    // O login central pede a confirmação de e-mail e celular e devolve para cá.
-    void iniciarLogin({ destino: rota });
-    return null;
-  }
-
   const mfaEnabled = guard.perfil.mfa_enabled === true;
   const memberships = guard.memberships;
   
