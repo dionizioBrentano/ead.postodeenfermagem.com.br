@@ -1,0 +1,116 @@
+@import "./quebras.css";
+
+/* Semânticos: o papel de cada valor. Telas e componentes usam só estes nomes. */
+:root {
+  /* Fonte de números (fixa, do sistema) */
+  --fonte-mono: ui-monospace, Consolas, "Liberation Mono", monospace;
+
+  /* Tipografia por papel */
+  --texto-rotulo: calc(var(--prim-fonte-1) * var(--escala));
+  --texto-apoio: calc(var(--prim-fonte-2) * var(--escala));
+  --texto-corpo: calc(var(--prim-fonte-3) * var(--escala));
+  --texto-titulo-cartao: calc(var(--prim-fonte-4) * var(--escala));
+  --texto-titulo-secao: calc(var(--prim-fonte-5) * var(--escala));
+  --texto-titulo-pagina: calc(var(--prim-fonte-6) * var(--escala));
+
+  /* Espaço por papel */
+  --espaco-justo: var(--prim-espaco-1);
+  --espaco-icone-texto: var(--prim-espaco-2);
+  --espaco-entre-itens: var(--prim-espaco-3);
+  --espaco-entre-campos: var(--prim-espaco-4);
+  --espaco-interno-cartao: var(--prim-espaco-4);
+  --espaco-gaveta: var(--prim-espaco-5);
+  --espaco-entre-blocos: var(--prim-espaco-6);
+  --espaco-colunas: var(--prim-espaco-7);
+  --espaco-entre-secoes: var(--prim-espaco-8);
+  --espaco-fim-pagina: var(--prim-espaco-9);
+  --margem-pagina: var(--prim-espaco-4);
+
+  /* Raio por papel */
+  --raio-pequeno: var(--prim-raio-1);
+  --raio-controle: var(--prim-raio-2);
+  --raio-cartao: var(--prim-raio-3);
+  --raio-selo: var(--prim-raio-pilula);
+
+  /* Sombra por papel */
+  --sombra-barra: var(--prim-sombra-1);
+  --sombra-cartao: var(--prim-sombra-2);
+  --sombra-cartao-ativo: var(--prim-sombra-3);
+  --sombra-flutuante: var(--prim-sombra-3);
+  --sombra-janela: var(--prim-sombra-4);
+  --sombra-suspenso: var(--prim-sombra-4);
+  --sombra-gaveta: var(--prim-sombra-lateral);
+
+  /* Duração por papel */
+  --duracao-rapida: var(--prim-duracao-1);
+  --duracao-media: var(--prim-duracao-2);
+  --duracao-gaveta: var(--prim-duracao-3);
+
+  /* Camadas */
+  --camada-elevado: 1;
+  --camada-barra: 100;
+  --camada-suspenso: 200;
+  --camada-flutuante: 250;
+  --camada-veu: 290;
+  --camada-gaveta: 300;
+  --camada-janela: 400;
+
+  /* Opacidade */
+  --opacidade-desabilitado: 0.6;
+  --opacidade-seta: 0.5;
+  --opacidade-veu-marca: 85%;
+
+  /* Dimensões */
+  --alvo-toque: 44px;
+  --altura-barra: 72px;
+  --altura-faixa-topo: 48px;
+  --altura-logo-barra: 38px;
+  --largura-logo-barra: 140px;
+  --icone-barra: 24px;
+  --icone-item: 40px;
+  --icone-tamanho: 20px;
+  --imagem-cartao: 88px;
+  --tamanho-seta-suspenso: 14px;
+  --tamanho-escolha: 20px;
+  --deslocamento-cartao: -2px;
+  --distancia-suspenso: 12px;
+  --proporcao-imagem: 16 / 9;
+  --proporcao-categoria: 4 / 3;
+  --fim-veu-categoria: 60%;
+  --largura-pagina: 1080px;
+  --largura-leitura: 820px;
+  --largura-form: 440px;
+  --largura-topo: 1200px;
+  --largura-janela: 580px;
+  --altura-maxima-janela: 90vh;
+  --largura-gaveta: 380px;
+  --largura-suspenso: 520px;
+  --largura-coluna-suspenso: 200px;
+  --largura-minima-coluna: 280px;
+  --altura-minima-texto: 110px;
+  --largura-maxima-texto: 70ch;
+  --desfoque-veu: 2px;
+  --tamanho-oculto-visual: 1px;
+
+  /* Quadro de notas e gráfico de evolução */
+  --largura-legenda-nota: 520px;
+  --largura-minima-quadro-grafico: 280px;
+  --tamanho-marcador-legenda: 12px;
+  --grafico-traco: 2px;
+  --altura-progresso: 6px;
+  --altura-celula-nota: 32px;
+  --largura-celula-nota: 40px;
+  --largura-item-nota: 128px;
+  --largura-minima-tabela-notas: 0;
+  --espaco-celulas-nota: var(--prim-espaco-1);
+}
+
+@media (--computador) {
+  :root {
+    --margem-pagina: var(--prim-espaco-8);
+    --altura-celula-nota: 34px;
+    --largura-celula-nota: 52px;
+    --largura-item-nota: 170px;
+    --largura-minima-tabela-notas: 520px;
+  }
+}

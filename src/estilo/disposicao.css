@@ -1,0 +1,66 @@
+/* Primitivas de disposição: pilha, linha, grade, contêiner e página. */
+.pilha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-entre-campos);
+}
+
+.pilha-justa {
+  gap: var(--espaco-icone-texto);
+}
+
+.pilha-itens {
+  gap: var(--espaco-entre-itens);
+}
+
+.pilha-blocos {
+  gap: var(--espaco-entre-blocos);
+}
+
+.pilha-secoes {
+  gap: var(--espaco-entre-secoes);
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espaco-entre-itens);
+}
+
+.linha-justa {
+  gap: var(--espaco-icone-texto);
+}
+
+.linha-separada {
+  justify-content: space-between;
+}
+
+.linha-fim {
+  justify-content: flex-end;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--largura-minima-coluna)), 1fr));
+  gap: var(--espaco-entre-campos);
+}
+
+.conteiner {
+  width: 100%;
+  max-width: var(--largura-pagina);
+  margin-inline: auto;
+  padding-inline: var(--margem-pagina);
+}
+
+.conteiner-leitura {
+  max-width: var(--largura-leitura);
+}
+
+.conteiner-form {
+  max-width: var(--largura-form);
+}
+
+.pagina {
+  padding-block: var(--espaco-entre-blocos) var(--espaco-fim-pagina);
+}

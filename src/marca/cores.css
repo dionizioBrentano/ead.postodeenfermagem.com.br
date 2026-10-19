@@ -1,60 +1,46 @@
-/* Cores da marca Sala EAD. Valores atuais, nomes por significado. */
+/* Apelidos dos nomes antigos de cor, para as telas ainda não migradas.
+   Cada um aponta para a marca ou para as cores fixas. Sai na última tarefa do plano. */
 :root {
-  --cor-fundo: #f8f6f1;
-  --cor-superficie: #ffffff;
-  --cor-linha: rgba(0, 0, 0, 0.06);
-  --cor-tinta: #3a3a3a;
-  --cor-tinta-suave: #909090;
-  --cor-primaria: #1a3a35;
-  --cor-primaria-contraste: #ffffff;
-  --cor-acao: #00ad57;
-  --cor-acao-contraste: #ffffff;
-  --cor-etapa-1: #1a3a35;
-  --cor-etapa-2: #b86e00;
-  --cor-etapa-3: #b3363b;
-  --cor-etapa-4: #3c4fa8;
-  --cor-etapa-1-suave: #f0ede6;
-  --cor-etapa-2-suave: #fbefdc;
-  --cor-etapa-3-suave: #f9e5e5;
-  --cor-etapa-4-suave: #e7eafa;
-  --cor-erro: #b3363b;
-  --cor-erro-suave: #f9e5e5;
-  --cor-neutro: #909090;
-
-  /* Realces, bordas, véus e cores sobre imagem */
-  --cor-realce: #f0ede6;
-  --cor-realce-suave: #faf9f6;
-  --cor-borda: #e6e4e1;
-  --cor-borda-forte: #d8d5d0;
-  --cor-linha-media: rgba(0, 0, 0, 0.08);
-  --cor-linha-forte: rgba(0, 0, 0, 0.1);
-  --cor-primaria-escura: #0d201d;
-  --cor-primaria-transparente: rgba(26, 58, 53, 0.2);
-  --cor-tinta-inversa: #ffffff;
+  --cor-fundo: var(--fundo);
+  --cor-superficie: var(--superficie);
+  --cor-linha: var(--linha);
+  --cor-tinta: var(--texto);
+  --cor-tinta-suave: var(--texto-suave);
+  --cor-primaria: var(--marca);
+  --cor-primaria-contraste: var(--marca-texto);
+  --cor-acao: var(--destaque);
+  --cor-acao-contraste: var(--destaque-texto);
+  --cor-neutro: var(--texto-suave);
+  --cor-realce: var(--fundo-suave);
+  --cor-realce-suave: var(--fundo-suave);
+  --cor-borda: var(--linha);
+  --cor-borda-forte: var(--linha);
+  --cor-linha-media: var(--linha);
+  --cor-linha-forte: var(--linha);
+  --cor-primaria-escura: color-mix(in srgb, var(--marca), var(--prim-preto) var(--prim-escurecer-forte));
+  --cor-primaria-transparente: color-mix(in srgb, var(--marca) 20%, transparent);
+  --cor-tinta-inversa: var(--marca-texto);
   --cor-tinta-sobre-imagem: rgba(255, 255, 255, 0.85);
   --cor-superficie-sobre-imagem: rgba(255, 255, 255, 0.95);
-  --cor-veu: rgba(0, 0, 0, 0.45);
   --cor-veu-imagem-topo: rgba(0, 0, 0, 0.35);
   --cor-veu-imagem-base: rgba(0, 0, 0, 0.78);
   --cor-grafico-aluno: #0f7c74;
   --cor-grafico-supervisor: var(--cor-etapa-2);
 
-  /* Apelidos dos nomes antigos — para o CSS existente continuar valendo.
-     Removidos tela por tela na limpeza. */
-  --bg: var(--cor-fundo);
-  --paper: var(--cor-superficie);
-  --line: var(--cor-linha);
-  --ink: var(--cor-tinta);
-  --muted: var(--cor-tinta-suave);
-  --accent: var(--cor-primaria);
-  --accent-ink: var(--cor-primaria-contraste);
-  --action: var(--cor-acao);
-  --action-ink: var(--cor-acao-contraste);
-  --ok: var(--cor-acao);
+  --bg: var(--fundo);
+  --paper: var(--superficie);
+  --line: var(--linha);
+  --ink: var(--texto);
+  --muted: var(--texto-suave);
+  --accent: var(--marca);
+  --accent-ink: var(--marca-texto);
+  --action: var(--destaque);
+  --action-ink: var(--destaque-texto);
+  --ok: var(--cor-sucesso);
   --no: var(--cor-erro);
   --err: var(--cor-erro);
   --errs: var(--cor-erro-suave);
-  --na: var(--cor-neutro);
+  --na: var(--texto-suave);
   --c1: var(--cor-etapa-1);
   --c2: var(--cor-etapa-2);
   --c3: var(--cor-etapa-3);

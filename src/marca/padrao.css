@@ -1,0 +1,21 @@
+/* Marca padrão neutra: vale só quando a marca da organização não carrega.
+   Fica numa camada; a folha de estilo da organização (servida pela API, fora de camada) sempre vence. */
+@layer marca-padrao {
+  :root {
+    --marca: #3a3a3a;
+    --marca-texto: #ffffff;
+    --destaque: #e0e0e0;
+    --destaque-texto: #1a1a1a;
+    --fundo: #ffffff;
+    --superficie: #ffffff;
+    --fundo-suave: #f2f2f2;
+    --texto: #1a1a1a;
+    --texto-suave: #5c5c5c;
+    --linha: #dddddd;
+    --fonte-titulo: system-ui, sans-serif;
+    --fonte-corpo: system-ui, sans-serif;
+    --logo-horizontal: none;
+    --logo-horizontal-clara: none;
+    --logo-simbolo: none;
+  }
+}

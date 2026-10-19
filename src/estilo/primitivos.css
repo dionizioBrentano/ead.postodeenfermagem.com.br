@@ -1,0 +1,83 @@
+@import "./quebras.css";
+
+/* Primitivos: as escalas da estrutura. Só semanticos.css usa estes nomes. */
+:root {
+  /* Espaço */
+  --prim-espaco-1: 4px;
+  --prim-espaco-2: 8px;
+  --prim-espaco-3: 12px;
+  --prim-espaco-4: 16px;
+  --prim-espaco-5: 20px;
+  --prim-espaco-6: 24px;
+  --prim-espaco-7: 32px;
+  --prim-espaco-8: 48px;
+  --prim-espaco-9: 64px;
+
+  /* Raio */
+  --prim-raio-1: 6px;
+  --prim-raio-2: 8px;
+  --prim-raio-3: 12px;
+  --prim-raio-pilula: 999px;
+  --prim-raio-circulo: 50%;
+
+  /* Espessura de borda */
+  --prim-borda-1: 1px;
+  --prim-borda-2: 2px;
+  --prim-borda-3: 4px;
+
+  /* Sombra */
+  --prim-sombra-1: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --prim-sombra-2: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --prim-sombra-3: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --prim-sombra-4: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --prim-sombra-lateral: 10px 0 40px rgba(0, 0, 0, 0.15);
+
+  /* Tamanho de fonte */
+  --prim-fonte-1: 0.8125rem;
+  --prim-fonte-2: 0.9375rem;
+  --prim-fonte-3: 1.0625rem;
+  --prim-fonte-4: 1.1875rem;
+  --prim-fonte-5: 1.375rem;
+  --prim-fonte-6: 1.75rem;
+
+  /* Controle de escala das fontes */
+  --escala: 1;
+
+  /* Peso */
+  --prim-peso-regular: 400;
+  --prim-peso-semi: 600;
+  --prim-peso-forte: 700;
+
+  /* Altura de linha */
+  --prim-linha-justa: 1.2;
+  --prim-linha-media: 1.4;
+  --prim-linha-texto: 1.6;
+
+  /* Espaço entre letras */
+  --prim-letras-titulo: -0.02em;
+  --prim-letras-rotulo: 0.16em;
+
+  /* Duração e curva */
+  --prim-duracao-1: 150ms;
+  --prim-duracao-2: 200ms;
+  --prim-duracao-3: 300ms;
+  --prim-curva: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Escurecer (mouse por cima e pressionado) */
+  --prim-escurecer: 15%;
+  --prim-escurecer-forte: 25%;
+}
+
+@media (--computador) {
+  :root {
+    --escala: 1.08;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --prim-duracao-1: 0ms;
+    --prim-duracao-2: 0ms;
+    --prim-duracao-3: 0ms;
+  }
+}

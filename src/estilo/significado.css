@@ -1,0 +1,52 @@
+/* Cores com significado: fixas, iguais para todas as organizações. */
+:root {
+  /* Estado */
+  --cor-erro: #b3363b;
+  --cor-erro-suave: #f9e5e5;
+  --cor-erro-texto: #ffffff;
+  --cor-aviso: #945800;
+  --cor-aviso-suave: #fbefdc;
+  --cor-sucesso: #2e7d32;
+  --cor-sucesso-suave: #e8f5e9;
+  --cor-info: #3c4fa8;
+  --cor-info-suave: #e7eafa;
+  --cor-veu: rgba(0, 0, 0, 0.4);
+
+  /* Escala de nota de 0 a 10 */
+  --cor-nota-0: #b71c1c;
+  --cor-nota-1: #d32f2f;
+  --cor-nota-2: #e64a19;
+  --cor-nota-3: #f57c00;
+  --cor-nota-4: #ffa000;
+  --cor-nota-5: #fbc02d;
+  --cor-nota-6: #c0ca33;
+  --cor-nota-7: #7cb342;
+  --cor-nota-8: #43a047;
+  --cor-nota-9: #2e7d32;
+  --cor-nota-10: #1b5e20;
+  --cor-nota-0-texto: #ffffff;
+  --cor-nota-1-texto: #ffffff;
+  --cor-nota-2-texto: #1a1a1a;
+  --cor-nota-3-texto: #1a1a1a;
+  --cor-nota-4-texto: #1a1a1a;
+  --cor-nota-5-texto: #1a1a1a;
+  --cor-nota-6-texto: #1a1a1a;
+  --cor-nota-7-texto: #1a1a1a;
+  --cor-nota-8-texto: #1a1a1a;
+  --cor-nota-9-texto: #ffffff;
+  --cor-nota-10-texto: #ffffff;
+
+  /* Etapas. A etapa 1 usa a cor da marca da organização (decisão de 19/10/2026);
+     as etapas 2, 3 e 4 são fixas. */
+  --cor-etapa-1: var(--marca);
+  --cor-etapa-2: #b86e00;
+  --cor-etapa-3: #b3363b;
+  --cor-etapa-4: #3c4fa8;
+  --cor-etapa-1-suave: var(--fundo-suave);
+  --cor-etapa-2-suave: #fbefdc;
+  --cor-etapa-3-suave: #f9e5e5;
+  --cor-etapa-4-suave: #e7eafa;
+
+  /* Só para escurecer cor em color-mix */
+  --prim-preto: #000000;
+}

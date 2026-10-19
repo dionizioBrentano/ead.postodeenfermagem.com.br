@@ -146,6 +146,7 @@ export default function App() {
       <main className="page auth">
         <div className="auth-card">
           <div className="brand">
+            <div className="brand-logo" aria-hidden="true" />
             <h1>Sala EAD</h1>
             <p className="muted">Guia do estágio hospitalar e autoavaliação.</p>
           </div>

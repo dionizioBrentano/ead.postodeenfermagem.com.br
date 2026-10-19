@@ -1,0 +1,47 @@
+/* Apelidos dos nomes antigos de espaço, raio e sombra, para as telas ainda não migradas.
+   Quem tem valor igual na escala nova aponta para ela; os outros guardam o valor antigo
+   até a tela que os usa ser migrada. Sai na última tarefa do plano. */
+:root {
+  --espaco-2: 2px;
+  --espaco-3: 3px;
+  --espaco-4: var(--prim-espaco-1);
+  --espaco-5: 5px;
+  --espaco-6: 6px;
+  --espaco-7: 7px;
+  --espaco-8: var(--prim-espaco-2);
+  --espaco-9: 9px;
+  --espaco-10: 10px;
+  --espaco-12: var(--prim-espaco-3);
+  --espaco-14: 14px;
+  --espaco-16: var(--prim-espaco-4);
+  --espaco-18: 18px;
+  --espaco-20: var(--prim-espaco-5);
+  --espaco-22: 22px;
+  --espaco-24: var(--prim-espaco-6);
+  --espaco-26: 26px;
+  --espaco-28: 28px;
+  --espaco-32: var(--prim-espaco-7);
+  --espaco-34: 34px;
+  --espaco-36: 36px;
+  --espaco-42: 42px;
+  --espaco-44: 44px;
+  --espaco-48: var(--prim-espaco-8);
+  --espaco-64: var(--prim-espaco-9);
+
+  --raio-fio: 2px;
+  --raio-xs: 4px;
+  --raio-sm: var(--prim-raio-1);
+  --raio-md: var(--prim-raio-2);
+  --raio-campo: 9px;
+  --raio-lg: 10px;
+  --raio-abas: 11px;
+  --raio-xl: var(--prim-raio-3);
+  --raio-caixa: 14px;
+  --raio-etiqueta: 20px;
+  --raio-pilula: var(--prim-raio-pilula);
+  --raio-circulo: var(--prim-raio-circulo);
+
+  --sombra-fina: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --sombra-cartao-realce: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --sombra-flutuante-dupla: 0 20px 60px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+}

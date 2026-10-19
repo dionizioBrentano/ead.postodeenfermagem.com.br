@@ -1,96 +1,79 @@
-/* Base estrutural comum. Padrões do sistema; a marca sobrepõe o que for dela. */
-:root {
-  /* Larguras de conteúdo */
-  --largura-pagina: 1080px;
-  --largura-leitura: 820px;
-  --largura-form: 440px;
-  --largura-topo: 1200px;
+/* Elementos da página. Só tokens semânticos e da marca. */
+* {
+  box-sizing: border-box;
+}
 
-  /* Dimensões recorrentes */
-  --altura-barra: 72px;
-  --alvo-toque: 44px;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
 
-  /* Cantos arredondados */
-  --raio-fio: 2px;
-  --raio-xs: 4px;
-  --raio-selo: 5px;
-  --raio-sm: 6px;
-  --raio-md: 8px;
-  --raio-campo: 9px;
-  --raio-lg: 10px;
-  --raio-abas: 11px;
-  --raio-xl: 12px;
-  --raio-caixa: 14px;
-  --raio-etiqueta: 20px;
-  --raio-pilula: 999px;
-  --raio-circulo: 50%;
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-corpo);
+  font-size: var(--texto-corpo);
+  line-height: var(--prim-linha-texto);
+}
 
-  /* Sombras */
-  --sombra-fina: 0 1px 2px rgba(0, 0, 0, 0.08);
-  --sombra-barra: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --sombra-cartao: 0 6px 18px rgba(0, 0, 0, 0.06);
-  --sombra-cartao-realce: 0 12px 24px rgba(0, 0, 0, 0.12);
-  --sombra-flutuante: 0 20px 60px rgba(0, 0, 0, 0.12);
-  --sombra-flutuante-dupla: 0 20px 60px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
-  --sombra-janela: 0 20px 60px rgba(0, 0, 0, 0.2);
-  --sombra-gaveta: 4px 0 24px rgba(0, 0, 0, 0.15);
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: var(--prim-peso-forte);
+  line-height: var(--prim-linha-justa);
+  letter-spacing: var(--prim-letras-titulo);
+  color: var(--texto);
+  text-wrap: balance;
+}
 
-  /* Espaçamento. O nome é o valor padrão em pixels; a marca pode sobrepor. */
-  --espaco-2: 2px;
-  --espaco-3: 3px;
-  --espaco-4: 4px;
-  --espaco-5: 5px;
-  --espaco-6: 6px;
-  --espaco-7: 7px;
-  --espaco-8: 8px;
-  --espaco-9: 9px;
-  --espaco-10: 10px;
-  --espaco-12: 12px;
-  --espaco-14: 14px;
-  --espaco-16: 16px;
-  --espaco-18: 18px;
-  --espaco-20: 20px;
-  --espaco-22: 22px;
-  --espaco-24: 24px;
-  --espaco-26: 26px;
-  --espaco-28: 28px;
-  --espaco-32: 32px;
-  --espaco-34: 34px;
-  --espaco-36: 36px;
-  --espaco-42: 42px;
-  --espaco-44: 44px;
-  --espaco-48: 48px;
-  --espaco-64: 64px;
+h1 {
+  font-size: var(--texto-titulo-pagina);
+  color: var(--marca);
+}
 
-  /* Escala de nota universal (0 a 10). Padrão da rede; marca pode sobrepor. */
-  --cor-nota-0: #b71c1c;
-  --cor-nota-1: #d32f2f;
-  --cor-nota-2: #e64a19;
-  --cor-nota-3: #f57c00;
-  --cor-nota-4: #ffa000;
-  --cor-nota-5: #fbc02d;
-  --cor-nota-6: #c0ca33;
-  --cor-nota-7: #7cb342;
-  --cor-nota-8: #43a047;
-  --cor-nota-9: #2e7d32;
-  --cor-nota-10: #1b5e20;
-  --cor-nota-0-texto: #ffffff;
-  --cor-nota-1-texto: #ffffff;
-  --cor-nota-2-texto: #1a1a1a;
-  --cor-nota-3-texto: #1a1a1a;
-  --cor-nota-4-texto: #1a1a1a;
-  --cor-nota-5-texto: #1a1a1a;
-  --cor-nota-6-texto: #1a1a1a;
-  --cor-nota-7-texto: #1a1a1a;
-  --cor-nota-8-texto: #1a1a1a;
-  --cor-nota-9-texto: #ffffff;
-  --cor-nota-10-texto: #ffffff;
+h2 {
+  font-size: var(--texto-titulo-secao);
+}
 
-  /* Dimensões de componentes */
-  --largura-legenda-nota: 520px;
-  --largura-minima-quadro-grafico: 280px;
-  --largura-maxima-texto: 70ch;
-  --tamanho-marcador-legenda: 12px;
-  --grafico-traco: 2px;
-  --altura-progresso: 6px;
+h3 {
+  font-size: var(--texto-titulo-cartao);
+}
+
+a {
+  color: var(--marca);
+}
+
+:focus-visible {
+  outline: var(--prim-borda-2) solid var(--marca);
+  outline-offset: var(--prim-borda-2);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+}
+
+.sem-rolagem {
+  overflow: hidden;
+}
+
+.oculto-visual {
+  position: absolute;
+  width: var(--tamanho-oculto-visual);
+  height: var(--tamanho-oculto-visual);
+  padding: 0;
+  margin: calc(var(--tamanho-oculto-visual) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
