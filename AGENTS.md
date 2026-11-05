@@ -77,4 +77,4 @@ DOC-07: arquivos, o que foi verificado e como, o que não foi, risco residual.
 ## Terminal
 
 Pode rodar sem pedir: `npm install` (sem acrescentar pacote), `npm run build`, `npm run dev`, `git status`, `git diff`, `git checkout -b`.
-Commit e envio ao GitHub só quando houver um prompt de envio, escrito depois que o Dionizio e o Claude revisarem o trabalho (ver `D:\postodeenfermagem\postodeenfermagem.com.br\processo\PROTOCOLO.md`). Sem prompt de envio, não faça commit. Ramo principal só quando o prompt de envio disser isso por escrito: o envio ao ramo principal publica o site.
+Commit e envio ao GitHub são feitos só pelo Claude, depois de conferir e aprovar o trabalho (ver `D:\postodeenfermagem\postodeenfermagem.com.br\processo\PROTOCOLO.md`). Você nunca faz commit nem envio, mesmo que alguém peça. O envio ao ramo principal publica o site.
