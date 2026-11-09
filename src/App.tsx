@@ -9,7 +9,6 @@ import {
   getUserToken,
   fetchMembershipsAndSave,
   apiErrorListeners,
-  logout,
 } from "./api/client";
 import { navegar, useRota } from "./lib/rota";
 import { useAnalise } from "./lib/useAnalise";
@@ -28,7 +27,7 @@ import { MODULOS_EAD, SLUGS_MODULOS_EAD, conteudoDoModulo } from "./data/ead/ind
 import { SLUGS_ASSUNTOS_ESTUDO, conteudoDoAssunto } from "./data/ead/assuntos/indiceAssuntos";
 import { slugDoModuloNaRota } from "./lib/modulosEad";
 import { slugDoAssuntoNaRota } from "./lib/assuntosEstudo";
-import { iniciarLogin, sairNoLoginCentral } from "./lib/loginCentral";
+import { iniciarLogin, recuperarAcesso, sair as sairCentral } from "./lib/loginCentral";
 
 export default function App() {
   const rotaRaw = useRota();
@@ -105,10 +104,18 @@ export default function App() {
 
   useAnalise(rota, guard.estado === "ok" ? guard.memberships : null);
 
+  if (recuperarAcesso()) {
+    return (
+      <main className="page auth">
+        <div className="auth-card">
+          <p className="muted">Entrando…</p>
+        </div>
+      </main>
+    );
+  }
+
   const sair = async () => {
-    if (token) await logout(token);
-    else clearSession();
-    sairNoLoginCentral();
+    await sairCentral();
   };
 
   if (faltando.length) {
@@ -155,7 +162,7 @@ export default function App() {
             <button className="btn" onClick={() => void iniciarLogin({ destino: rota === "/" ? "/participar" : rota })}>
               Entrar
             </button>
-            <button className="btn ghost" onClick={() => void iniciarLogin({ destino: "/participar", cadastro: true })}>
+            <button className="btn ghost" onClick={() => void iniciarLogin({ destino: "/participar" })}>
               Criar cadastro
             </button>
           </div>

@@ -10,9 +10,9 @@ export default function EntrarRetornoPage({ onEntrou }: { onEntrou: (destino: st
   useEffect(() => {
     if (feito.current) return;
     feito.current = true;
-    concluirLogin("/sso/trocar")
+    concluirLogin()
       .then(({ resposta, destino }) => {
-        saveSession(resposta.access_token, resposta.user ?? null);
+        saveSession(resposta.user ?? null);
         onEntrou(destino);
       })
       .catch((e: unknown) => setErro(e instanceof Error ? e.message : "Não foi possível entrar."));

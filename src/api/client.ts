@@ -2,12 +2,13 @@
 // Regras: identidade e autorização vêm da API. Entrar, cadastro, verificação em
 // duas etapas, confirmação de contatos e senha ficam no login central
 // (entrar.postodeenfermagem.com.br); ver src/auth/loginCentral.ts.
-import { iniciarLogin } from "../auth/loginCentral";
+import { API_URL } from "../auth/enderecosApi";
+import { CAMINHO_RETORNO, iniciarLogin } from "../auth/loginCentral";
+import { limparEndereco, prova } from "../auth/provaDpop";
+import { limpar, renovar, token } from "../auth/tokenNaMemoria";
 
-const API_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 const TENANT_ID = import.meta.env.VITE_TENANT_ID ?? "";
 
-const USER_TOKEN_KEY = "ead.userToken";
 const PROFILE_KEY = "ead.profile";
 const MEMBERSHIPS_KEY = "ead.memberships";
 
@@ -43,7 +44,7 @@ export function tenantAtual(): string {
   return TENANT_ID;
 }
 
-/* ---------- Armazenamento do token do usuário ---------- */
+/* ---------- Armazenamento do token e sessão do usuário ---------- */
 
 function safeGet(key: string): string | null {
   try {
@@ -65,14 +66,10 @@ function safeRemove(key: string) {
   }
 }
 
-let memoryUserToken: string | null = null;
-
 export function getUserToken(): string | null {
-  return memoryUserToken ?? safeGet(USER_TOKEN_KEY);
+  return token();
 }
-export function saveSession(token: string, profile: Profile | null) {
-  memoryUserToken = token;
-  safeSet(USER_TOKEN_KEY, token);
+export function saveSession(profile: Profile | null) {
   if (profile) safeSet(PROFILE_KEY, JSON.stringify(profile));
 }
 export function saveMemberships(memberships: Membership[]) {
@@ -102,8 +99,8 @@ export function getSavedMembershipsOuNulo(): Membership[] | null {
   }
 }
 export function clearSession() {
-  memoryUserToken = null;
-  safeRemove(USER_TOKEN_KEY);
+  limpar();
+  safeRemove("ead.userToken");
   safeRemove(PROFILE_KEY);
   safeRemove(MEMBERSHIPS_KEY);
 }
@@ -119,22 +116,35 @@ type RequestOptions = {
 export const apiErrorListeners = new Set<(err: ApiError) => void>();
 
 export async function request(method: string, path: string, opts: RequestOptions = {}): Promise<unknown> {
-  const headers: Record<string, string> = { Accept: "application/json" };
-  if (opts.body !== undefined) headers["Content-Type"] = "application/json";
-  if (opts.tenant !== false) headers["X-Tenant-ID"] = TENANT_ID;
-  if (opts.bearer) headers["Authorization"] = `Bearer ${opts.bearer}`;
+  async function enviar(bearer: string | null | undefined): Promise<Response> {
+    const headers: Record<string, string> = { Accept: "application/json" };
+    if (opts.body !== undefined) headers["Content-Type"] = "application/json";
+    if (opts.tenant !== false) headers["X-Tenant-ID"] = TENANT_ID;
+    if (bearer) {
+      headers["Authorization"] = `DPoP ${bearer}`;
+      headers["DPoP"] = await prova(method, limparEndereco(`${API_URL}${path}`), bearer);
+    }
 
-  let res: Response;
-  try {
-    res = await fetch(`${API_URL}${path}`, {
-      method,
-      headers,
-      body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
-    });
-  } catch {
-    const e = new ApiError(0, "Não foi possível falar com o servidor. Verifique sua internet e tente de novo.", null);
-    apiErrorListeners.forEach(cb => cb(e));
-    throw e;
+    try {
+      return await fetch(`${API_URL}${path}`, {
+        method,
+        headers,
+        body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+      });
+    } catch {
+      const e = new ApiError(0, "Não foi possível falar com o servidor. Verifique sua internet e tente de novo.", null);
+      apiErrorListeners.forEach((cb) => cb(e));
+      throw e;
+    }
+  }
+
+  let res = await enviar(opts.bearer);
+
+  if (res.status === 401 && opts.bearer) {
+    const novoToken = await renovar();
+    if (novoToken) {
+      res = await enviar(novoToken);
+    }
   }
 
   let data: unknown = null;
@@ -149,12 +159,12 @@ export async function request(method: string, path: string, opts: RequestOptions
   if (!res.ok) {
     if (res.status === 401) {
       clearSession();
-      if (!window.location.pathname.includes("/entrar/retorno")) {
+      if (!window.location.pathname.includes(CAMINHO_RETORNO)) {
         void iniciarLogin();
       }
     }
     const e = new ApiError(res.status, messageFrom(data) ?? `Erro ${res.status}`, data);
-    apiErrorListeners.forEach(cb => cb(e));
+    apiErrorListeners.forEach((cb) => cb(e));
     throw e;
   }
   return data;
@@ -224,15 +234,6 @@ export function isOrganizationMismatch(err: unknown): boolean {
 
 /* ---------- Rotas usadas ---------- */
 
-export async function logout(token: string) {
-  try {
-    await request("POST", "/auth/logout", { bearer: token });
-  } catch {
-    // Ignora erros ao deslogar
-  }
-  clearSession();
-}
-
 export async function currentUser(token: string): Promise<Profile> {
   const data = await request("GET", "/user", { bearer: token });
   return pickProfile(data) ?? (obj(data) as Profile) ?? {};
@@ -288,4 +289,3 @@ export async function createRegistroProfissional(bearer: string, payload: { cons
 export async function deleteRegistroProfissional(bearer: string, id: string) {
   return request("DELETE", `/me/registros-profissionais/${id}`, { bearer });
 }
-

@@ -2,10 +2,12 @@
 // Mesmo comportamento em todos os sites: PKCE S256, código de uso único trocado na API.
 // Nunca colocar token em URL ou console.
 
-const LOGIN_CENTRAL = (import.meta.env.VITE_LOGIN_CENTRAL_URL ?? "https://entrar.postodeenfermagem.com.br").replace(/\/+$/, "");
-const rawApiUrl = (import.meta.env.VITE_API_URL ?? "https://api.postodeenfermagem.com.br").replace(/\/+$/, "");
-const API_URL = rawApiUrl.endsWith("/api/v1") ? rawApiUrl : `${rawApiUrl}/api/v1`;
+import { base64url } from "./base64url";
+import { ENDERECO_AUTORIZAR, ENDERECO_SAIR, ENDERECO_TROCA } from "./enderecosApi";
+import { postarComProva } from "./provaDpop";
+import { token, limpar, guardar, temAcesso, type RespostaToken } from "./tokenNaMemoria";
 
+const LOGIN_CENTRAL = (import.meta.env.VITE_LOGIN_CENTRAL_URL ?? "https://entrar.postodeenfermagem.com.br").replace(/\/+$/, "");
 // Prefixo das rotas quando o site não fica na raiz do domínio (ex.: "/frontend").
 const BASE = (import.meta.env.VITE_ROTAS_BASE ?? "").replace(/\/+$/, "");
 const CHAVE = "loginCentral.pedido";
@@ -18,12 +20,6 @@ function aleatorio(bytes: number): string {
   const b = new Uint8Array(bytes);
   crypto.getRandomValues(b);
   return base64url(b);
-}
-
-function base64url(bytes: Uint8Array): string {
-  let s = "";
-  bytes.forEach((x) => { s += String.fromCharCode(x); });
-  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 async function desafio(verifier: string): Promise<string> {
@@ -53,8 +49,6 @@ export type OpcoesLogin = {
   destino?: string;
   /** A área exige verificação em duas etapas (aplicativo autenticador). */
   exigirMfa?: boolean;
-  /** Abrir direto a tela de cadastro. */
-  cadastro?: boolean;
 };
 
 export async function iniciarLogin(opcoes: OpcoesLogin = {}): Promise<void> {
@@ -70,29 +64,27 @@ export async function iniciarLogin(opcoes: OpcoesLogin = {}): Promise<void> {
     // Sem sessionStorage não dá para concluir o retorno com segurança.
   }
   const q = new URLSearchParams({
-    return_to: urlRetorno(),
+    response_type: "code",
+    client_id: window.location.hostname,
+    redirect_uri: urlRetorno(),
     state: pedido.state,
     code_challenge: await desafio(verifier),
     code_challenge_method: "S256",
   });
-  if (opcoes.exigirMfa) q.set("mfa", "1");
-  const caminho = opcoes.cadastro ? "/cadastro" : "/";
-  window.location.assign(`${LOGIN_CENTRAL}${caminho}?${q.toString()}`);
+  if (opcoes.exigirMfa) q.set("verificacao", "1");
+  window.location.assign(`${ENDERECO_AUTORIZAR}?${q.toString()}`);
 }
 
-export type RespostaLogin = {
-  access_token: string;
+export type RespostaLogin = RespostaToken & {
   user?: Record<string, unknown>;
   abilities?: string[];
-  [k: string]: unknown;
 };
 
 /**
  * Conclui o retorno do login central: confere o state, troca o código na API
  * e devolve a resposta (token + usuário) e a página de destino.
- * O caminho da troca é `${API_URL}${caminhoTroca}`.
  */
-export async function concluirLogin(caminhoTroca = "/sso/trocar"): Promise<{ resposta: RespostaLogin; destino: string }> {
+export async function concluirLogin(): Promise<{ resposta: RespostaLogin; destino: string }> {
   const q = new URLSearchParams(window.location.search);
   const code = q.get("code");
   const state = q.get("state");
@@ -113,12 +105,12 @@ export async function concluirLogin(caminhoTroca = "/sso/trocar"): Promise<{ res
 
   let res: Response;
   try {
-    const path = caminhoTroca.startsWith("/api/v1") ? caminhoTroca.slice(7) : caminhoTroca;
-    const endpoint = `${API_URL}${path.startsWith("/") ? "" : "/"}${path}`;
-    res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ code, code_verifier: pedido.verifier, return_to: urlRetorno() }),
+    res = await postarComProva(ENDERECO_TROCA, {
+      grant_type: "authorization_code",
+      code,
+      code_verifier: pedido.verifier,
+      redirect_uri: urlRetorno(),
+      client_id: window.location.hostname,
     });
   } catch {
     throw new Error("Não foi possível falar com o servidor. Verifique sua internet e tente de novo.");
@@ -127,32 +119,57 @@ export async function concluirLogin(caminhoTroca = "/sso/trocar"): Promise<{ res
   if (!res.ok || !data || typeof data.access_token !== "string") {
     throw new Error("A entrada expirou ou já foi usada. Tente entrar de novo.");
   }
+  guardar(data);
   return { resposta: data, destino: destinoSeguro(pedido.destino) };
 }
 
 /** Encerra a sessão localmente e redireciona para o login central para logout global. */
 export async function sair(): Promise<void> {
-  const token = localStorage.getItem("ead.userToken");
+  const tk = token();
   try {
-    if (token) {
-      await fetch(`${API_URL}/auth/logout`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+    if (tk) {
+      await postarComProva(ENDERECO_SAIR, undefined, tk);
     }
   } catch {
     // Falhas de rede não impedem a saída
   } finally {
-    localStorage.removeItem("ead.userToken");
+    limpar();
     localStorage.removeItem("ead.profile");
     localStorage.removeItem("ead.memberships");
     const returnTo = `${window.location.origin}${BASE}/`;
     const q = new URLSearchParams({ return_to: returnTo });
     window.location.assign(`${LOGIN_CENTRAL}/sair?${q.toString()}`);
   }
+}
+
+let recuperando = false;
+
+/**
+ * Se não há token na memória mas há marca de sessão ativa nesta aba e não estamos no retorno,
+ * inicia o login com a página atual como destino e retorna true (passagem silenciosa).
+ */
+export function recuperarAcesso(): boolean {
+  if (temAcesso()) {
+    return false;
+  }
+  let ativa = false;
+  try {
+    ativa = sessionStorage.getItem("entrada.ativa") === "1";
+  } catch {
+    ativa = false;
+  }
+  if (!ativa) {
+    return false;
+  }
+  const p = window.location.pathname;
+  if (p.includes(CAMINHO_RETORNO)) {
+    return false;
+  }
+  if (!recuperando) {
+    recuperando = true;
+    void iniciarLogin({ destino: paginaAtual() });
+  }
+  return true;
 }
 
 /** Encerra a sessão também no login central. Chame depois de apagar o token do site. */
